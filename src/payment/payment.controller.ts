@@ -51,9 +51,9 @@ export class PaymentController {
   update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
     return this.paymentService.update(+id, updatePaymentDto);
   }
-
+}
+/* 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.paymentService.remove(+id);
-  }
-}
+  } */

@@ -73,9 +73,9 @@ export class UniversityController {
     return this.universityService.update(id, updateUniversityDto);
   }
   
-  @Roles(UserRole.ADMIN)
+}
+/*   @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param() { id }: ParamsWithId) {
     return await this.universityService.remove(id);
-  }
-}
+  } */

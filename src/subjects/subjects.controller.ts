@@ -55,9 +55,9 @@ export class SubjectsController {
     return this.subjectsService.update(id, updateSubjectDto);
   }
 
-  @Roles(UserRole.ADMIN)
+}
+/*   @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param() { id }: ParamsWithId) {
     return this.subjectsService.remove(id);
-  }
-}
+  } */
