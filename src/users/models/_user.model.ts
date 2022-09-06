@@ -17,7 +17,7 @@ export type UserDocument = User & Document;
 export enum UserRole {
   ADMIN = 'admin',
   STUDENT = 'student',
-  TEACHER = 'teacher',
+  teamMember = 'teamMember',
 }
 
 export enum DeviceType {
@@ -80,17 +80,17 @@ export class User {
   @Prop({ type: String })
   password: string;
 
-  @Prop({ default: false, type: Boolean })
+  @Prop({ default: true, type: Boolean })
   enabled: boolean;
 
   @Prop({ type: String })
   photo: string;
 
   @Prop({ index: true, unique: true, sparse: true, type: String })
-  facebookId: string;
+  facebookId?: string;
 
   @Prop({ index: true, unique: true, sparse: true, type: String })
-  googleId: string;
+  googleId?: string;
 
   @Prop({ required: true, type: String, enum: Object.values(UserRole) })
   role: UserRole;
@@ -111,7 +111,7 @@ export class User {
       },
     ]),
   )
-  pushTokens: PushToken[];
+  pushTokens?: PushToken[];
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
@@ -184,6 +184,11 @@ UserSchema.methods.sendNotification = async function (message) {
 UserSchema.methods.isValidPassword = async function (password) {
   // return compare(password, (this as UserDocument).password);
   return Password.isCorrectPassword(password, (this as UserDocument).password);
+};
+
+UserSchema.methods.hashing = async function (password) {
+  // return compare(password, (this as UserDocument).password);
+  return Password.hash(password);
 };
 
 export { UserSchema };

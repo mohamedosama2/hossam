@@ -20,6 +20,7 @@ import { JwtService } from '@nestjs/jwt';
 import { StudentDocument } from 'src/users/models/student.model';
 import { CreateQuery, FilterQuery } from 'mongoose';
 import { UserRepository } from 'src/users/users.repository';
+import * as SendGrid from '@sendgrid/mail';
 
 @Injectable()
 export class AuthService {
@@ -27,35 +28,25 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
-
-  async register(registerationData: RegisterDto): Promise<StudentDocument> {
-    let user = await this.userRepository.findOne({
-      phone: registerationData.phone,
-    } as FilterQuery<UserDocument>);
-    if (user) throw new BadRequestException('phone should be unique');
-    // user = await this.userRepository.create({
-    //   ...registerationData,
-    //   role: 'student',
-    // } as CreateQuery<UserDocument>);
-    user = await this.userRepository.createDoc({
-      ...registerationData,
-      role: 'student',
-    } as User);
-    return user;
+  ) {
+    SendGrid.setApiKey(this.configService.get<string>('SEND_GRID_KEY'));
   }
 
   async login(loginDto: LoginDto): Promise<{
     user: UserDocument;
     token: string;
   }> {
-    const { phone } = loginDto;
+    const { email } = loginDto;
+    console.log(email);
+
     let user = await this.userRepository.findOne({
-      phone,
+      email,
     } as FilterQuery<UserDocument>);
     if (!user) throw new UserNotFoundException();
+    console.log(user,"1");
     if (!(await (user as any).isValidPassword(loginDto.password)))
       throw new UnauthorizedException('invalid credentials');
+    console.log(user);
 
     if (user.enabled === false)
       throw new UnauthorizedException('your account is deactivated');
@@ -65,33 +56,6 @@ export class AuthService {
     const options = {};
     const token = jwt.sign(payload, process.env.JWT_SECRET, options);
     return { user, token };
-  }
-
-  async loginGoogle(user: UserDocument): Promise<UserDocument> {
-    return user;
-  }
-
-  async loginFacebook({
-    accessToken,
-  }: LoginFacebookDto): Promise<UserDocument> {
-    const { data } = await axios(
-      `${this.configService.get<string>(
-        'facebookUrl',
-      )}&access_token=${accessToken}`,
-    );
-    const { id, name, email } = data;
-    let user = await this.userRepository.findOne({
-      facebookId: id,
-    } as FilterQuery<UserDocument>);
-    if (!user) {
-      user = await this.userRepository.create({
-        username: name,
-        email,
-        facebookId: id,
-        role: 'student',
-      } as CreateQuery<UserDocument>);
-    }
-    return user;
   }
 
   async verifyUserByTokenFromSocket(
@@ -115,4 +79,28 @@ export class AuthService {
       return false;
     }
   }
+
+
+  async send(mail: SendGrid.MailDataRequired) {
+    const transport = await SendGrid.send(mail);
+
+    console.log(`Email successfully dispatched to ${mail.to}`);
+    return transport;
+  }
 }
+/*   async register(registerationData: RegisterDto): Promise<StudentDocument> {
+    let user = await this.userRepository.findOne({
+      phone: registerationData.phone,
+    } as FilterQuery<UserDocument>);
+    if (user) throw new BadRequestException('phone should be unique');
+    // user = await this.userRepository.create({
+    //   ...registerationData,
+    //   role: 'student',
+    // } as CreateQuery<UserDocument>);
+    user = await this.userRepository.createDoc({
+      ...registerationData,
+      role: 'admin',
+    } as User);
+    return user;
+  }
+ */

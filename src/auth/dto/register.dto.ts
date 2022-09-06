@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -18,4 +19,13 @@ export class RegisterDto {
   @IsString()
   @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
   phone: string;
+
+  @IsString()
+  @Matches(Constants.EMAIL_REGX, { message: 'email is invalid' })
+  email: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ type: 'string', format: 'binary' })
+  photo: string;
 }

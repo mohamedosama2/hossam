@@ -17,6 +17,7 @@ import {
   Query,
   CacheInterceptor,
   CacheKey,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { request } from 'http';
@@ -33,11 +34,11 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { FilterQuery, PaginateResult } from 'mongoose';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponseGeneral } from 'src/utils/pagination/apiOkResponseGeneral';
-import { Student } from './models/student.model';
-import { Teacher } from './models/teacher.model';
+import { Student, StudentDocument } from './models/student.model';
 import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
 import { UserRepository } from './users.repository';
 import { Constants } from 'src/utils/constants';
+import { CreateStudentDto, CreateTeamMemberDto } from './dto/create-user.dto';
 
 @ApiBearerAuth()
 @ApiTags('USERS')
@@ -103,5 +104,64 @@ export class UsersController {
     return await this.usersService.findOne({
       _id: id,
     } as FilterQuery<UserDocument>);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+  @ApiConsumes('multipart/form-data')
+  @Post('add-student')
+  async addStudent(
+    @Body() registerationData: CreateStudentDto,
+    @UploadedFiles()
+    files,
+  ) {
+    let user = await this.UserRepository.findOne({
+      $or: [
+        { phone: registerationData.phone },
+        { email: registerationData.email },
+      ],
+    });
+    if (user) throw new BadRequestException('phone and email should be unique');
+    if (files && files.photo)
+      registerationData.photo = files.photo[0].secure_url;
+
+    let newUser = await this.UserRepository.createDoc({
+      role: UserRole.STUDENT,
+      enabled: true,
+      ...registerationData,
+    });
+    return newUser;
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+  @ApiConsumes('multipart/form-data')
+  @Post('add-teamMember')
+  async addTeamMember(
+    @Body() registerationData: CreateTeamMemberDto,
+    @UploadedFiles()
+    files,
+  ) {
+    let user = await this.UserRepository.findOne({
+      role: UserRole.teamMember,
+      $or: [
+        { phone: registerationData.phone },
+        { email: registerationData.email },
+        { whatsapp: registerationData.whatsapp },
+      ],
+    });
+    if (user)
+      throw new BadRequestException(
+        'phone,email and whatsapp should be unique',
+      );
+    if (files && files.photo)
+      registerationData.photo = files.photo[0].secure_url;
+
+    let newUser = await this.UserRepository.createDoc({
+      role: UserRole.teamMember,
+      enabled: true,
+      ...registerationData,
+    });
+    return newUser;
   }
 }

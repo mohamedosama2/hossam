@@ -13,7 +13,6 @@ import { PaginationParams } from './utils/pagination/paginationParams.dto';
 import { PaginatedDto } from './utils/pagination/paginated.dto';
 import { User } from './users/models/_user.model';
 import { Student } from './users/models/student.model';
-import { Teacher } from './users/models/teacher.model';
 import { FilterQueryOptionsUser } from './users/dto/filterQueryOptions.dto';
 import ParamsWithId from './utils/paramsWithId.dto';
 

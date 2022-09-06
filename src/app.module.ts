@@ -11,6 +11,9 @@ import { MessageQueueModule } from './message-queue/message-queue-publisher.modu
 import { CacheConfigService } from './cache/cacheConfigService';
 import { cacheOperationsModule } from './cache/cache.module';
 import { NotificationModule } from './notification/notification.module';
+import { UniversityModule } from './university/university.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { GroupModule } from './group/group.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -18,8 +21,11 @@ import { NotificationModule } from './notification/notification.module';
     UsersModule,
     AuthModule,
     PhoneConfirmationModule,
-    ChatModule,
-    NotificationModule,
+    UniversityModule,
+    SubjectsModule,
+    GroupModule,
+   /*  ChatModule, */
+/*     NotificationModule, */
     // MessageQueueModule,
     // cacheOperationsModule,
   ],
