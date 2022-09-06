@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
       connectionFactory: (connection) => {
         connection.plugin(require('mongoose-autopopulate'));
         connection.plugin(require('mongoose-paginate-v2'));
+        connection.plugin(require('mongoose-aggregate-paginate-v2'));
         return connection;
       },
     }),

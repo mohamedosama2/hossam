@@ -50,7 +50,7 @@
     "kafkajs": "^1.16.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.0.13",
-    "mongoose-aggregate-paginate-v2": "^1.0.5",
+    "mongoose-aggregate-paginate-v2": "^1.0.6",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-autopopulate": "^0.16.0",
     "mongoose-paginate-v2": "^1.4.2",

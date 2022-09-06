@@ -41,6 +41,7 @@ export class UsersService {
       ['username', 'role'],
       { populate: 'university' },
     );
+
     return users;
   }
 
