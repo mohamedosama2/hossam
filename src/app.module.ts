@@ -14,6 +14,8 @@ import { NotificationModule } from './notification/notification.module';
 import { UniversityModule } from './university/university.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { GroupModule } from './group/group.module';
+import { TasksModule } from './tasks/tasks.module';
+import { PaymentModule } from './payment/payment.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,6 +26,10 @@ import { GroupModule } from './group/group.module';
     UniversityModule,
     SubjectsModule,
     GroupModule,
+    /*  ChatModule, */
+    /*     NotificationModule, */
+    TasksModule,
+    PaymentModule,
     /*  ChatModule, */
     /*     NotificationModule, */
     // MessageQueueModule,

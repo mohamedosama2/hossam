@@ -11,6 +11,7 @@ import {
   PaginateResult,
   QueryOptions,
 } from 'mongoose';
+import { AggregationOpptionsInterface } from './pagination/paginationParams.dto';
 
 type TDocument<T> = T & Document;
 export abstract class BaseAbstractRepository<T> {
@@ -63,6 +64,19 @@ export abstract class BaseAbstractRepository<T> {
     } else {
       docs = await this.model.find(filters).setOptions(options);
     }
+    return docs;
+  }
+  public async findAllWithPaginationAggregationOption(
+    queryFiltersAndOptions: AggregationOpptionsInterface,
+    arrayOfPiplines: Record<string, any>[],
+  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]> {
+    console.log(arrayOfPiplines)
+    var aggregate = this.model.aggregate(arrayOfPiplines);
+
+    const docs = await (this.model as any).aggregatePaginate(
+      aggregate,
+      queryFiltersAndOptions,
+    );
     return docs;
   }
 

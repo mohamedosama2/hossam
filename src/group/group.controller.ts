@@ -51,9 +51,9 @@ export class GroupController {
   ) {
     return await this.groupService.update(id, updateGroupDto);
   }
-
+}
+/* 
   @Delete(':id')
   async remove(@Param() { id }: ParamsWithId) {
     return await this.groupService.remove(id);
-  }
-}
+  } */

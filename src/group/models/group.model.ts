@@ -7,7 +7,7 @@ import { User } from 'src/users/models/_user.model';
 
 export type GroupDocument = Group & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Group {
   @Prop({ type: String, required: true })
   name: string;

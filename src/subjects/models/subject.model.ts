@@ -10,7 +10,7 @@ export enum Semester {
   SECOND = 'SECOND',
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Subject {
   id?: string;
 
