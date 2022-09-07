@@ -24,12 +24,12 @@ import { GroupModule } from './group/group.module';
     UniversityModule,
     SubjectsModule,
     GroupModule,
-   /*  ChatModule, */
-/*     NotificationModule, */
+    /*  ChatModule, */
+    /*     NotificationModule, */
     // MessageQueueModule,
     // cacheOperationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
