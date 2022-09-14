@@ -8,7 +8,7 @@ import { SubjectRepository } from './subjects.repository';
 @Module({
   controllers: [SubjectsController],
   providers: [SubjectsService, SubjectRepository],
-  exports: [SubjectRepository],
+  exports: [SubjectsService, SubjectRepository],
   imports: [
     MongooseModule.forFeature([
       {
@@ -18,4 +18,4 @@ import { SubjectRepository } from './subjects.repository';
     ]),
   ],
 })
-export class SubjectsModule {}
+export class SubjectsModule { }

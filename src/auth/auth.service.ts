@@ -1,10 +1,11 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  HttpException,
-  HttpStatus,
-  BadRequestException,
-} from '@nestjs/common';
+import
+  {
+    Injectable,
+    UnauthorizedException,
+    HttpException,
+    HttpStatus,
+    BadRequestException,
+  } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -21,21 +22,24 @@ import { StudentDocument } from 'src/users/models/student.model';
 import { CreateQuery, FilterQuery } from 'mongoose';
 import { UserRepository } from 'src/users/users.repository';
 import * as SendGrid from '@sendgrid/mail';
-
+import * as nodemailer from "@nestjs-modules/mailer";
 @Injectable()
-export class AuthService {
+export class AuthService
+{
   constructor(
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {
+  )
+  {
     SendGrid.setApiKey(this.configService.get<string>('SEND_GRID_KEY'));
   }
 
   async login(loginDto: LoginDto): Promise<{
     user: UserDocument;
     token: string;
-  }> {
+  }>
+  {
     const { email } = loginDto;
     console.log(email);
 
@@ -43,7 +47,7 @@ export class AuthService {
       email,
     } as FilterQuery<UserDocument>);
     if (!user) throw new UserNotFoundException();
-    console.log(user,"1");
+    console.log(user, "1");
     if (!(await (user as any).isValidPassword(loginDto.password)))
       throw new UnauthorizedException('invalid credentials');
     console.log(user);
@@ -60,10 +64,13 @@ export class AuthService {
 
   async verifyUserByTokenFromSocket(
     token: string,
-  ): Promise<false | UserDocument> {
-    try {
+  ): Promise<false | UserDocument>
+  {
+    try
+    {
       const decoded: TokenPayload = await this.jwtService.verify(token);
-      if (decoded.userId === undefined) {
+      if (decoded.userId === undefined)
+      {
         return false;
       }
 
@@ -71,17 +78,32 @@ export class AuthService {
         _id: decoded.userId,
       } as FilterQuery<UserDocument>);
 
-      if (!user || user.enabled === false) {
+      if (!user || user.enabled === false)
+      {
         return false;
       }
       return user;
-    } catch (err) {
+    } catch (err)
+    {
       return false;
+      
     }
   }
 
 
-  async send(mail: SendGrid.MailDataRequired) {
+  async send(mail: SendGrid.MailDataRequired)
+  {
+  //  nodemailer.MAILER_TRANSPORT_FACTORY({
+  //     service: 'gmail',
+  //     auth: {
+  //       type: 'OAuth2',
+  //       user: process.env.MAIL_USERNAME,
+  //       pass: process.env.MAIL_PASSWORD,
+  //       clientId: process.env.OAUTH_CLIENTID,
+  //       clientSecret: process.env.OAUTH_CLIENT_SECRET,
+  //       refreshToken: process.env.OAUTH_REFRESH_TOKEN
+  //     }
+  //   });
     const transport = await SendGrid.send(mail);
 
     console.log(`Email successfully dispatched to ${mail.to}`);

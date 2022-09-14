@@ -1,4 +1,5 @@
-import {
+import
+{
   Controller,
   Get,
   Post,
@@ -22,24 +23,28 @@ import ParamsWithId from 'src/utils/paramsWithId.dto';
 @ApiBearerAuth()
 @ApiTags('group'.toUpperCase())
 @Controller('group')
-export class GroupController {
-  constructor(private readonly groupService: GroupService) {}
+export class GroupController
+{
+  constructor(private readonly groupService: GroupService) { }
 
   @Roles(UserRole.ADMIN)
   @Post()
-  async create(@Body() createGroupDto: CreateGroupDto) {
+  async create(@Body() createGroupDto: CreateGroupDto)
+  {
     return await this.groupService.create(createGroupDto);
   }
 
   @Get()
   async findAll(
     @Query() queryFiltersAndOptions: FilterQueryOptionsGroup,
-  ): Promise<PaginateResult<GroupDocument> | GroupDocument[]> {
+  ): Promise<PaginateResult<GroupDocument> | GroupDocument[]>
+  {
     return await this.groupService.findAll(queryFiltersAndOptions);
   }
 
   @Get(':id')
-  async findOne(@Param() { id }: ParamsWithId) {
+  async findOne(@Param() { id }: ParamsWithId)
+  {
     return await this.groupService.findOne(id);
   }
 
@@ -48,12 +53,15 @@ export class GroupController {
   async update(
     @Param() { id }: ParamsWithId,
     @Body() updateGroupDto: UpdateGroupDto,
-  ) {
+  )
+  {
     return await this.groupService.update(id, updateGroupDto);
   }
-}
-/* 
+
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() { id }: ParamsWithId) {
+  async remove(@Param() { id }: ParamsWithId)
+  {
     return await this.groupService.remove(id);
-  } */
+  }
+}

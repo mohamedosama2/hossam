@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import * as _ from 'lodash';
-import {
+import
+{
   CreateQuery,
   FilterQuery,
   UpdateQuery,
@@ -17,16 +18,19 @@ type TDocument<T> = T & Document;
 export abstract class BaseAbstractRepository<T> {
   private model: Model<TDocument<T>>;
 
-  protected constructor(model: Model<TDocument<T>>) {
+  protected constructor(model: Model<TDocument<T>>)
+  {
     this.model = model;
   }
 
-  public async create(data: CreateQuery<TDocument<T>>): Promise<TDocument<T>> {
+  public async create(data: CreateQuery<TDocument<T>>): Promise<TDocument<T>>
+  {
     const newDocument = new this.model(data).save();
     return newDocument;
   }
 
-  public async createDoc(data: T): Promise<TDocument<T>> {
+  public async createDoc(data: T): Promise<TDocument<T>>
+  {
     const newDocument = new this.model(data).save();
     return newDocument;
   }
@@ -35,7 +39,8 @@ export abstract class BaseAbstractRepository<T> {
     filterQuery: FilterQuery<TDocument<T>>,
     options: QueryOptions = {},
     projection: any = {},
-  ): Promise<TDocument<T>> {
+  ): Promise<TDocument<T>>
+  {
     const doc = await this.model
       .findOne(filterQuery, projection)
       .setOptions(options);
@@ -46,7 +51,8 @@ export abstract class BaseAbstractRepository<T> {
     queryFiltersAndOptions: any,
     arrayOfFilters: string[],
     extraOptions: PaginateOptions = {},
-  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]> {
+  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]>
+  {
     const filters: FilterQuery<TDocument<T>> = _.pick(
       queryFiltersAndOptions,
       arrayOfFilters,
@@ -56,12 +62,14 @@ export abstract class BaseAbstractRepository<T> {
       'limit',
     ]);
     let docs;
-    if (queryFiltersAndOptions.allowPagination) {
+    if (queryFiltersAndOptions.allowPagination)
+    {
       docs = await (this.model as PaginateModel<TDocument<T>>).paginate(
         filters,
         { ...options, ...extraOptions },
       );
-    } else {
+    } else
+    {
       docs = await this.model.find(filters).setOptions(options);
     }
     return docs;
@@ -69,7 +77,8 @@ export abstract class BaseAbstractRepository<T> {
   public async findAllWithPaginationAggregationOption(
     queryFiltersAndOptions: AggregationOpptionsInterface,
     arrayOfPiplines: Record<string, any>[],
-  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]> {
+  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]>
+  {
     console.log(arrayOfPiplines)
     var aggregate = this.model.aggregate(arrayOfPiplines);
 
@@ -82,7 +91,8 @@ export abstract class BaseAbstractRepository<T> {
 
   public async deleteOne(
     filterQuery: FilterQuery<TDocument<T>>,
-  ): Promise<void> {
+  ): Promise<void>
+  {
     await this.model.deleteOne(filterQuery);
   }
 
@@ -91,7 +101,8 @@ export abstract class BaseAbstractRepository<T> {
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
     projection: any = {},
-  ): Promise<TDocument<T>> {
+  ): Promise<TDocument<T>>
+  {
     const doc = await this.model
       .findOne(filterQuery, projection)
       .setOptions(options);
@@ -104,14 +115,24 @@ export abstract class BaseAbstractRepository<T> {
     filterQuery: FilterQuery<TDocument<T>>,
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
-  ): Promise<void> {
+  ): Promise<void>
+  {
     await this.model.updateOne(filterQuery, updateQuery);
   }
   public async updateAllVoid(
     filterQuery: FilterQuery<TDocument<T>>,
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
-  ): Promise<void> {
+  ): Promise<void>
+  {
     await this.model.updateMany(filterQuery, updateQuery);
   }
+  public async deleteAllVoid(
+    filterQuery: FilterQuery<TDocument<T>>,
+  ): Promise<void>
+  {
+    console.log(filterQuery)
+    await this.model.deleteMany(filterQuery);
+  }
+
 }

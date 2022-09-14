@@ -18,5 +18,7 @@ import { PaymentModule } from 'src/payment/payment.module';
     ]),
     PaymentModule,
   ],
+  exports: [TasksService, TaskRepository],
+
 })
-export class TasksModule {}
+export class TasksModule { }
