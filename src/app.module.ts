@@ -26,14 +26,16 @@ import { PaymentModule } from './payment/payment.module';
     UniversityModule,
     SubjectsModule,
     GroupModule,
+    /*  ChatModule, */
+    /*     NotificationModule, */
     TasksModule,
     PaymentModule,
-   /*  ChatModule, */
-/*     NotificationModule, */
+    /*  ChatModule, */
+    /*     NotificationModule, */
     // MessageQueueModule,
     // cacheOperationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

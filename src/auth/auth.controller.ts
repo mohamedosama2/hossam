@@ -1,12 +1,13 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpStatus,
-  HttpCode,
-  UseGuards,
-  Inject,
-} from '@nestjs/common';
+import
+  {
+    Controller,
+    Post,
+    Body,
+    HttpStatus,
+    HttpCode,
+    UseGuards,
+    Inject,
+  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -32,12 +33,13 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 @ApiTags('AUTH')
 @Controller('auth')
-export class AuthController {
+export class AuthController
+{
   constructor(
     private readonly authService: AuthService,
     private readonly userRepository: UserRepository,
     @Inject(REQUEST) private readonly req: Record<string, unknown>,
-  ) {}
+  ) { }
 
   @Public()
   @HttpCode(HttpStatus.OK)
@@ -45,7 +47,8 @@ export class AuthController {
   async login(@Body() LoginDto: LoginDto): Promise<{
     user: UserDocument;
     token: string;
-  }> {
+  }>
+  {
     return await this.authService.login(LoginDto);
   }
 
@@ -54,7 +57,8 @@ export class AuthController {
   @Post('forget-pass-email')
   async sendEmail(
     @Query() CreateEmailConfirmationDto: CreateEmailConfirmationDto,
-  ) {
+  )
+  {
     const code = Math.floor(Math.random() * 90000) + 10000;
     console.log(code);
     const admin = await this.userRepository.findOne({
@@ -72,7 +76,7 @@ export class AuthController {
     const mail = {
       to: CreateEmailConfirmationDto.email,
       subject: 'Greeting Message from NestJS Sendgrid',
-      from: 'fashionbatcy@gmail.com',
+      from: process.env.email,
       text: `YOUR CODE IS ${code}`,
       html: '<h1>Hello World from NestJS Sendgrid</h1>',
     };
@@ -83,7 +87,8 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('verify-pass-email')
-  async verifyEmail(@Query() ResetPasswordDto: ResetPasswordDto) {
+  async verifyEmail(@Query() ResetPasswordDto: ResetPasswordDto)
+  {
     const isExistedAdmin = await this.userRepository.findOne({
       role: UserRole.ADMIN,
       email: ResetPasswordDto.email,

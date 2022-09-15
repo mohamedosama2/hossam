@@ -1,4 +1,5 @@
-import {
+import
+{
   Controller,
   Get,
   Post,
@@ -11,7 +12,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { UniversityService } from './university.service';
-import {
+import
+{
   CreateUniversityDto,
   FilterQueryOptionsUniversity,
 } from './dto/create-university.dto';
@@ -27,8 +29,9 @@ import ParamsWithId from 'src/utils/paramsWithId.dto';
 @ApiBearerAuth()
 @ApiTags('UNIVERSITY')
 @Controller('university')
-export class UniversityController {
-  constructor(private readonly universityService: UniversityService) {}
+export class UniversityController
+{
+  constructor(private readonly universityService: UniversityService) { }
 
   @Roles(UserRole.ADMIN)
   @Post()
@@ -38,7 +41,8 @@ export class UniversityController {
     @UploadedFiles()
     files,
     @Body() createUniversityDto: CreateUniversityDto,
-  ) {
+  )
+  {
     if (files && files.photo)
       createUniversityDto.photo = files.photo[0].secure_url;
 
@@ -48,12 +52,14 @@ export class UniversityController {
   @Get()
   async findAll(
     @Query() queryFiltersAndOptions: FilterQueryOptionsUniversity,
-  ): Promise<PaginateResult<UniversityDocument> | UniversityDocument[]> {
+  ): Promise<PaginateResult<UniversityDocument> | UniversityDocument[]>
+  {
     return await this.universityService.findAll(queryFiltersAndOptions);
   }
 
   @Get(':id')
-  async findOne(@Param() { id }: ParamsWithId) {
+  async findOne(@Param() { id }: ParamsWithId)
+  {
     return await this.universityService.findOne(id);
   }
 
@@ -66,16 +72,18 @@ export class UniversityController {
     @UploadedFiles()
     files,
     @Body() updateUniversityDto: UpdateUniversityDto,
-  ) {
+  )
+  {
     if (files && files.photo)
-    updateUniversityDto.photo = files.photo[0].secure_url;
+      updateUniversityDto.photo = files.photo[0].secure_url;
     console.log(updateUniversityDto);
     return this.universityService.update(id, updateUniversityDto);
   }
-  
-}
-/*   @Roles(UserRole.ADMIN)
+
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() { id }: ParamsWithId) {
-    return await this.universityService.remove(id);
-  } */
+  async remove(@Param() { id }: ParamsWithId)
+  {
+    return await this.universityService.deleteUniversity(id);
+  }
+}
