@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaymentType } from 'src/payment/models/payment.model';
 import { PaymentService } from 'src/payment/payment.service';
 import { CreatePaymentTaskDto, CreateTaskDto } from './dto/create-task.dto';
 import { FilterQueryOptionsTasks, FilterQueryTasks } from './dto/filter.dto';
@@ -22,6 +23,7 @@ export class TasksService
       await this.PaymentService.create({
         ...payment,
         task: task._id,
+        pymentType: PaymentType.REVENUSE
       });
     }
     return task;

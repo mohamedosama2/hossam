@@ -9,10 +9,12 @@ import { Types, Schema as MongooseSchema } from 'mongoose';
 export class PaymentRepository extends BaseAbstractRepository<Payment> {
   constructor(
     @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
-  ) {
+  )
+  {
     super(paymentModel);
   }
-  async findTaskDetails(taskId: string) {
+  async findTaskDetails(taskId: string)
+  {
     const taskDeatils = await this.paymentModel.aggregate([
       { $match: { task: new Types.ObjectId(taskId) } },
 
@@ -29,8 +31,19 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               },
             },
             { $unwind: { path: '$task', preserveNullAndEmptyArrays: true } },
+            {
+              $project: {
+                'task.nameEn': 1,
+                'task.nameAr': 1,
+                'task.createdAt': 1,
+                'task.totalPrice': 1,
+                'task.state ': 1,
+                'task.endDate': 1,
+
+              }
+            }
           ],
-          teamMember: [
+          teamManager: [
             { $limit: 1 },
             {
               $lookup: {
@@ -55,6 +68,12 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 preserveNullAndEmptyArrays: true,
               },
             },
+            {
+              $project: {
+                'taskManager': 1
+
+              }
+            }
           ],
           subject: [
             { $limit: 1 },
@@ -76,6 +95,49 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               },
             },
             { $unwind: { path: '$subject', preserveNullAndEmptyArrays: true } },
+
+            {
+              $project: {
+                'subject.nameEn': 1,
+                'subject.nameAr': 1,
+                'subject.semester': 1
+
+
+
+              }
+            }
+          ],
+          university: [
+            { $limit: 1 },
+            {
+              $lookup: {
+                from: 'tasks',
+                localField: 'task',
+                foreignField: '_id',
+                as: 'task',
+              },
+            },
+            { $unwind: { path: '$task', preserveNullAndEmptyArrays: true } },
+            {
+              $lookup: {
+                from: 'universities',
+                localField: 'task.university',
+                foreignField: '_id',
+                as: 'university',
+              },
+            },
+            { $unwind: { path: '$university', preserveNullAndEmptyArrays: true } },
+
+            {
+              $project: {
+                'university.nameEn': 1,
+                'university.nameAr': 1,
+
+
+
+
+              }
+            }
           ],
           group: [
             { $limit: 1 },
@@ -97,6 +159,24 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               },
             },
             { $unwind: { path: '$group', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$group.students', preserveNullAndEmptyArrays: true } },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'group.students.student',
+                foreignField: '_id',
+                as: 'group.students.student',
+              },
+            },
+            { $unwind: { path: '$group.students.student', preserveNullAndEmptyArrays: true } },
+            {
+              $project: {
+
+                'group.students.student.username': 1,
+                'group.students.student.phone': 1,
+                'group.students.isTeamLeader': 1,
+              }
+            }
           ],
           paymentDetails: [
             {
