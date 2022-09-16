@@ -92,6 +92,7 @@ export class NotificationService implements OnApplicationBootstrap {
       _id: string;
     }[],
   ): Promise<void> {
+    console.log(message, devices);
     let messagesWithTokens = devices.map((deviceData) => {
       return {
         ...encodingDataForAllDevices(message),
@@ -112,6 +113,24 @@ export class NotificationService implements OnApplicationBootstrap {
       promises.push(admin.messaging().sendAll(MessageList));
     }
     console.log(promises);
+    await Promise.all(promises);
+    console.log('Done Package');
+  }
+
+  async sendManyWithFailture(
+    message: MessageBody,
+    devices: {
+      deviceToken: string;
+      _id: string;
+    }[],
+  ): Promise<void> {
+    console.log(message, devices);
+
+    let promises = [];
+    devices.map(({ deviceToken }) => {
+      promises.push(admin.messaging().sendToDevice(deviceToken, message));
+    });
+
     await Promise.all(promises);
     console.log('Done Package');
   }

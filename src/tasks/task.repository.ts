@@ -9,4 +9,17 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {
     super(taskModel);
   }
+  async findPopulatedTask(taskId: string) {
+    const task = await this.taskModel.findOne({ _id: taskId }).populate({
+      path: 'group',
+      populate: {
+        path: 'students',
+        populate: {
+          path: 'student',
+     
+        },
+      },
+    });
+    return task;
+  }
 }
