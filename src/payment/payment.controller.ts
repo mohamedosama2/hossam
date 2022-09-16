@@ -1,4 +1,5 @@
-import {
+import
+{
   Controller,
   Get,
   Post,
@@ -16,16 +17,29 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/users/models/_user.model';
 import ParamsWithId from 'src/utils/paramsWithId.dto';
 import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dto';
+import { PaymentType } from './models/payment.model';
 
 @ApiBearerAuth()
 @ApiTags('payment'.toUpperCase())
 @Controller('payment')
-export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+export class PaymentController
+{
+  constructor(private readonly paymentService: PaymentService) { }
 
   @Roles(UserRole.ADMIN)
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
+  @Post('/expensis')
+  createExpensis(@Body() createPaymentDto: CreatePaymentDto)
+  {
+    createPaymentDto.pymentType = PaymentType.EXPENSIS
+    return this.paymentService.create(createPaymentDto);
+  }
+
+
+  @Roles(UserRole.ADMIN)
+  @Post('/revenue')
+  createRevenue(@Body() createPaymentDto: CreatePaymentDto)
+  {
+    createPaymentDto.pymentType = PaymentType.REVENUSE
     return this.paymentService.create(createPaymentDto);
   }
 
@@ -33,22 +47,26 @@ export class PaymentController {
   async findAllPaymentsToTask(
     @Param() { id }: ParamsWithId,
     @Query() AggregationOpptionsDto: AggregationOpptionsDto,
-  ) {
+  )
+  {
     return await this.paymentService.findAll(id, AggregationOpptionsDto);
   }
 
   @Get('task-details/:id')
-  async findTaskDetails(@Param() { id }: ParamsWithId) {
+  async findTaskDetails(@Param() { id }: ParamsWithId)
+  {
     return await this.paymentService.findTaskDetails(id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string)
+  {
     return this.paymentService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto)
+  {
     return this.paymentService.update(+id, updatePaymentDto);
   }
 }

@@ -4,18 +4,29 @@ import { Types, Schema as MongooseSchema } from 'mongoose';
 import { Task } from 'src/tasks/models/task.model';
 import { User } from 'src/users/models/_user.model';
 
-export enum PaymentMethod {
+export enum PaymentMethod
+{
   VISA = 'VISA',
   CASH = 'CASH',
+}
+
+export enum PaymentType
+{
+  EXPENSIS = 'EXPENSIS',
+  REVENUSE = 'REVENUSE',
 }
 export type PaymentDocument = Payment & Document;
 
 @Schema({ timestamps: true })
-export class Payment {
+export class Payment
+{
   id?: string;
 
   @Prop({ type: String, enum: Object.values(PaymentMethod), required: true })
   method: PaymentMethod;
+
+  @Prop({ type: String, enum: Object.values(PaymentType), required: true })
+  pymentType: PaymentType;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
