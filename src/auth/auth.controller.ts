@@ -1,13 +1,12 @@
-import
-  {
-    Controller,
-    Post,
-    Body,
-    HttpStatus,
-    HttpCode,
-    UseGuards,
-    Inject,
-  } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  HttpCode,
+  UseGuards,
+  Inject,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -30,16 +29,17 @@ import { Query } from '@nestjs/common';
 import { CreateEmailConfirmationDto } from 'src/phone-confirmation/dto/create-phone-confirmation.dto';
 import { UserNotFoundException } from 'src/users/exceptions/userNotFound.exception';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @ApiTags('AUTH')
 @Controller('auth')
-export class AuthController
-{
+export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userRepository: UserRepository,
     @Inject(REQUEST) private readonly req: Record<string, unknown>,
-  ) { }
+    private mailerService: MailerService,
+  ) {}
 
   @Public()
   @HttpCode(HttpStatus.OK)
@@ -47,8 +47,7 @@ export class AuthController
   async login(@Body() LoginDto: LoginDto): Promise<{
     user: UserDocument;
     token: string;
-  }>
-  {
+  }> {
     return await this.authService.login(LoginDto);
   }
 
@@ -57,8 +56,7 @@ export class AuthController
   @Post('forget-pass-email')
   async sendEmail(
     @Query() CreateEmailConfirmationDto: CreateEmailConfirmationDto,
-  )
-  {
+  ) {
     const code = Math.floor(Math.random() * 90000) + 10000;
     console.log(code);
     const admin = await this.userRepository.findOne({
@@ -73,22 +71,33 @@ export class AuthController
       },
       { code },
     );
-    const mail = {
+    /*  const mail = {
       to: CreateEmailConfirmationDto.email,
       subject: 'Greeting Message from NestJS Sendgrid',
       from: process.env.email,
       text: `YOUR CODE IS ${code}`,
       html: '<h1>Hello World from NestJS Sendgrid</h1>',
-    };
+    }; */
 
-    return await this.authService.send(mail);
+    /*     return await this.authService.send(mail); */
+    const mail = await this.mailerService.sendMail({
+      to: CreateEmailConfirmationDto.email,
+      // from: '"Support Team" <support@example.com>', // override default from
+      subject: 'Welcome to Our App! Confirm your Email',
+      template: './confirmation', // `.hbs` extension is appended automatically
+      context: {
+        // ✏️ filling curly brackets with content
+        name: CreateEmailConfirmationDto.email,
+        code,
+      },
+    });
+    console.log(mail);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('verify-pass-email')
-  async verifyEmail(@Query() ResetPasswordDto: ResetPasswordDto)
-  {
+  async verifyEmail(@Query() ResetPasswordDto: ResetPasswordDto) {
     const isExistedAdmin = await this.userRepository.findOne({
       role: UserRole.ADMIN,
       email: ResetPasswordDto.email,

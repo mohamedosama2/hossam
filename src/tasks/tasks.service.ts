@@ -29,9 +29,9 @@ export class TasksService {
     const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
     const tokens = [];
     ((taskGroup.group as any).students as any[]).forEach(({ student }) => {
-      console.log('St', student);
+   /*    console.log('St', student); */
       student.pushTokens.forEach(({ deviceToken }) => {
-        console.log('St2', deviceToken);
+       /*  console.log('St2', deviceToken); */
         tokens.push({
           deviceToken: deviceToken ? deviceToken : 'testing',
           _id: student._id,
@@ -39,7 +39,7 @@ export class TasksService {
       });
     });
 
-    console.log((taskGroup.group as any).students);
+/*     console.log((taskGroup.group as any).students); */
     await this.NotificationService.sendMany(
       {
         body: task.subject,
