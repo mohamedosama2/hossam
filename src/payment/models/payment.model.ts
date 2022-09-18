@@ -26,7 +26,7 @@ export class Payment
   method: PaymentMethod;
 
   @Prop({ type: String, enum: Object.values(PaymentType), required: true })
-  pymentType: PaymentType;
+  paymentType: PaymentType;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,

@@ -9,7 +9,7 @@ export class CreatePaymentDto
 
   @IsString()
   @IsEnum(PaymentType)
-  pymentType: PaymentType;
+  paymentType: PaymentType;
 
   @IsMongoId()
   byWhom: string;

@@ -30,7 +30,7 @@ export class PaymentController
   @Post('/expensis')
   createExpensis(@Body() createPaymentDto: CreatePaymentDto)
   {
-    createPaymentDto.pymentType = PaymentType.EXPENSIS
+    createPaymentDto.paymentType = PaymentType.EXPENSIS
     return this.paymentService.create(createPaymentDto);
   }
 
@@ -39,17 +39,17 @@ export class PaymentController
   @Post('/revenue')
   createRevenue(@Body() createPaymentDto: CreatePaymentDto)
   {
-    createPaymentDto.pymentType = PaymentType.REVENUSE
+    createPaymentDto.paymentType = PaymentType.REVENUSE
     return this.paymentService.create(createPaymentDto);
   }
 
   @Get('task-pyaments/:id')
   async findAllPaymentsToTask(
     @Param() { id }: ParamsWithId,
-    @Query() AggregationOpptionsDto: AggregationOpptionsDto,
+    @Query() AggregationOpptionsDto: AggregationOpptionsDto, paymentType: PaymentType
   )
   {
-    return await this.paymentService.findAll(id, AggregationOpptionsDto);
+    return await this.paymentService.findAll(id, paymentType, AggregationOpptionsDto);
   }
 
   @Get('task-details/:id')

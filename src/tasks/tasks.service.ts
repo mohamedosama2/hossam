@@ -23,7 +23,7 @@ export class TasksService
       await this.PaymentService.create({
         ...payment,
         task: task._id,
-        pymentType: PaymentType.REVENUSE
+        paymentType: PaymentType.REVENUSE
       });
     }
     return task;

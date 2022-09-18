@@ -4,6 +4,7 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PaymentRepository } from './payment.repository';
 import { Types, Schema as MongooseSchema } from 'mongoose';
+import { PaymentType } from './models/payment.model';
 
 @Injectable()
 export class PaymentService
@@ -16,12 +17,19 @@ export class PaymentService
 
   async findAll(
     taskId: string,
+    paymentType: PaymentType,
     AggregationOpptionsDto: AggregationOpptionsDto,
   )
   {
+    let qury = {
+      ...(paymentType && { paymentType: paymentType }),
+      task: new Types.ObjectId(taskId)
+
+    }
     return await this.PaymentRepository.findAllWithPaginationAggregationOption(
       AggregationOpptionsDto,
-      [{ $match: { task: new Types.ObjectId(taskId) } }],
+
+      [{ $match: qury }],
     );
   }
 
