@@ -84,7 +84,7 @@ export class User {
   enabled: boolean;
 
   @Prop({ type: String })
-  photo: string;
+  photo?: string;
 
   @Prop({ index: true, unique: true, sparse: true, type: String })
   facebookId?: string;

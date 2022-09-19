@@ -39,7 +39,12 @@ export class UsersService {
     const users = await this.userRepository.findAllWithPaginationOption(
       queryFiltersAndOptions,
       ['username', 'role'],
-      { populate: 'university' },
+      {
+        populate: {
+          path: 'university',
+          select: { nameAr: 1, nameEn: 1, _id: 1 },
+        },
+      },
     );
 
     return users;

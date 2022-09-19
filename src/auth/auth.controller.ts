@@ -58,7 +58,7 @@ export class AuthController {
     @Query() CreateEmailConfirmationDto: CreateEmailConfirmationDto,
   ) {
     const code = Math.floor(Math.random() * 90000) + 10000;
-    console.log(code);
+   /*  console.log(code); */
     const admin = await this.userRepository.findOne({
       email: CreateEmailConfirmationDto.email,
       role: UserRole.ADMIN,
@@ -80,7 +80,7 @@ export class AuthController {
     }; */
 
     /*     return await this.authService.send(mail); */
-    const mail = await this.mailerService.sendMail({
+    await this.mailerService.sendMail({
       to: CreateEmailConfirmationDto.email,
       // from: '"Support Team" <support@example.com>', // override default from
       subject: 'Welcome to Our App! Confirm your Email',
@@ -91,7 +91,7 @@ export class AuthController {
         code,
       },
     });
-    console.log(mail);
+    /* console.log(mail); */
   }
 
   @Public()

@@ -6,10 +6,6 @@ export class UpdateUserDto {
   @IsOptional()
   enabled?: boolean;
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({ type: 'string', format: 'binary' })
-  photo?: string;
 
   @IsString()
   @IsOptional()

@@ -72,12 +72,8 @@ export class UsersController {
   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   async updateProfile(
-    @UploadedFiles()
-    files,
     @Body() updateUserData: UpdateUserDto,
   ): Promise<UserDocument> {
-    if (files && files.photo) updateUserData.photo = files.photo[0].secure_url;
-
     delete updateUserData.enabled;
 
     return await this.usersService.update(
@@ -112,8 +108,8 @@ export class UsersController {
   @Post('add-student')
   async addStudent(
     @Body() registerationData: CreateStudentDto,
-    @UploadedFiles()
-    files,
+    /*  @UploadedFiles()
+    files, */
   ) {
     let user = await this.UserRepository.findOne({
       $or: [
@@ -122,8 +118,8 @@ export class UsersController {
       ],
     });
     if (user) throw new BadRequestException('phone and email should be unique');
-    if (files && files.photo)
-      registerationData.photo = files.photo[0].secure_url;
+    /* if (files && files.photo)
+      registerationData.photo = files.photo[0].secure_url; */
 
     let newUser = await this.UserRepository.createDoc({
       role: UserRole.STUDENT,
