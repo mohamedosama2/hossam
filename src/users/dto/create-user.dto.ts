@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
+import
+{
   IsMongoId,
   IsNotEmpty,
   IsOptional,
@@ -9,7 +10,8 @@ import {
 import { RegisterDto } from 'src/auth/dto/register.dto';
 import { Constants } from 'src/utils/constants';
 
-export class CreateStudentDto {
+export class CreateStudentDto
+{
   @IsString()
   @IsMongoId()
   university: string;
@@ -18,25 +20,26 @@ export class CreateStudentDto {
   @IsNotEmpty()
   username: string;
 
-  @IsString()
-  @IsNotEmpty()
-  usernameAr?: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // usernameAr?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   password?: string;
 
-  @IsString()
-  @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
-  phone: string;
+  // @IsString()
+  // @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
+  // phone: string;
 
   @IsString()
   @Matches(Constants.EMAIL_REGX, { message: 'email is invalid' })
   email: string;
 }
 
-export class CreateTeamMemberDto extends RegisterDto {
+export class CreateTeamMemberDto extends RegisterDto
+{
   @IsString()
   @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
   whatsapp: string;

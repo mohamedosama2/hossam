@@ -1,24 +1,25 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  Inject,
-  UseFilters,
-  UploadedFiles,
-  ValidationPipe,
-  UsePipes,
-  HttpStatus,
-  HttpCode,
-  Query,
-  CacheInterceptor,
-  CacheKey,
-  BadRequestException,
-} from '@nestjs/common';
+import
+  {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    UseInterceptors,
+    Inject,
+    UseFilters,
+    UploadedFiles,
+    ValidationPipe,
+    UsePipes,
+    HttpStatus,
+    HttpCode,
+    Query,
+    CacheInterceptor,
+    CacheKey,
+    BadRequestException,
+  } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { request } from 'http';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -43,12 +44,13 @@ import { CreateStudentDto, CreateTeamMemberDto } from './dto/create-user.dto';
 @ApiBearerAuth()
 @ApiTags('USERS')
 @Controller('users')
-export class UsersController {
+export class UsersController
+{
   constructor(
     private readonly usersService: UsersService,
     private readonly UserRepository: UserRepository,
     @Inject(REQUEST) private readonly req: Record<string, unknown>,
-  ) {}
+  ) { }
 
   // @Roles(UserRole.STUDENT)
   // @CacheKey(Constants.GET_POSTS_CACHE_KEY)
@@ -57,14 +59,16 @@ export class UsersController {
   @Get()
   async findAll(
     @Query() queryFiltersAndOptions: FilterQueryOptionsUser,
-  ): Promise<PaginateResult<UserDocument> | UserDocument[]> {
+  ): Promise<PaginateResult<UserDocument> | UserDocument[]>
+  {
     return await this.usersService.findAll(
       queryFiltersAndOptions as FilterQueryOptionsUser,
     );
   }
 
   @Get('profile')
-  async getProfile(): Promise<UserDocument> {
+  async getProfile(): Promise<UserDocument>
+  {
     return await this.usersService.getProfile(this.req.me as UserDocument);
   }
 
@@ -75,7 +79,8 @@ export class UsersController {
   async updateProfile(
     @Body() updateUserData: UpdateUserDto,
     @Param() { id }: ParamsWithId,
-  ): Promise<UserDocument> {
+  ): Promise<UserDocument>
+  {
     delete updateUserData.enabled;
 
     return await this.usersService.update(
@@ -89,7 +94,8 @@ export class UsersController {
   async changePassword(
     @Body() { oldPassword, newPassword }: ChangePasswordDto,
     @AuthUser() me: UserDocument,
-  ): Promise<UserDocument> {
+  ): Promise<UserDocument>
+  {
     return await this.usersService.changePassword(
       { oldPassword, newPassword },
       me,
@@ -98,7 +104,8 @@ export class UsersController {
 
   @Public()
   @Get(':id')
-  async fetchUserById(@Param() { id }: ParamsWithId): Promise<UserDocument> {
+  async fetchUserById(@Param() { id }: ParamsWithId): Promise<UserDocument>
+  {
     return await this.usersService.findOne({
       _id: id,
     } as FilterQuery<UserDocument>);
@@ -110,10 +117,11 @@ export class UsersController {
     @Body() registerationData: CreateStudentDto,
     /*  @UploadedFiles()
     files, */
-  ) {
+  )
+  {
     let user = await this.UserRepository.findOne({
       $or: [
-        { phone: registerationData.phone },
+
         { email: registerationData.email },
       ],
     });
@@ -137,7 +145,8 @@ export class UsersController {
     @Body() registerationData: CreateTeamMemberDto,
     @UploadedFiles()
     files,
-  ) {
+  )
+  {
     let user = await this.UserRepository.findOne({
       role: UserRole.teamMember,
       $or: [
@@ -170,7 +179,8 @@ export class UsersController {
     @UploadedFiles()
     files,
     @Param() { id }: ParamsWithId,
-  ) {
+  )
+  {
     let user = await this.UserRepository.findOne({
       role: UserRole.teamMember,
       $or: [
@@ -198,7 +208,8 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() { id }: ParamsWithId) {
+  async remove(@Param() { id }: ParamsWithId)
+  {
     return await this.usersService.deleteStudent(id);
   }
 }
