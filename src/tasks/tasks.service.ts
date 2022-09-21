@@ -9,33 +9,28 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskRepository } from './task.repository';
 
 @Injectable()
-export class TasksService
-{
+export class TasksService {
   constructor(
     private readonly TaskRepository: TaskRepository,
     private readonly PaymentService: PaymentService,
     private readonly NotificationService: NotificationService,
-  ) { }
-  async create(createTaskDto: CreateTaskDto)
-  {
+  ) {}
+  async create(createTaskDto: CreateTaskDto) {
     const payment = createTaskDto.payment as CreatePaymentTaskDto;
     delete createTaskDto.payment;
     let task = await this.TaskRepository.create(createTaskDto);
-    if (payment)
-    {
+    if (payment) {
       await this.PaymentService.create({
         ...payment,
         task: task._id,
-        paymentType: PaymentType.REVENUSE
+        paymentType: PaymentType.REVENUSE,
       });
     }
     const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
     const tokens = [];
-    ((taskGroup.group as any).students as any[]).forEach(({ student }) =>
-    {
+    ((taskGroup.group as any).students as any[]).forEach(({ student }) => {
       /*    console.log('St', student); */
-      student.pushTokens.forEach(({ deviceToken }) =>
-      {
+      student.pushTokens.forEach(({ deviceToken }) => {
         /*  console.log('St2', deviceToken); */
         tokens.push({
           deviceToken: deviceToken ? deviceToken : 'testing',
@@ -55,8 +50,7 @@ export class TasksService
     return task;
   }
 
-  async findAll(FilterQueryOptionsTasks: FilterQueryOptionsTasks)
-  {
+  async findAll(FilterQueryOptionsTasks: FilterQueryOptionsTasks) {
     return await this.TaskRepository.findAllWithPaginationOption(
       FilterQueryOptionsTasks,
       ['university', 'subject', 'status'],
@@ -64,21 +58,22 @@ export class TasksService
     );
   }
 
-  async findOne(_id: string)
-  {
+  async findOne(_id: string) {
     const isExisted = await this.TaskRepository.findOne({ _id });
     if (!isExisted) throw new NotFoundException();
     return isExisted;
   }
 
-  async update(_id: string, updateTaskDto: UpdateTaskDto)
-  {
+  async update(_id: string, updateTaskDto: UpdateTaskDto) {
     // await this.findOne(_id);
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto);
   }
 
-  async deleteTask(id: string)
-  {
+  async deleteTask(id: string) {
     return await this.TaskRepository.deleteOne({ _id: id });
+  }
+
+  async getWeek(date: Date) {
+    return await this.TaskRepository.getWeek(date);
   }
 }

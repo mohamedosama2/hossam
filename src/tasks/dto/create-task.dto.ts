@@ -72,6 +72,11 @@ export class CreatePaymentTaskDto {
   recieveTime: Date;
 }
 
+export class CreateDtoTasks {
+  @Type(() => Date)
+  @IsDate()
+  date: Date;
+}
 
 /* 
 ex
