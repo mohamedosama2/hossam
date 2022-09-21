@@ -13,15 +13,15 @@ export class CreateStudentDto {
   @IsString()
   @IsMongoId()
   university: string;
-/* 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({ type: 'string', format: 'binary' })
-  photo?: string; */
+
 
   @IsString()
   @IsNotEmpty()
   username: string;
+
+  @IsString()
+  @IsNotEmpty()
+  usernameAr?: string;
 
   @IsString()
   @IsNotEmpty()

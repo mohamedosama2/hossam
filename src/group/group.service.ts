@@ -47,4 +47,8 @@ export class GroupService {
     await this.findOne(_id);
     return await this.GroupRepository.deleteOne({ _id });
   }
+
+  async removeStudent(_id: string) {
+    await this.GroupRepository.pullStudent(_id);
+  }
 }

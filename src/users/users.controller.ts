@@ -22,7 +22,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { request } from 'http';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateTeamMemberDto, UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument, UserRole } from './models/_user.model';
 import { UsersService } from './users.service';
 import { REQUEST } from '@nestjs/core';
@@ -68,16 +68,18 @@ export class UsersController {
     return await this.usersService.getProfile(this.req.me as UserDocument);
   }
 
-  @Patch('profile')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
-  @ApiConsumes('multipart/form-data')
+  /*   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+    @ApiConsumes('multipart/form-data') */
+  @Roles(UserRole.ADMIN)
+  @Patch('update-student/:id')
   async updateProfile(
     @Body() updateUserData: UpdateUserDto,
+    @Param() { id }: ParamsWithId,
   ): Promise<UserDocument> {
     delete updateUserData.enabled;
 
     return await this.usersService.update(
-      { _id: this.req.me } as FilterQuery<UserDocument>,
+      { _id: id, role: UserRole.STUDENT } as FilterQuery<UserDocument>,
       updateUserData,
     );
   }
@@ -103,8 +105,6 @@ export class UsersController {
   }
 
   @Roles(UserRole.ADMIN)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
-  @ApiConsumes('multipart/form-data')
   @Post('add-student')
   async addStudent(
     @Body() registerationData: CreateStudentDto,
@@ -159,5 +159,46 @@ export class UsersController {
       ...registerationData,
     });
     return newUser;
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+  @ApiConsumes('multipart/form-data')
+  @Patch('update-teamMember/:id')
+  async updateTeamMember(
+    @Body() registerationData: UpdateTeamMemberDto,
+    @UploadedFiles()
+    files,
+    @Param() { id }: ParamsWithId,
+  ) {
+    let user = await this.UserRepository.findOne({
+      role: UserRole.teamMember,
+      $or: [
+        { phone: registerationData.phone },
+        { email: registerationData.email },
+        { whatsapp: registerationData.whatsapp },
+      ],
+    });
+    if (user)
+      throw new BadRequestException(
+        'phone,email and whatsapp should be unique',
+      );
+    if (files && files.photo)
+      registerationData.photo = files.photo[0].secure_url;
+
+    let newUser = await this.UserRepository.updateOne(
+      {
+        role: UserRole.teamMember,
+        enabled: true,
+      },
+      registerationData,
+    );
+    return newUser;
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Delete(':id')
+  async remove(@Param() { id }: ParamsWithId) {
+    return await this.usersService.deleteStudent(id);
   }
 }

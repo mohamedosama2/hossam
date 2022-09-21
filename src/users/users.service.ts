@@ -23,6 +23,7 @@ import { User, UserDocument, UserRole, UserSchema } from './models/_user.model';
 import * as _ from 'lodash';
 import { UserRepository } from './users.repository';
 import { cacheOperationsService } from 'src/cache/cache-operations.service';
+import { GroupService } from 'src/group/group.service';
 
 function randomInRange(from: number, to: number) {
   var r = Math.random();
@@ -31,7 +32,10 @@ function randomInRange(from: number, to: number) {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly GroupService: GroupService,
+  ) {}
 
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsUser,
@@ -84,5 +88,10 @@ export class UsersService {
       { _id: me._id } as FilterQuery<UserDocument>,
       { password: newPassword } as UpdateQuery<UserDocument>,
     );
+  }
+
+  async deleteStudent(_id: string) {
+    await this.userRepository.deleteOne({ _id });
+    await this.GroupService.removeStudent(_id);
   }
 }

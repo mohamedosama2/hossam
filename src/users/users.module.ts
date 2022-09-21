@@ -17,6 +17,7 @@ import { UserRepository } from './users.repository';
 import { cacheOperationsModule } from 'src/cache/cache.module';
 import { TeamMemberSchema } from './models/teamMember.model';
 import { AdminSchema } from './models/admin.model';
+import { GroupModule } from 'src/group/group.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AdminSchema } from './models/admin.model';
       useClass: UploadCloudinary,
       inject: [ConfigService],
     }),
+    GroupModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UserRepository],

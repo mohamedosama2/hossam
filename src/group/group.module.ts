@@ -16,6 +16,6 @@ import { GroupRepository } from './group.repository';
       },
     ]),
   ],
-  exports: [GroupRepository],
+  exports: [GroupRepository,GroupService],
 })
 export class GroupModule {}

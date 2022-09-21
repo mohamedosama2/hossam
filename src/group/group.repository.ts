@@ -11,4 +11,18 @@ export class GroupRepository extends BaseAbstractRepository<Group> {
   ) {
     super(groupModel);
   }
+  async pullStudent(_id: string) {
+    await this.groupModel.updateMany(
+      {},
+      {
+        $pull: {
+          students: {
+            student: {
+              $eq: _id,
+            },
+          },
+        } as any,
+      },
+    );
+  }
 }

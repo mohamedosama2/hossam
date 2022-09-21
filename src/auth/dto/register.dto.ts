@@ -14,6 +14,10 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
+  usernameAr?: string;
+
+  @IsString()
+  @IsNotEmpty()
   password: string;
 
   @IsString()

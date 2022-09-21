@@ -77,6 +77,11 @@ export class User {
   })
   username: string;
 
+  @Prop({
+    index: true,
+  })
+  usernameAr?: string;
+
   @Prop({ type: String })
   password: string;
 
