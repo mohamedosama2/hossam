@@ -83,7 +83,7 @@ export class User {
   usernameAr?: string;
 
   @Prop({ type: String })
-  password: string;
+  password?: string;
 
   @Prop({ default: true, type: Boolean })
   enabled: boolean;

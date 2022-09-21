@@ -8,6 +8,9 @@ import { User, UserDocument } from './models/_user.model';
 export class UserRepository extends BaseAbstractRepository<User> {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     super(userModel);
+   /*  this.userModel.collection.dropIndex("whatsapp_1")
+    this.userModel.collection.dropIndex("phone_1")
+    console.log(this.userModel.listIndexes().then((data) => console.log(data))); */
   }
 
   async fetchUsersByFilter(
