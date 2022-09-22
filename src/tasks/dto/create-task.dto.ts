@@ -1,5 +1,8 @@
-import { Type } from 'class-transformer';
-import {
+import { Type } from 'class-transformer'
+import { ApiHideProperty } from '@nestjs/swagger';
+;
+import
+{
   IsDate,
   IsEnum,
   IsMongoId,
@@ -15,7 +18,19 @@ import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
 import { State } from '../models/task.model';
 
-export class CreateTaskDto {
+export class TaskManagerDto 
+{
+  @IsString()
+  @IsOptional()
+  id?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiHideProperty()
+  name?: string;
+}
+export class CreateTaskDto
+{
   @IsString()
   @IsNotEmpty()
   nameAr: string;
@@ -33,8 +48,9 @@ export class CreateTaskDto {
   @IsMongoId()
   group: string;
 
-  @IsMongoId()
-  taskManager: string;
+  @IsOptional()
+  @Type(() => TaskManagerDto)
+  taskManager?: TaskManagerDto;
 
   @IsNumber()
   totalPrice: number;
@@ -57,7 +73,8 @@ export class CreateTaskDto {
   payment?: Record<string, any>;
 }
 
-export class CreatePaymentTaskDto {
+export class CreatePaymentTaskDto
+{
   @IsString()
   @IsEnum(PaymentMethod)
   method: PaymentMethod;
@@ -72,7 +89,8 @@ export class CreatePaymentTaskDto {
   recieveTime: Date;
 }
 
-export class CreateDtoTasks {
+export class CreateDtoTasks
+{
   @Type(() => Date)
   @IsDate()
   date: Date;

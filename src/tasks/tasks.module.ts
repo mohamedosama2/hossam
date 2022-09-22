@@ -24,4 +24,4 @@ import { UsersModule } from 'src/users/users.module';
   ],
   exports: [TasksService, TaskRepository],
 })
-export class TasksModule {}
+export class TasksModule { }
