@@ -14,7 +14,13 @@ export class UserRepository extends BaseAbstractRepository<User> {
   }
 
   async coudeStudents() {
-    return await this.userModel.countDocuments({ role: UserRole.STUDENT });
+    const students = await this.userModel.countDocuments({
+      role: UserRole.STUDENT,
+    });
+    const teamMembers = await this.userModel.countDocuments({
+      role: UserRole.teamMember,
+    });
+    return { students, teamMembers };
   }
 
   async fetchUsersByFilter(

@@ -59,7 +59,7 @@ export class TasksService {
     const calender = await this.TaskRepository.getHone(date);
     return {
       ...res,
-      students: studentRes,
+      ...studentRes,
       calender,
     };
   }
