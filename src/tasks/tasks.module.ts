@@ -6,6 +6,7 @@ import { Task, TaskSchema } from './models/task.model';
 import { TaskRepository } from './task.repository';
 import { PaymentModule } from 'src/payment/payment.module';
 import { NotificationModule } from 'src/notification/notification.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   controllers: [TasksController],
@@ -19,6 +20,7 @@ import { NotificationModule } from 'src/notification/notification.module';
     ]),
     PaymentModule,
     NotificationModule,
+    UsersModule,
   ],
   exports: [TasksService, TaskRepository],
 })

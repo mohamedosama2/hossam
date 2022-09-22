@@ -28,6 +28,13 @@ export class TasksController {
     return await this.tasksService.create(createTaskDto);
   }
 
+  @Get('home')
+  async hetHone(@Query() CreateDtoTasks: CreateDtoTasks) {
+    
+    return await this.tasksService.getHome(CreateDtoTasks.date);
+  }
+
+
   @Get()
   findAll(@Query() FilterQueryOptionsTasks: FilterQueryOptionsTasks) {
     return this.tasksService.findAll(FilterQueryOptionsTasks);
@@ -53,4 +60,5 @@ export class TasksController {
   remove(@Param('id') id: string) {
     return this.tasksService.deleteTask(id);
   }
+  
 }
