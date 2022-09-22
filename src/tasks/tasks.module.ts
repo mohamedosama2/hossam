@@ -20,7 +20,7 @@ import { UsersModule } from 'src/users/users.module';
     ]),
     PaymentModule,
     NotificationModule,
-    UsersModule
+    UsersModule,
   ],
   exports: [TasksService, TaskRepository],
 })
