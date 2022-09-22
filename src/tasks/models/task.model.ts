@@ -7,14 +7,25 @@ import { User } from 'src/users/models/_user.model';
 
 export type TaskDocument = Task & Document;
 
-export enum State {
+export enum State
+{
   PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
   COMPLETED = 'COMPLETED',
 }
+export class Manager
+{
+  @Prop({ type: String, required: true })
+  id?: string;
+
+  @Prop()
+  name?: string;
+
+}
 
 @Schema({ timestamps: true })
-export class Task {
+export class Task
+{
   id?: string;
 
   @Prop({ type: String, required: true })
@@ -44,12 +55,8 @@ export class Task {
   })
   group: string;
 
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: User.name,
-    required: true,
-  })
-  taskManager: string;
+  @Prop({ type: () => Manager })
+  taskManager?: Manager;
 
   @Prop({ type: Number, required: true })
   totalPrice: number;
@@ -63,6 +70,7 @@ export class Task {
   @Prop({ type: Date, required: true })
   endDate: Date;
 }
+
 
 const TaskSchema = SchemaFactory.createForClass(Task);
 

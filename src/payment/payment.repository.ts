@@ -31,50 +31,50 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               },
             },
             { $unwind: { path: '$task', preserveNullAndEmptyArrays: true } },
-            {
-              $project: {
-                'task.nameEn': 1,
-                'task.nameAr': 1,
-                'task.createdAt': 1,
-                'task.totalPrice': 1,
-                'task.state ': 1,
-                'task.endDate': 1,
+            // {
+            //   $project: {
+            //     'task.nameEn': 1,
+            //     'task.nameAr': 1,
+            //     'task.createdAt': 1,
+            //     'task.totalPrice': 1,
+            //     'task.state ': 1,
+            //     'task.endDate': 1,
 
-              }
-            }
+            //   }
+            // }
           ],
-          teamManager: [
-            { $limit: 1 },
-            {
-              $lookup: {
-                from: 'tasks',
-                localField: 'task',
-                foreignField: '_id',
-                as: 'task',
-              },
-            },
-            { $unwind: { path: '$task', preserveNullAndEmptyArrays: true } },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'task.taskManager',
-                foreignField: '_id',
-                as: 'taskManager',
-              },
-            },
-            {
-              $unwind: {
-                path: '$taskManager',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $project: {
-                'taskManager': 1
+          // teamManager: [
+          //   { $limit: 1 },
+          //   {
+          //     $lookup: {
+          //       from: 'tasks',
+          //       localField: 'task',
+          //       foreignField: '_id',
+          //       as: 'task',
+          //     },
+          //   },
+          //   { $unwind: { path: '$task', preserveNullAndEmptyArrays: true } },
+          //   {
+          //     $lookup: {
+          //       from: 'users',
+          //       localField: 'task.taskManager',
+          //       foreignField: '_id',
+          //       as: 'taskManager',
+          //     },
+          //   },
+          //   {
+          //     $unwind: {
+          //       path: '$taskManager',
+          //       preserveNullAndEmptyArrays: true,
+          //     },
+          //   },
+          //   // {
+          //   //   $project: {
+          //   //     'taskManager': 1
 
-              }
-            }
-          ],
+          //   //   }
+          //   // }
+          // ],
           subject: [
             { $limit: 1 },
             {
