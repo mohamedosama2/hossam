@@ -16,6 +16,12 @@ export class FilterQueryTasks
   university?: string;
 
   @IsOptional()
+  from?: string;
+
+  @IsOptional()
+  to?: string;
+
+  @IsOptional()
   @IsMongoId()
   subject?: string;
 
@@ -26,6 +32,24 @@ export class FilterQueryTasks
   @IsOptional()
   @IsEnum(State)
   state?: State;
+
+  @IsOptional()
+  @Transform(({ obj }) =>
+  {
+    return new RegExp(escapeRegExp(obj.nameEn), 'i');
+  })
+  nameEn?: string;
+
+  @IsOptional()
+  @Transform(({ obj }) =>
+  {
+    return new RegExp(escapeRegExp(obj.nameAr), 'i');
+  })
+  nameAr?: string;
+
+
+
+
 }
 
 export class FilterQueryOptionsTasks extends IntersectionType(

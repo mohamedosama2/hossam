@@ -23,9 +23,10 @@ export class TasksService
   async create(createTaskDto: CreateTaskDto)
   {
     const payment = createTaskDto.payment as CreatePaymentTaskDto;
+    // let manager = await this.usersService.findOne({ _id: createTaskDto.taskManager.id })
     // createTaskDto.taskManager.id = manager._id
     // createTaskDto.taskManager.name = manager.username
-    console.log(createTaskDto.taskManager)
+    // console.log(createTaskDto.taskManager)
     delete createTaskDto.payment;
     let task = await this.TaskRepository.create(createTaskDto);
     if (payment)
@@ -34,6 +35,7 @@ export class TasksService
         ...payment,
         task: task._id,
         paymentType: PaymentType.REVENUSE,
+        teamMember: createTaskDto.taskManager as any
       });
     }
     const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
@@ -77,10 +79,10 @@ export class TasksService
 
   async findAll(FilterQueryOptionsTasks: FilterQueryOptionsTasks)
   {
-    return await this.TaskRepository.findAllWithPaginationOption(
+    return await this.TaskRepository.findAllWithPaginationCustome(
       FilterQueryOptionsTasks,
-      ['university', 'subject', 'state', 'teamMember'],
-      { populate: ['group', 'university'] },
+      // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
+      // { populate: ['group', 'university'] },
     );
   }
 

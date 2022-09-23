@@ -13,6 +13,8 @@ export class CreatePaymentDto
 
   @IsMongoId()
   byWhom: string;
+  @IsMongoId()
+  teamMember: string;
 
   @IsMongoId()
   task: string;

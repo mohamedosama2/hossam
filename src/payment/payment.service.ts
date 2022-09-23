@@ -1,17 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PaymentRepository } from './payment.repository';
 import { Types, Schema as MongooseSchema } from 'mongoose';
 import { PaymentType } from './models/payment.model';
+import { TasksService } from 'src/tasks/tasks.service';
 
 @Injectable()
 export class PaymentService
 {
-  constructor(private readonly PaymentRepository: PaymentRepository) { }
+  constructor(
+    @Inject(forwardRef(() => TasksService))
+    private readonly tasksService: TasksService,
+
+    private readonly PaymentRepository: PaymentRepository,
+  ) { }
   async create(createPaymentDto: CreatePaymentDto)
   {
+    let task = await this.tasksService.findOne(createPaymentDto.task)
+    createPaymentDto.teamMember = task.taskManager.id
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
@@ -37,6 +45,12 @@ export class PaymentService
   {
     return await this.PaymentRepository.findTaskDetails(taskId);
   }
+
+  async findTaskDetailsTeam(taskId: string)
+  {
+    return await this.PaymentRepository.findTaskDetails(taskId);
+  }
+
 
   findOne(id: number)
   {

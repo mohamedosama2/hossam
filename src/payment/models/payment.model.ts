@@ -37,6 +37,13 @@ export class Payment
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
+    ref: User.name,
+    required: true,
+  })
+  teamMember: string;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
     ref: Task.name,
     required: true,
   })

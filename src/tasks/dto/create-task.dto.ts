@@ -104,7 +104,9 @@ ex
   "university": "6316a9b028dbf037bbc843a4",
   "subject": "6316c66e991ab4ce200413ed",
   "group": "6316d104346fdc306236a8e0",
-  "taskManager": "6316bbf0bf84293049a66420",
+  "taskManager": {
+    "id": "6316bbf0bf84293049a66420"
+  },
   "totalPrice": 100,
   "state": "PENDING",
   "startDate": "2022-09-06T12:44:57.669Z",
