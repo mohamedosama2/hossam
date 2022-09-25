@@ -1,3 +1,4 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PaymentMethod, PaymentType } from '../models/payment.model';
 
@@ -13,6 +14,9 @@ export class CreatePaymentDto
 
   @IsMongoId()
   byWhom: string;
+
+  @IsOptional()
+  @ApiHideProperty()
   @IsMongoId()
   teamMember: string;
 

@@ -61,7 +61,7 @@ export class PaymentController
   @Get('team-member/task-details/:id')
   async findTaskDetailsTeam(@Param() { id }: ParamsWithId)
   {
-    return await this.paymentService.findTaskDetails(id);
+    return await this.paymentService.findTaskDetailsTeam(id);
   }
 
 

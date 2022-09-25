@@ -65,7 +65,7 @@ export class PaymentService
 
   async findTaskDetailsTeam(taskId: string)
   {
-    return await this.PaymentRepository.findTaskDetails(taskId);
+    return await this.PaymentRepository.findTaskDetailsTeam(taskId);
   }
 
 
