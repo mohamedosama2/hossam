@@ -5,6 +5,8 @@ import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
 import * as _ from 'lodash';
 import * as moment from "moment"
+var ObjectId = require('mongodb').ObjectId;
+
 
 /* function addDays(days) {
   var date = new Date(this.valueOf());
@@ -152,6 +154,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'state',
       'nameEn',
       'nameAr',
+      'group'
     ]);
     console.log('here')
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
@@ -164,9 +167,28 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
           ...(queryFiltersAndOptions.from && { $gte: moment(queryFiltersAndOptions.from).utc().startOf('d').toDate(), }),
           ...(queryFiltersAndOptions.to && { $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(), })
         }
-      })
-    }
+      }),
+      ...(queryFiltersAndOptions.nameEn && {
 
+        "nameAr": { $regex: `.*${queryFiltersAndOptions.nameEn}.*`, $options: "i" }
+
+      }),
+      ...(queryFiltersAndOptions.nameAr && {
+        "nameAr": { $regex: `.*${queryFiltersAndOptions.nameAr}.*`, $options: "i" }
+      }),
+      ...(queryFiltersAndOptions.group && { group: ObjectId(queryFiltersAndOptions.group) }),
+      ...(queryFiltersAndOptions.teamMember && { 'taskManager.id': ObjectId(queryFiltersAndOptions.teamMember) }),
+      ...(queryFiltersAndOptions.subject && { subject: ObjectId(queryFiltersAndOptions.subject) }),
+      ...(queryFiltersAndOptions.university && { university: ObjectId(queryFiltersAndOptions.university) }),
+      ...(queryFiltersAndOptions.state && { state: queryFiltersAndOptions.state }),
+    }
+    delete filters.subject
+    delete filters.nameAr
+    delete filters.nameEn
+    delete filters.state
+    delete filters.university
+    delete filters.group
+    delete filters.teamMember
     delete filters.from
     delete filters.to
 

@@ -30,21 +30,26 @@ export class FilterQueryTasks
   teamMember?: string;
 
   @IsOptional()
+  @IsMongoId()
+  group?: string;
+
+
+  @IsOptional()
   @IsEnum(State)
   state?: State;
 
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
-    return new RegExp(escapeRegExp(obj.nameEn), 'i');
-  })
+  // @Transform(({ obj }) =>
+  // {
+  //   return new RegExp(escapeRegExp(obj.nameEn), 'i');
+  // })
   nameEn?: string;
 
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
-    return new RegExp(escapeRegExp(obj.nameAr), 'i');
-  })
+  // @Transform(({ obj }) =>
+  // {
+  //   return { $regex: `.*${nameAr}.*`, $options: "i" }  //RegExp(escapeRegExp(obj.nameAr), 'i');
+  // })
   nameAr?: string;
 
 

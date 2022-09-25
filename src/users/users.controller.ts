@@ -1,25 +1,25 @@
 import
-  {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    UseInterceptors,
-    Inject,
-    UseFilters,
-    UploadedFiles,
-    ValidationPipe,
-    UsePipes,
-    HttpStatus,
-    HttpCode,
-    Query,
-    CacheInterceptor,
-    CacheKey,
-    BadRequestException,
-  } from '@nestjs/common';
+{
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  Inject,
+  UseFilters,
+  UploadedFiles,
+  ValidationPipe,
+  UsePipes,
+  HttpStatus,
+  HttpCode,
+  Query,
+  CacheInterceptor,
+  CacheKey,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { request } from 'http';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -123,6 +123,7 @@ export class UsersController
       $or: [
 
         { email: registerationData.email },
+        { phone: registerationData.phone },
       ],
     });
     if (user) throw new BadRequestException('phone and email should be unique');

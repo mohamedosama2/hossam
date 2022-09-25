@@ -29,9 +29,10 @@ export class CreateStudentDto
   @IsNotEmpty()
   password?: string;
 
-  // @IsString()
-  // @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
-  // phone: string;
+  @IsString()
+  @IsOptional()
+  @Matches(Constants.PHONE_REGX, { message: 'phone is invalid' })
+  phone: string;
 
   @IsString()
   @Matches(Constants.EMAIL_REGX, { message: 'email is invalid' })
