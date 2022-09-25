@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
-import { Payment, PaymentDocument } from './models/payment.model';
+import { Payment, PaymentDocument, PaymentType } from './models/payment.model';
 import { Types, Schema as MongooseSchema } from 'mongoose';
+var ObjectId = require('mongodb').ObjectId;
+
 
 @Injectable()
 export class PaymentRepository extends BaseAbstractRepository<Payment> {
@@ -439,5 +441,26 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
       },
     ]);
     return taskDeatils;
+  }
+  public async allTeamMemberMony(tramMember: string)
+  {
+    let stages = [
+
+      {
+        $match: {
+          teamMember: ObjectId(tramMember),
+          paymentType: PaymentType.EXPENSIS
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalExpensis: { $sum: "$paid" }
+        }
+      }
+    ]
+    console.log(stages)
+    let mony = await this.paymentModel.aggregate(stages)
+    return mony[0]
   }
 }

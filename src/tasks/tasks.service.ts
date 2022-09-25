@@ -93,6 +93,14 @@ export class TasksService
     return isExisted;
   }
 
+  async teamMemberMony(teamMember: string)
+  {
+    console.log('here')
+    return await this.TaskRepository.allTeamMemberMony(teamMember);
+
+  }
+
+
   async update(_id: string, updateTaskDto: UpdateTaskDto)
   {
     // await this.findOne(_id);

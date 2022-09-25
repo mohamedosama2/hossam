@@ -43,8 +43,9 @@ export class TasksController
   }
 
   @Get('home')
-  async hetHone(@Query() CreateDtoTasks: CreateDtoTasks) {
-    
+  async hetHone(@Query() CreateDtoTasks: CreateDtoTasks)
+  {
+
     return await this.tasksService.getHome(CreateDtoTasks.date);
   }
 
@@ -68,6 +69,8 @@ export class TasksController
     return this.tasksService.findOne(id);
   }
 
+
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto)
   {
@@ -79,5 +82,5 @@ export class TasksController
   {
     return this.tasksService.deleteTask(id);
   }
-  
+
 }

@@ -110,34 +110,6 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return task;
   }
 
-  // public async findAllWithPaginationOption(
-  //   queryFiltersAndOptions: any,
-  //   arrayOfFilters: string[],
-  //   extraOptions: PaginateOptions = {},
-  // ): Promise<PaginateResult<TaskDocument> | TaskDocument[]>
-  // {
-  //   const filters: FilterQuery<TaskDocument> = _.pick(
-  //     queryFiltersAndOptions,
-  //     arrayOfFilters,
-  //   );
-  //   const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
-  //     'page',
-  //     'limit',
-  //   ]);
-  //   let docs;
-  //   if (queryFiltersAndOptions.allowPagination)
-  //   {
-  //     docs = await (this.taskModel as PaginateModel<TaskDocument>).paginate(
-  //       filters,
-  //       { ...options, ...extraOptions },
-  //     );
-  //   } else
-  //   {
-  //     docs = await this.taskModel.find(filters).setOptions(options);
-  //   }
-  //   return docs;
-  // }
-
 
   public async findAllWithPaginationCustome(
     queryFiltersAndOptions: any,
@@ -217,5 +189,26 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       },).populate(['group', 'university'])
     }
     return docs;
+  }
+
+  public async allTeamMemberMony(tramMember: string)
+  {
+    let stages = [
+
+      {
+        $match: {
+          "taskManager.id": ObjectId(tramMember)
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalmony: { $sum: "$totalPrice" }
+        }
+      }
+    ]
+    console.log(stages)
+    let mony = await this.taskModel.aggregate(stages)
+    return mony[0]
   }
 }

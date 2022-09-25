@@ -64,6 +64,16 @@ export class PaymentController
     return await this.paymentService.findTaskDetails(id);
   }
 
+
+
+  @Get(':teamMember/all-payments')
+  MonyTest(@Param('teamMember') teamMember: string)
+  {
+
+    return this.paymentService.teamMemberMony(teamMember);
+  }
+
+
   @Get(':id')
   findOne(@Param('id') id: string)
   {

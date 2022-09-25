@@ -41,6 +41,23 @@ export class PaymentService
     );
   }
 
+  async teamMemberMony(teamMember: string)
+  {
+    console.log('here')
+    let totalPrice = await this.tasksService.teamMemberMony(teamMember);
+
+    let paidPrice = await this.PaymentRepository.allTeamMemberMony(teamMember)
+    let remaning = (totalPrice.totalmony - paidPrice.totalExpensis)
+    return {
+      totalPrice: totalPrice.totalmony,
+      paidPrice: paidPrice.totalExpensis,
+      remaning
+
+    }
+
+  }
+
+
   async findTaskDetails(taskId: string)
   {
     return await this.PaymentRepository.findTaskDetails(taskId);
