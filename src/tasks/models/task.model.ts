@@ -37,28 +37,28 @@ export class Task
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,
-    required: true,
+    // required: true,
   })
   university: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Subject.name,
-    required: true,
+    // required: true,
   })
   subject: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Group.name,
-    required: true,
+    // required: true,
   })
   group: string;
 
   @Prop({ type: () => Manager })
   taskManager?: Manager;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number })
   totalPrice: number;
 
   @Prop({ type: String, required: true, enum: Object.values(State) })

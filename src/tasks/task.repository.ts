@@ -36,7 +36,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
   async getHone(date: Date)
   {
     let strartDate = new Date(date);
-    const endDate = date.setDate(date.getDate() + 6);
+    const endDate = date.setDate(date.getDate() + 30);
     return await this.taskModel.aggregate([
       {
         $addFields: {
@@ -67,7 +67,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
   async getWeek(date: Date)
   {
     let strartDate = new Date(date);
-    const endDate = date.setDate(date.getDate() + 6);
+    const endDate = date.setDate(date.getDate() + 30);
     /*  console.log(date); */
     console.log(strartDate);
     console.log(date);
@@ -142,7 +142,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       }),
       ...(queryFiltersAndOptions.nameEn && {
 
-        "nameAr": { $regex: `.*${queryFiltersAndOptions.nameEn}.*`, $options: "i" }
+        "nameEn": { $regex: `.*${queryFiltersAndOptions.nameEn}.*`, $options: "i" }
 
       }),
       ...(queryFiltersAndOptions.nameAr && {

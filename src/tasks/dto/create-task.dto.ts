@@ -39,12 +39,15 @@ export class CreateTaskDto
   @IsNotEmpty()
   nameEn: string;
 
+  @IsOptional()
   @IsMongoId()
   university: string;
 
+  @IsOptional()
   @IsMongoId()
   subject: string;
 
+  @IsOptional()
   @IsMongoId()
   group: string;
 
@@ -52,6 +55,7 @@ export class CreateTaskDto
   @Type(() => TaskManagerDto)
   taskManager?: TaskManagerDto;
 
+  @IsOptional()
   @IsNumber()
   totalPrice: number;
 

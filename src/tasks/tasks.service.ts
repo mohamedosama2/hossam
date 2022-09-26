@@ -38,29 +38,32 @@ export class TasksService
         teamMember: createTaskDto.taskManager as any
       });
     }
-    const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
-    const tokens = [];
-    ((taskGroup.group as any).students as any[]).forEach(({ student }) =>
+    if (createTaskDto.group)
     {
-      /*    console.log('St', student); */
-      student.pushTokens.forEach(({ deviceToken }) =>
+      const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
+      const tokens = [];
+      ((taskGroup.group as any).students as any[]).forEach(({ student }) =>
       {
-        /*  console.log('St2', deviceToken); */
-        tokens.push({
-          deviceToken: deviceToken ? deviceToken : 'testing',
-          _id: student._id,
+        /*    console.log('St', student); */
+        student.pushTokens.forEach(({ deviceToken }) =>
+        {
+          /*  console.log('St2', deviceToken); */
+          tokens.push({
+            deviceToken: deviceToken ? deviceToken : 'testing',
+            _id: student._id,
+          });
         });
       });
-    });
 
-    /*     console.log((taskGroup.group as any).students); */
-    await this.NotificationService.sendMany(
-      {
-        body: task.subject,
-        title: task.nameAr + task.nameEn,
-      },
-      tokens,
-    );
+      /*     console.log((taskGroup.group as any).students); */
+      await this.NotificationService.sendMany(
+        {
+          body: task.subject,
+          title: task.nameAr + task.nameEn,
+        },
+        tokens,
+      );
+    }
     return task;
   }
 
