@@ -16,9 +16,10 @@ import { CreateDtoTasks, CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/users/models/_user.model';
+import { UserDocument, UserRole } from 'src/users/models/_user.model';
 import { FilterQueryOptionsTasks, FilterQueryTasks } from './dto/filter.dto';
 import { UsersService } from 'src/users/users.service';
+import { AuthUser } from 'src/auth/decorators/me.decorator';
 
 @ApiBearerAuth()
 @ApiTags('tasks'.toUpperCase())
@@ -43,24 +44,24 @@ export class TasksController
   }
 
   @Get('home')
-  async hetHone(@Query() CreateDtoTasks: CreateDtoTasks)
+  async hetHone(@Query() CreateDtoTasks: CreateDtoTasks, @AuthUser() me: UserDocument)
   {
 
-    return await this.tasksService.getHome(CreateDtoTasks.date);
+    return await this.tasksService.getHome(CreateDtoTasks.date, me);
   }
 
 
   @Get()
-  findAll(@Query() FilterQueryOptionsTasks: FilterQueryOptionsTasks)
+  findAll(@Query() FilterQueryOptionsTasks: FilterQueryOptionsTasks, @AuthUser() me: UserDocument)
   {
-    return this.tasksService.findAll(FilterQueryOptionsTasks);
+    return this.tasksService.findAll(FilterQueryOptionsTasks, me);
   }
 
   @Get('week-calender')
-  async getWeek(@Query() CreateDtoTasks: CreateDtoTasks)
+  async getWeek(@Query() CreateDtoTasks: CreateDtoTasks, @AuthUser() me: UserDocument)
   {
     console.log(CreateDtoTasks);
-    return await this.tasksService.getWeek(CreateDtoTasks.date);
+    return await this.tasksService.getWeek(CreateDtoTasks.date, me);
   }
 
   @Get(':id')

@@ -5,6 +5,8 @@ import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
 import * as _ from 'lodash';
 import * as moment from "moment"
+import { AuthUser } from 'src/auth/decorators/me.decorator';
+import { UserDocument, UserRole } from 'src/users/models/_user.model';
 var ObjectId = require('mongodb').ObjectId;
 
 
@@ -33,7 +35,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return { tasksInProgress, tasksFinished };
   }
 
-  async getHone(date: Date)
+  async getHone(date: Date, @AuthUser() me: UserDocument,)
   {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
@@ -49,6 +51,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
             { startDate: { $gte: new Date(strartDate) } },
             { startDate: { $lte: new Date(endDate) } },
           ],
+          ...(me.role === UserRole.teamMember && {
+            'taskManager.id': me._id,
+          }),
         },
       },
       {
@@ -64,7 +69,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     ]);
   }
 
-  async getWeek(date: Date)
+  async getWeek(date: Date, @AuthUser() me: UserDocument)
   {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
@@ -85,6 +90,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
             { startDate: { $gte: new Date(strartDate) } },
             { startDate: { $lte: new Date(endDate) } },
           ],
+          ...(me.role === UserRole.teamMember && {
+            'taskManager.id': me._id,
+          }),
         },
       },
       {
@@ -112,6 +120,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
 
 
   public async findAllWithPaginationCustome(
+    @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
   ): Promise<TaskDocument[]>
   {
@@ -134,6 +143,15 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'limit',
     ]);
     let query = {
+      ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
+        && {
+        'taskManager.id': queryFiltersAndOptions.teamMember,
+
+      }),
+      ...(me.role === UserRole.teamMember && {
+        'taskManager.id': me._id,
+      }),
+
       ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
         createdAt: {
           ...(queryFiltersAndOptions.from && { $gte: moment(queryFiltersAndOptions.from).utc().startOf('d').toDate(), }),

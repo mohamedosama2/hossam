@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { NotificationService } from 'src/notification/notification.service';
 import { PaymentType } from 'src/payment/models/payment.model';
 import { PaymentService } from 'src/payment/payment.service';
 import { StudentDocument } from 'src/users/models/student.model';
+import { UserDocument } from 'src/users/models/_user.model';
 import { UserRepository } from 'src/users/users.repository';
 import { UsersService } from 'src/users/users.service';
 import { CreatePaymentTaskDto, CreateTaskDto } from './dto/create-task.dto';
@@ -67,12 +69,12 @@ export class TasksService
     return task;
   }
 
-  async getHome(date: Date)
+  async getHome(date: Date, @AuthUser() me: UserDocument)
   {
     const res = await this.TaskRepository.getTasksProgress();
     const studentRes = await this.UserRepository.coudeStudents();
     console.log(res, studentRes);
-    const calender = await this.TaskRepository.getHone(date);
+    const calender = await this.TaskRepository.getHone(date, me);
     return {
       ...res,
       ...studentRes,
@@ -80,9 +82,16 @@ export class TasksService
     };
   }
 
-  async findAll(FilterQueryOptionsTasks: FilterQueryOptionsTasks)
+
+
+  async findAll(FilterQueryOptionsTasks: FilterQueryOptionsTasks,
+    @AuthUser() me: UserDocument
+  )
   {
+
+
     return await this.TaskRepository.findAllWithPaginationCustome(
+      me,
       FilterQueryOptionsTasks,
       // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
       // { populate: ['group', 'university'] },
@@ -115,8 +124,8 @@ export class TasksService
     return await this.TaskRepository.deleteOne({ _id: id });
   }
 
-  async getWeek(date: Date)
+  async getWeek(date: Date, @AuthUser() me: UserDocument)
   {
-    return await this.TaskRepository.getWeek(date);
+    return await this.TaskRepository.getWeek(date, me);
   }
 }

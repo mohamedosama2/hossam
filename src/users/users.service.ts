@@ -1,4 +1,5 @@
-import {
+import
+{
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -7,7 +8,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
+import
+{
   CreateQuery,
   FilterQuery,
   Model,
@@ -25,36 +27,53 @@ import { UserRepository } from './users.repository';
 import { cacheOperationsService } from 'src/cache/cache-operations.service';
 import { GroupService } from 'src/group/group.service';
 
-function randomInRange(from: number, to: number) {
+function randomInRange(from: number, to: number)
+{
   var r = Math.random();
   return Math.floor(r * (to - from) + from);
 }
 
 @Injectable()
-export class UsersService {
+export class UsersService
+{
   constructor(
     private readonly userRepository: UserRepository,
     private readonly GroupService: GroupService,
-  ) {}
+  ) { }
 
-  async findAll(
-    queryFiltersAndOptions: FilterQueryOptionsUser,
-  ): Promise<PaginateResult<UserDocument> | UserDocument[]> {
-    const users = await this.userRepository.findAllWithPaginationOption(
-      queryFiltersAndOptions,
-      ['username', 'role'],
-      {
-        populate: {
-          path: 'university',
-          select: { nameAr: 1, nameEn: 1, _id: 1 },
-        },
-      },
+
+
+  async findAll(FilterQueryOptionsUser: FilterQueryOptionsUser,)
+  {
+    return await this.userRepository.findAllWithPaginationCustome(
+      FilterQueryOptionsUser,
+      // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
+      // { populate: ['group', 'university'] },
     );
-
-    return users;
   }
 
-  async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument> {
+
+
+  // async findAll(
+  //   queryFiltersAndOptions: FilterQueryOptionsUser,
+  // ): Promise<PaginateResult<UserDocument> | UserDocument[]>
+  // {
+  //   const users = await this.userRepository.findAllWithPaginationOption(
+  //     queryFiltersAndOptions,
+  //     ['username', 'role', 'university'],
+  //     {
+  //       populate: {
+  //         path: 'university',
+  //         select: { nameAr: 1, nameEn: 1, _id: 1 },
+  //       },
+  //     },
+  //   );
+
+  //   return users;
+  // }
+
+  async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument>
+  {
     const user = await this.userRepository.findOne(filter);
     return user;
   }
@@ -62,25 +81,29 @@ export class UsersService {
   async update(
     filter: FilterQuery<UserDocument>,
     updateUserData: UpdateUserDto,
-  ): Promise<UserDocument> {
+  ): Promise<UserDocument>
+  {
     const user = await this.userRepository.updateOne(filter, updateUserData);
     return user;
   }
 
-  async getProfile(me: UserDocument): Promise<UserDocument> {
+  async getProfile(me: UserDocument): Promise<UserDocument>
+  {
     return me;
   }
 
   async createUser(
     createUserData: CreateQuery<UserDocument>,
-  ): Promise<UserDocument> {
+  ): Promise<UserDocument>
+  {
     return await this.userRepository.create(createUserData);
   }
 
   async changePassword(
     { oldPassword, newPassword }: ChangePasswordDto,
     me: UserDocument,
-  ): Promise<UserDocument> {
+  ): Promise<UserDocument>
+  {
     if (!(await (me as any).isValidPassword(oldPassword)))
       throw new UnauthorizedException('password not match');
 
@@ -90,7 +113,8 @@ export class UsersService {
     );
   }
 
-  async deleteStudent(_id: string) {
+  async deleteStudent(_id: string)
+  {
     await this.userRepository.deleteOne({ _id });
     await this.GroupService.removeStudent(_id);
   }

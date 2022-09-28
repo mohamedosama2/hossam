@@ -1,7 +1,8 @@
 import { IsNumber, Min, IsOptional } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
-export class PaginationParams {
+export class PaginationParams
+{
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -12,16 +13,18 @@ export class PaginationParams {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  limit?: number = 8;
+  limit?: number;
 
   @IsOptional()
-  @Transform(({ obj }) => {
+  @Transform(({ obj }) =>
+  {
     return [true, 'true'].indexOf(obj.allowPagination) > -1;
   })
   allowPagination?: boolean = true;
 }
 
-export interface AggregationOpptionsInterface {
+export interface AggregationOpptionsInterface
+{
   sort?: Object | String;
   page?: Number;
   offset?: Number;
@@ -30,7 +33,8 @@ export interface AggregationOpptionsInterface {
   pagination?: boolean;
   allowDiskUse?: boolean;
 }
-export class AggregationOpptionsDto {
+export class AggregationOpptionsDto
+{
   sort?: Object | String;
 
   offset?: Number;
@@ -48,10 +52,11 @@ export class AggregationOpptionsDto {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  limit?: number = 8;
+  limit?: number;
 
   @IsOptional()
-  @Transform(({ obj }) => {
+  @Transform(({ obj }) =>
+  {
     return [true, 'true'].indexOf(obj.pagination) > -1;
   })
   pagination?: boolean = true;
