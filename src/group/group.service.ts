@@ -18,7 +18,7 @@ export class GroupService {
   ): Promise<PaginateResult<GroupDocument> | GroupDocument[]> {
     const groups = await this.GroupRepository.findAllWithPaginationOption(
       queryFiltersAndOptions,
-      ['name'],
+      ['name', 'university'],
       { populate: ['students.student', 'university'] },
     );
     return groups;

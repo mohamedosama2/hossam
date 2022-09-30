@@ -7,19 +7,16 @@ var ObjectId = require('mongodb').ObjectId;
 import * as _ from 'lodash';
 import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
 
-
 @Injectable()
 export class UserRepository extends BaseAbstractRepository<User> {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>)
-  {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     super(userModel);
     /*  this.userModel.collection.dropIndex("whatsapp_1")
     this.userModel.collection.dropIndex("phone_1")
     console.log(this.userModel.listIndexes().then((data) => console.log(data))); */
   }
 
-  async coudeStudents()
-  {
+  async coudeStudents() {
     const students = await this.userModel.countDocuments({
       role: UserRole.STUDENT,
     });
@@ -32,8 +29,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
   async fetchUsersByFilter(
     filter: FilterQuery<UserDocument>,
     stage = 0,
-  ): Promise<UserDocument[]>
-  {
+  ): Promise<UserDocument[]> {
     return await this.userModel
       .find(filter)
       .skip(5000 * stage)
@@ -41,15 +37,13 @@ export class UserRepository extends BaseAbstractRepository<User> {
       .select('_id pushTokens');
   }
 
-  async fetchShouldSend()
-  {
+  async fetchShouldSend() {
     return await this.userModel.countDocuments({
       'pushTokens.0': { $exists: true },
     });
   }
 
-  async fetchCounts(filter: FilterQuery<UserDocument>): Promise<number>
-  {
+  async fetchCounts(filter: FilterQuery<UserDocument>): Promise<number> {
     const count = await this.userModel.aggregate([
       { $match: filter },
       { $count: 'usersCount' },
@@ -62,8 +56,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
   ): Promise<{
     arrayOfObjects: { deviceToken: string; _id: string }[];
     arrayOfUsersIds: string[];
-  }>
-  {
+  }> {
     const chunk = await this.userModel.aggregate([
       { $match: filter },
       { $skip: stage * 1000 },
@@ -93,26 +86,19 @@ export class UserRepository extends BaseAbstractRepository<User> {
     return chunk[0];
   }
 
-
   public async findAllWithPaginationCustome(
     // @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
-  ): Promise<UserDocument[]>
-  {
-    console.log(queryFiltersAndOptions)
+  ): Promise<UserDocument[]> {
+    console.log(queryFiltersAndOptions);
 
     let filters: FilterQuery<UserDocument> = _.pick(queryFiltersAndOptions, [
       'university',
-      'from',
-      'to',
-      'subject',
-      'teamMember',
-      'state',
-      'nameEn',
-      'nameAr',
-      'group'
+      'username',
+      'usernameAr',
+      'role',
     ]);
-    console.log('here')
+    console.log('here');
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
       'page',
       'limit',
@@ -127,26 +113,33 @@ export class UserRepository extends BaseAbstractRepository<User> {
       //   'taskManager.id': me._id,
       // }),
       ...(queryFiltersAndOptions.username && {
-
-        "username": { $regex: `.*${queryFiltersAndOptions.username}.*`, $options: "i" }
-
+        username: {
+          $regex: `.*${queryFiltersAndOptions.username}.*`,
+          $options: 'i',
+        },
       }),
-      ...(queryFiltersAndOptions.university && { university: ObjectId(queryFiltersAndOptions.university) }),
+      ...(queryFiltersAndOptions.usernameAr && {
+        usernameAr: {
+          $regex: `.*${queryFiltersAndOptions.usernameAr}.*`,
+          $options: 'i',
+        },
+      }),
+      ...(queryFiltersAndOptions.university && {
+        university: ObjectId(queryFiltersAndOptions.university),
+      }),
       ...(queryFiltersAndOptions.role && { role: queryFiltersAndOptions.role }),
-    }
-    delete filters.university
-    delete filters.role
-    delete filters.username
+    };
+    delete filters.university;
+    delete filters.role;
+    delete filters.username;
     let docs;
-    console.log(filters)
-    console.log(query)
-    if (queryFiltersAndOptions.allowPagination)
-    {
+    console.log(filters);
+    console.log(query);
+    if (queryFiltersAndOptions.allowPagination) {
       docs = await (this.userModel as PaginateModel<UserDocument>).paginate(
         // here we can but any option to to query like sort
         {
-
-          ...query
+          ...query,
         },
         {
           ...options,
@@ -155,17 +148,18 @@ export class UserRepository extends BaseAbstractRepository<User> {
             select: { nameAr: 1, nameEn: 1, _id: 1 },
           },
           // populate: ['group', 'university']
-        }
+        },
       );
-    } else
-    {
-      docs = await this.userModel.find({
-        filters,
-        ...query
-      }).populate({
-        path: 'university',
-        select: { nameAr: 1, nameEn: 1, _id: 1 },
-      })
+    } else {
+      docs = await this.userModel
+        .find({
+          filters,
+          ...query,
+        })
+        .populate({
+          path: 'university',
+          select: { nameAr: 1, nameEn: 1, _id: 1 },
+        });
     }
     return docs;
   }

@@ -10,6 +10,10 @@ export class FilterQueryGroup {
     return new RegExp(escapeRegExp(obj.name), 'i');
   })
   name?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  university?:string
 }
 
 export class FilterQueryOptionsGroup extends IntersectionType(
