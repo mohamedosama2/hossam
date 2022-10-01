@@ -135,7 +135,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'state',
       'nameEn',
       'nameAr',
-      'group'
+      'group',
+      'isDeletedTask'
     ]);
     console.log('here')
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
@@ -151,6 +152,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,
       }),
+      ...(queryFiltersAndOptions.isDeletedTask !== null &&
+        queryFiltersAndOptions.isDeletedTask !== undefined &&
+        { isDeletedTask: queryFiltersAndOptions.isDeletedTask == 'true' as any ? true : false }),
 
       ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
         createdAt: {
@@ -181,6 +185,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     delete filters.teamMember
     delete filters.from
     delete filters.to
+    delete filters.isDeletedTask
 
 
     let docs;

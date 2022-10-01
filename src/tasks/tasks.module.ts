@@ -7,6 +7,7 @@ import { TaskRepository } from './task.repository';
 import { PaymentModule } from 'src/payment/payment.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { UsersModule } from 'src/users/users.module';
+import { GroupModule } from 'src/group/group.module';
 
 @Module({
 
@@ -20,6 +21,7 @@ import { UsersModule } from 'src/users/users.module';
     forwardRef(() => PaymentModule),
     NotificationModule,
     UsersModule,
+    GroupModule
   ],
   controllers: [TasksController],
   providers: [TasksService, TaskRepository],

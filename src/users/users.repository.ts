@@ -29,6 +29,12 @@ export class UserRepository extends BaseAbstractRepository<User> {
     return { students, teamMembers };
   }
 
+  findAllCustome(options?: string[])
+  {
+    return this.userModel.find({ _id: { $in: options } });
+
+  }
+
   async fetchUsersByFilter(
     filter: FilterQuery<UserDocument>,
     stage = 0,

@@ -5,13 +5,15 @@ import { Types, Schema as MongooseSchema } from 'mongoose';
 
 export type SubjectDocument = Subject & Document;
 
-export enum Semester {
+export enum Semester
+{
   FIRST = 'FIRST',
   SECOND = 'SECOND',
 }
 
 @Schema({ timestamps: true })
-export class Subject {
+export class Subject
+{
   id?: string;
 
   @Prop({
@@ -38,9 +40,14 @@ export class Subject {
 
   @Prop({ type: String, required: true })
   driveLink: string;
-  
+
   @Prop({ type: String, required: true })
   driveMaterials: string;
+
+  @Prop({
+    type: Boolean, default: true
+  })
+  enable?: boolean;
 }
 
 const SubjectSchema = SchemaFactory.createForClass(Subject);

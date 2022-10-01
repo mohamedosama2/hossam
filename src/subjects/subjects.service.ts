@@ -7,37 +7,45 @@ import { SubjectDocument } from './models/subject.model';
 import { SubjectRepository } from './subjects.repository';
 
 @Injectable()
-export class SubjectsService {
-  constructor(private readonly SubjectRepository: SubjectRepository) {}
-  async create(createSubjectDto: CreateSubjectDto) {
+export class SubjectsService
+{
+  constructor(private readonly SubjectRepository: SubjectRepository) { }
+  async create(createSubjectDto: CreateSubjectDto)
+  {
     return await this.SubjectRepository.create(createSubjectDto);
   }
 
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsSubject,
-  ): Promise<PaginateResult<SubjectDocument> | SubjectDocument[]> {
+  ): Promise<PaginateResult<SubjectDocument> | SubjectDocument[]>
+  {
     const universities =
       await this.SubjectRepository.findAllWithPaginationOption(
         queryFiltersAndOptions,
-        ['nameAr', 'nameEn', 'university', 'semester'],
+        ['nameAr', 'nameEn', 'university', 'semester', 'enable'],
       );
     return universities;
   }
 
 
-  async findOne(_id: string) {
+  async findOne(_id: string)
+  {
     const subject = await this.SubjectRepository.findOne({ _id });
     if (!subject) throw new NotFoundException();
     return subject;
   }
 
-  async update(_id: string, updateSubjectDto: UpdateSubjectDto) {
+  async update(_id: string, updateSubjectDto: UpdateSubjectDto)
+  {
     await this.findOne(_id);
     return await this.SubjectRepository.updateOne({ _id }, updateSubjectDto);
   }
 
-  async remove(_id: string) {
+  async remove(_id: string)
+  {
     await this.findOne(_id);
-    return await this.SubjectRepository.deleteOne({ _id });
+    return await this.SubjectRepository.updateOne({ _id }, {
+      enable: false
+    });
   }
 }

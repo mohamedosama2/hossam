@@ -3,6 +3,7 @@ import { ApiHideProperty } from '@nestjs/swagger';
 ;
 import
 {
+  IsBoolean,
   IsDate,
   IsEnum,
   IsMongoId,
@@ -38,6 +39,16 @@ export class CreateTaskDto
   @IsString()
   @IsNotEmpty()
   nameEn: string;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiHideProperty()
+  isAdminTask: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiHideProperty()
+  isDeletedTask: boolean;
 
   @IsOptional()
   @IsMongoId()

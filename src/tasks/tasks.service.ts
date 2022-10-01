@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
+import { GroupService } from 'src/group/group.service';
 import { NotificationService } from 'src/notification/notification.service';
 import { PaymentType } from 'src/payment/models/payment.model';
 import { PaymentService } from 'src/payment/payment.service';
@@ -21,32 +22,39 @@ export class TasksService
     private readonly usersService: UsersService,
     private readonly NotificationService: NotificationService,
     private readonly UserRepository: UserRepository,
+    private readonly groupService: GroupService,
   ) { }
   async create(createTaskDto: CreateTaskDto)
   {
     const payment = createTaskDto.payment as CreatePaymentTaskDto;
-    // let manager = await this.usersService.findOne({ _id: createTaskDto.taskManager.id })
-    // createTaskDto.taskManager.id = manager._id
-    // createTaskDto.taskManager.name = manager.username
-    // console.log(createTaskDto.taskManager)
-    delete createTaskDto.payment;
     let task = await this.TaskRepository.create(createTaskDto);
+    let group = await this.groupService.findOne(task.group)
     if (payment)
     {
+      console.log(createTaskDto.totalPrice)
+      console.log(group.students.length)
+      console.log(createTaskDto.totalPrice / group.students.length)
+      if (payment.paid > (createTaskDto.totalPrice / group.students.length))
+      {
+        throw new BadRequestException('paid greater than total price')
+      }
       await this.PaymentService.create({
         ...payment,
         task: task._id,
         paymentType: PaymentType.REVENUSE,
-        teamMember: createTaskDto.taskManager as any
+        teamMember: createTaskDto.taskManager as any,
+        isDeletedPayment: false
+
       });
     }
     if (createTaskDto.group)
     {
       const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
+      console.log(group.students)
       const tokens = [];
-      ((taskGroup.group as any).students as any[]).forEach(({ student }) =>
+      (group.students as any[]).forEach(({ student }) =>
       {
-        /*    console.log('St', student); */
+        console.log('St', student);
         student.pushTokens.forEach(({ deviceToken }) =>
         {
           /*  console.log('St2', deviceToken); */
@@ -68,7 +76,36 @@ export class TasksService
     }
     return task;
   }
+  async createAdmin(createTaskDto: CreateTaskDto)
+  {
+    // const payment = createTaskDto.payment as CreatePaymentTaskDto;
+    let task = await this.TaskRepository.create(createTaskDto);
+    if (createTaskDto.taskManager)
+    {
+      const admin = await this.usersService.findOne(createTaskDto.taskManager);
+      console.log('inside notification', admin)
+      const tokens = [];
 
+      console.log('St', admin);
+      admin.pushTokens.forEach(({ deviceToken }) =>
+      {
+        /*  console.log('St2', deviceToken); */
+        tokens.push({
+          deviceToken: deviceToken ? deviceToken : 'testing',
+          _id: admin._id,
+        });
+      });
+      /*     console.log((taskGroup.group as any).students); */
+      await this.NotificationService.sendMany(
+        {
+          body: task.subject,
+          title: task.nameAr + task.nameEn,
+        },
+        tokens,
+      );
+    }
+    return task;
+  }
   async getHome(date: Date, @AuthUser() me: UserDocument)
   {
     const res = await this.TaskRepository.getTasksProgress();
@@ -121,7 +158,8 @@ export class TasksService
 
   async deleteTask(id: string)
   {
-    return await this.TaskRepository.deleteOne({ _id: id });
+    let taskPayment = await this.PaymentService.findAndUpdateMany(id)
+    return await this.TaskRepository.updateOne({ _id: id }, { isDeletedTask: true });
   }
 
   async getWeek(date: Date, @AuthUser() me: UserDocument)

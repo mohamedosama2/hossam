@@ -43,6 +43,12 @@ export class UsersService
 
 
 
+  async getCustomeDocs(countriesId: string[]): Promise<UserDocument[]>
+  {
+    const docs = await this.userRepository.findAllCustome(countriesId);
+    return docs;
+  }
+
   async findAll(FilterQueryOptionsUser: FilterQueryOptionsUser,)
   {
     return await this.userRepository.findAllWithPaginationCustome(
@@ -115,7 +121,7 @@ export class UsersService
 
   async deleteStudent(_id: string)
   {
-    await this.userRepository.deleteOne({ _id });
-    await this.GroupService.removeStudent(_id);
+    await this.userRepository.updateOne({ _id }, { enabled: false });
+    // await this.GroupService.removeStudent(_id);
   }
 }

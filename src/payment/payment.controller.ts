@@ -14,10 +14,12 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/users/models/_user.model';
+import { UserDocument, UserRole } from 'src/users/models/_user.model';
 import ParamsWithId from 'src/utils/paramsWithId.dto';
 import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dto';
 import { PaymentType } from './models/payment.model';
+import { AuthUser } from 'src/auth/decorators/me.decorator';
+import { FilterQueryOptionsPayment } from './dto/filter.dto';
 
 @ApiBearerAuth()
 @ApiTags('payment'.toUpperCase())
@@ -43,13 +45,10 @@ export class PaymentController
     return this.paymentService.create(createPaymentDto);
   }
 
-  @Get('task-pyaments/:id')
-  async findAllPaymentsToTask(
-    @Param() { id }: ParamsWithId,
-    @Query() AggregationOpptionsDto: AggregationOpptionsDto, paymentType: PaymentType
-  )
+  @Get()
+  findAll(@Query() FilterQueryOptionsTasks: FilterQueryOptionsPayment, @AuthUser() me: UserDocument)
   {
-    return await this.paymentService.findAll(id, paymentType, AggregationOpptionsDto);
+    return this.paymentService.findAll(FilterQueryOptionsTasks, me);
   }
 
   @Get('task-details/:id')

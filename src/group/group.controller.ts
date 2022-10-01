@@ -25,12 +25,15 @@ import ParamsWithId from 'src/utils/paramsWithId.dto';
 @Controller('group')
 export class GroupController
 {
-  constructor(private readonly groupService: GroupService) { }
+  constructor(
+
+    private readonly groupService: GroupService) { }
 
   @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() createGroupDto: CreateGroupDto)
   {
+    createGroupDto.enable = true
     return await this.groupService.create(createGroupDto);
   }
 

@@ -6,6 +6,9 @@ import { PaymentRepository } from './payment.repository';
 import { Types, Schema as MongooseSchema } from 'mongoose';
 import { PaymentType } from './models/payment.model';
 import { TasksService } from 'src/tasks/tasks.service';
+import { FilterQueryOptionsPayment } from './dto/filter.dto';
+import { UserDocument } from 'src/users/models/_user.model';
+import { AuthUser } from 'src/auth/decorators/me.decorator';
 
 @Injectable()
 export class PaymentService
@@ -23,21 +26,17 @@ export class PaymentService
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
-  async findAll(
-    taskId: string,
-    paymentType: PaymentType,
-    AggregationOpptionsDto: AggregationOpptionsDto,
+  async findAll(FilterQueryOptionsTasks: FilterQueryOptionsPayment,
+    @AuthUser() me: UserDocument
   )
   {
-    let qury = {
-      ...(paymentType && { paymentType: paymentType }),
-      task: new Types.ObjectId(taskId)
 
-    }
-    return await this.PaymentRepository.findAllWithPaginationAggregationOption(
-      AggregationOpptionsDto,
 
-      [{ $match: qury }],
+    return await this.PaymentRepository.findAllWithPaginationCustome(
+      me,
+      FilterQueryOptionsTasks,
+      // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
+      // { populate: ['group', 'university'] },
     );
   }
 
@@ -58,10 +57,19 @@ export class PaymentService
   }
 
 
+
+
   async findTaskDetails(taskId: string)
   {
     return await this.PaymentRepository.findTaskDetails(taskId);
   }
+
+
+  async findAndUpdateMany(taskId: string)
+  {
+    return await this.PaymentRepository.updateManyPayment(taskId);
+  }
+
 
   async findTaskDetailsTeam(taskId: string)
   {

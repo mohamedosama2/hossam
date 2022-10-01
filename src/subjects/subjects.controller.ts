@@ -31,6 +31,7 @@ export class SubjectsController
   @Post()
   async create(@Body() createSubjectDto: CreateSubjectDto)
   {
+    createSubjectDto.enable = true
     return this.subjectsService.create(createSubjectDto);
   }
 

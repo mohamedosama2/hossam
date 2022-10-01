@@ -28,47 +28,60 @@ export class Task
 {
   id?: string;
 
-  @Prop({ type: String, required: true })
-  nameAr: string;
+  @Prop({
+    type: String,
+    // required: true
+  })
+  nameAr?: string;
 
   @Prop({ type: String, required: true })
-  nameEn: string;
+  nameEn?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,
     // required: true,
   })
-  university: string;
+  university?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Subject.name,
     // required: true,
   })
-  subject: string;
+  subject?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Group.name,
     // required: true,
   })
-  group: string;
+  group?: string;
 
   @Prop({ type: () => Manager })
   taskManager?: Manager;
 
   @Prop({ type: Number })
-  totalPrice: number;
+  totalPrice?: number;
 
-  @Prop({ type: String, required: true, enum: Object.values(State) })
-  state: State;
-
-  @Prop({ type: Date, required: true })
-  startDate: Date;
+  @Prop({ type: String, enum: Object.values(State) })
+  state?: State;
 
   @Prop({ type: Date, required: true })
-  endDate: Date;
+  startDate?: Date;
+
+  @Prop({ type: Date, required: true })
+  endDate?: Date;
+
+  @Prop({ type: Boolean })
+  isAdminTask?: boolean;
+
+  @Prop({
+    type: Boolean, default: false
+  })
+  isDeletedTask?: boolean;
+
+
 }
 
 

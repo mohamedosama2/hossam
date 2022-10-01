@@ -20,6 +20,7 @@ import { UserDocument, UserRole } from 'src/users/models/_user.model';
 import { FilterQueryOptionsTasks, FilterQueryTasks } from './dto/filter.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
+import { CreateAdminTaskDto } from './dto/create-admin-task.dto';
 
 @ApiBearerAuth()
 @ApiTags('tasks'.toUpperCase())
@@ -40,7 +41,33 @@ export class TasksController
     createTaskDto.taskManager.id = manager._id
     createTaskDto.taskManager.name = manager.username
     console.log(createTaskDto.taskManager)
+    createTaskDto.isAdminTask = false
+    createTaskDto.isDeletedTask = false
+
     return await this.tasksService.create(createTaskDto);
+  }
+
+
+  @Post('/add/admin')
+  async createAdminTask(@Body() createTaskDto: CreateAdminTaskDto, @AuthUser() me: UserDocument)
+  {
+    console.log('here22')
+    console.log(me)
+    console.log(me.username)
+    let adminData = {
+      id: me._id,
+      name: me.username
+    }
+    // let manager = await this.usersService.findOne({ _id: createTaskDto.taskManager.id })
+    // if (!manager) throw new NotFoundException('user not found')
+    console.log(createTaskDto.taskManager)
+    createTaskDto.taskManager = adminData
+    console.log('here55')
+    // createTaskDto.taskManager.name = me.username
+    createTaskDto.isAdminTask = true
+    createTaskDto.isDeletedTask = false
+    console.log(createTaskDto.taskManager)
+    return await this.tasksService.createAdmin(createTaskDto as any);
   }
 
   @Get('home')

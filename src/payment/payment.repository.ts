@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, PaginateModel, PaginateOptions } from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Payment, PaymentDocument, PaymentType } from './models/payment.model';
 import { Types, Schema as MongooseSchema } from 'mongoose';
 var ObjectId = require('mongodb').ObjectId;
-
+import * as _ from 'lodash';
+import * as moment from "moment"
+import { AuthUser } from 'src/auth/decorators/me.decorator';
+import { UserDocument, UserRole } from 'src/users/models/_user.model';
 
 @Injectable()
 export class PaymentRepository extends BaseAbstractRepository<Payment> {
@@ -15,6 +18,29 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   {
     super(paymentModel);
   }
+
+
+  async findTaskPayments(taskId: string)
+  {
+    const taskDeatils = await this.paymentModel.aggregate([
+      { $match: { task: new Types.ObjectId(taskId) } }])
+
+    return taskDeatils
+  }
+
+  async updateManyPayment(_id: string)
+  {
+    // const taskDeatils = await this.paymentModel.aggregate([
+    //   { $match: { task: new Types.ObjectId(_id) } }])
+
+    await this.paymentModel.updateMany(
+      { task: _id },
+      {
+        isDeletedPayment: true
+      },
+    );
+  }
+
   async findTaskDetails(taskId: string)
   {
     const taskDeatils = await this.paymentModel.aggregate([
@@ -325,4 +351,81 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     let mony = await this.paymentModel.aggregate(stages)
     return mony[0]
   }
+
+
+  public async findAllWithPaginationCustome(
+    @AuthUser() me: UserDocument,
+    queryFiltersAndOptions: any,
+  ): Promise<PaymentDocument[]>
+  {
+    console.log(queryFiltersAndOptions)
+
+    let filters: FilterQuery<PaymentDocument> = _.pick(queryFiltersAndOptions, [
+      'task',
+      'from',
+      'to',
+      'paymentType',
+      'isDeletedPayment'
+    ]);
+    console.log('here')
+    const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
+      'page',
+      'limit',
+    ]);
+    let query = {
+      // ...(queryFiltersAndOptions.isDeletedPayment !== null &&
+      //   queryFiltersAndOptions.isDeletedPayment !== undefined &&
+      //   { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? true : false }),
+
+      ...(queryFiltersAndOptions.isDeletedPayment !== null &&
+        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment }),
+
+
+      ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
+        createdAt: {
+          ...(queryFiltersAndOptions.from && { $gte: moment(queryFiltersAndOptions.from).utc().startOf('d').toDate(), }),
+          ...(queryFiltersAndOptions.to && { $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(), })
+        }
+      }),
+      ...(queryFiltersAndOptions.task && { task: ObjectId(queryFiltersAndOptions.task) }),
+      ...(queryFiltersAndOptions.paymentType && { paymentType: queryFiltersAndOptions.paymentType }),
+    }
+    delete filters.task
+    delete filters.paymentType
+    // delete filters.isDeletedPayment
+    delete filters.from
+    delete filters.to
+
+
+    let docs;
+    console.log(filters)
+    console.log(query)
+    if (queryFiltersAndOptions.allowPagination)
+    {
+      docs = await (this.paymentModel as PaginateModel<PaymentDocument>).paginate(
+        // here we can but any option to to query like sort
+        {
+          filters,
+          ...query
+        },
+        {
+          ...options,
+          // populate: ['group', 'university']
+        }
+      );
+    } else
+    {
+      docs = await this.paymentModel.find({
+        filters,
+        ...query
+      },)
+      // .populate(['group', 'university'])
+    }
+    return docs;
+  }
+
+
+
+
+
 }

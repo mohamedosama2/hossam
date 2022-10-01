@@ -54,6 +54,12 @@ export class Payment
 
   @Prop({ type: Date, required: true })
   recieveTime: Date;
+
+  @Prop({
+    type: Boolean, default: false
+  })
+  isDeletedPayment?: boolean;
+
 }
 
 const PaymentSchema = SchemaFactory.createForClass(Payment);

@@ -39,6 +39,12 @@ export class FilterQueryTasks
   state?: State;
 
   @IsOptional()
+  @IsEnum({})
+  isDeletedTask?: boolean;
+
+
+
+  @IsOptional()
   // @Transform(({ obj }) =>
   // {
   //   return new RegExp(escapeRegExp(obj.nameEn), 'i');

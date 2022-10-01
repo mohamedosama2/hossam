@@ -1,15 +1,19 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsMongoId,
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import
+  {
+    IsArray,
+    IsBoolean,
+    IsMongoId,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    ValidateNested,
+  } from 'class-validator';
 import { IsNonPrimitiveArray } from 'src/utils/custumValidationDecorator';
 
-export class CreateGroupDto {
+export class CreateGroupDto
+{
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -22,9 +26,17 @@ export class CreateGroupDto {
   @IsNonPrimitiveArray()
   @Type(() => CreateStudentGroupDto)
   students: CreateStudentGroupDto[];
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiHideProperty()
+  enable: boolean;
+
+
 }
 
-export class CreateStudentGroupDto {
+export class CreateStudentGroupDto
+{
   @IsMongoId()
   student: string;
 

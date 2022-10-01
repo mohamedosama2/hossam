@@ -8,7 +8,8 @@ import { User } from 'src/users/models/_user.model';
 export type GroupDocument = Group & Document;
 
 @Schema({ timestamps: true })
-export class Group {
+export class Group
+{
   @Prop({ type: String, required: true })
   name: string;
 
@@ -32,6 +33,11 @@ export class Group {
     ]),
   )
   students: Record<string, any>[];
+
+  @Prop({
+    type: Boolean, default: true
+  })
+  enable?: boolean;
 }
 const GroupSchema = SchemaFactory.createForClass(Group);
 
