@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import
-  {
-    FilterQuery,
-    Model,
-    PaginateModel,
-    PaginateOptions,
-    PaginateResult,
-  } from 'mongoose';
+{
+  FilterQuery,
+  Model,
+  PaginateModel,
+  PaginateOptions,
+  PaginateResult,
+} from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
 import * as _ from 'lodash';
@@ -142,6 +142,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'nameAr',
       'group',
       'isDeletedTask',
+      'isAdminTask'
     ]);
     console.log('here');
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
@@ -156,6 +157,16 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,
       }),
+
+      ...(queryFiltersAndOptions.isDeletedTask !== null &&
+        queryFiltersAndOptions.isDeletedTask !== undefined &&
+        { isDeletedTask: queryFiltersAndOptions.isDeletedTask == 'true' as any ? true : false }),
+
+      ...(queryFiltersAndOptions.isAdminTask !== null &&
+        queryFiltersAndOptions.isAdminTask !== undefined &&
+        { isAdminTask: queryFiltersAndOptions.isAdminTask == 'true' as any ? true : false }),
+
+
       // ...{
       //   isDeletedTask: queryFiltersAndOptions.isDeletedTask,
       // },

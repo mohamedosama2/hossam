@@ -4,9 +4,14 @@ import { Document, Model, ObjectId, AcceptsDiscriminator } from 'mongoose';
 export type UniversityDocument = University & Document;
 
 @Schema({ timestamps: true })
-export class University {
+export class University
+{
   id?: string;
 
+  @Prop({
+    type: Boolean, default: true
+  })
+  enable?: boolean;
   @Prop({ type: String, required: true })
   photo: string;
 

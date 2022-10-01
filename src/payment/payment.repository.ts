@@ -384,12 +384,12 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
       'limit',
     ]);
     let query = {
-      // ...(queryFiltersAndOptions.isDeletedPayment !== null &&
-      //   queryFiltersAndOptions.isDeletedPayment !== undefined &&
-      //   { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? true : false }),
-
       ...(queryFiltersAndOptions.isDeletedPayment !== null &&
-        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment }),
+        queryFiltersAndOptions.isDeletedPayment !== undefined &&
+        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? true : false }),
+
+      // ...(queryFiltersAndOptions.isDeletedPayment &&
+      //   { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment }),
 
 
       ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
@@ -403,7 +403,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     }
     delete filters.task
     delete filters.paymentType
-    // delete filters.isDeletedPayment
+    delete filters.isDeletedPayment
     delete filters.from
     delete filters.to
 

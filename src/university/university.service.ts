@@ -39,7 +39,7 @@ export class UniversityService
     const universities =
       await this.UniversityRepository.findAllWithPaginationOption(
         queryFiltersAndOptions,
-        ['nameAr', 'nameEn'],
+        ['nameAr', 'nameEn', 'enable'],
       );
     return universities;
   }

@@ -1,19 +1,32 @@
 import { IsBoolean, IsEnum, IsMongoId, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { escapeRegExp } from 'lodash';
-import {
+import
+{
   AggregationOpptionsDto,
   PaginationParams,
 } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
 import { State } from 'src/tasks/models/task.model';
 
-export class FilterQueryTasksUpdated {
+export class FilterQueryTasksUpdated
+{
   @IsOptional()
-  @Transform(({ obj }) => {
-    return JSON.parse(obj.isDeletedTask);
-  })
-  isDeletedTask?: boolean = false;
+  // @IsBoolean()
+  // @Transform(({ obj }) =>
+  // {
+  //   return JSON.parse(obj.isDeletedTask);
+  // })
+  isDeletedTask?: string;
+
+  @IsOptional()
+  // @IsBoolean()
+  // @Transform(({ obj }) =>
+  // {
+  //   return JSON.parse(obj.isDeletedTask);
+  // })
+  isAdminTask?: string;
+
 
   @IsOptional()
   @IsMongoId()
@@ -42,13 +55,15 @@ export class FilterQueryTasksUpdated {
   state?: State;
 
   @IsOptional()
-  @Transform(({ obj }) => {
+  @Transform(({ obj }) =>
+  {
     return new RegExp(escapeRegExp(obj.nameEn), 'i');
   })
   nameEn?: string;
 
   @IsOptional()
-  @Transform(({ obj }) => {
+  @Transform(({ obj }) =>
+  {
     return new RegExp(escapeRegExp(obj.nameAr), 'i');
   })
   nameAr?: string;
@@ -57,4 +72,4 @@ export class FilterQueryTasksUpdated {
 export class FilterQueryOptionsTasks extends IntersectionType(
   FilterQueryTasksUpdated,
   PaginationParams,
-) {}
+) { }

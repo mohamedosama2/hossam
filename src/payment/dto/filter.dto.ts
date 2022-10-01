@@ -1,6 +1,7 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
+import
+{
   IsBoolean,
   IsEnum,
   IsMongoId,
@@ -11,7 +12,8 @@ import { escapeRegExp } from 'lodash';
 import { PaginationParams } from 'src/utils/pagination/paginationParams.dto';
 import { PaymentType } from '../models/payment.model';
 
-export class FilterQueryPayment {
+export class FilterQueryPayment
+{
   @IsOptional()
   @IsMongoId()
   task?: string;
@@ -27,13 +29,13 @@ export class FilterQueryPayment {
   paymentType?: PaymentType;
 
   @IsOptional()
-  @Transform(({ obj }) => {
-    return JSON.parse(obj.isDeletedPayment);
-  })
-  isDeletedPayment?: boolean;
+  // @Transform(({ obj }) => {
+  //   return JSON.parse(obj.isDeletedPayment);
+  // })
+  isDeletedPayment?: string;
 }
 
 export class FilterQueryOptionsPayment extends IntersectionType(
   FilterQueryPayment,
   PaginationParams,
-) {}
+) { }
