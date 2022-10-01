@@ -160,11 +160,11 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
 
       ...(queryFiltersAndOptions.isDeletedTask !== null &&
         queryFiltersAndOptions.isDeletedTask !== undefined &&
-        { isDeletedTask: queryFiltersAndOptions.isDeletedTask == 'true' as any ? true : false }),
+        { isDeletedTask: queryFiltersAndOptions.isDeletedTask == 'true' as any ? { $ne: false, $exists: true } : { $ne: true } }),
 
       ...(queryFiltersAndOptions.isAdminTask !== null &&
         queryFiltersAndOptions.isAdminTask !== undefined &&
-        { isAdminTask: queryFiltersAndOptions.isAdminTask == 'true' as any ? true : false }),
+        { isAdminTask: queryFiltersAndOptions.isAdminTask == 'true' as any ? { $ne: false } : { $ne: true } }),
 
 
       // ...{

@@ -385,8 +385,8 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     ]);
     let query = {
       ...(queryFiltersAndOptions.isDeletedPayment !== null &&
-        queryFiltersAndOptions.isDeletedPayment !== undefined &&
-        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? true : false }),
+        // queryFiltersAndOptions.isDeletedPayment !== undefined &&
+        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? { $ne: false } : { $ne: true } }),
 
       // ...(queryFiltersAndOptions.isDeletedPayment &&
       //   { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment }),
