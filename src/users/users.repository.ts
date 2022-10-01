@@ -110,14 +110,14 @@ export class UserRepository extends BaseAbstractRepository<User> {
       'limit',
     ]);
     let query = {
-      // ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
-      //   && {
-      //   'taskManager.id': queryFiltersAndOptions.teamMember,
+    // ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
+    //   && {
+    //   'taskManager.id': queryFiltersAndOptions.teamMember,
 
-      // }),
-      // ...(me.role === UserRole.teamMember && {
-      //   'taskManager.id': me._id,
-      // }),
+    // }),
+    // ...(me.role === UserRole.teamMember && {
+    //   'taskManager.id': me._id,
+    // }),
       ...(queryFiltersAndOptions.username && {
         username: {
           $regex: `.*${queryFiltersAndOptions.username}.*`,

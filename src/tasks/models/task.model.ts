@@ -7,25 +7,21 @@ import { User } from 'src/users/models/_user.model';
 
 export type TaskDocument = Task & Document;
 
-export enum State
-{
+export enum State {
   PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
   COMPLETED = 'COMPLETED',
 }
-export class Manager
-{
+export class Manager {
   @Prop({ type: String, required: true })
   id?: string;
 
   @Prop()
   name?: string;
-
 }
 
 @Schema({ timestamps: true })
-export class Task
-{
+export class Task {
   id?: string;
 
   @Prop({
@@ -77,13 +73,11 @@ export class Task
   isAdminTask?: boolean;
 
   @Prop({
-    type: Boolean, default: false
+    type: Boolean,
+    default: false,
   })
   isDeletedTask?: boolean;
-
-
 }
-
 
 const TaskSchema = SchemaFactory.createForClass(Task);
 

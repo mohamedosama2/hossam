@@ -55,8 +55,6 @@ export abstract class BaseAbstractRepository<T> {
       'page',
       'limit',
     ]);
-    console.log(filters)
-    console.log(options)
 
     let docs;
     if (queryFiltersAndOptions.allowPagination) {

@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PaginateModel, PaginateOptions, PaginateResult } from 'mongoose';
+import {
+  FilterQuery,
+  Model,
+  PaginateModel,
+  PaginateOptions,
+  PaginateResult,
+} from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
 import * as _ from 'lodash';
-import * as moment from "moment"
+import * as moment from 'moment';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { UserDocument, UserRole } from 'src/users/models/_user.model';
 var ObjectId = require('mongodb').ObjectId;
-
 
 /* function addDays(days) {
   var date = new Date(this.valueOf());
@@ -18,13 +23,11 @@ var ObjectId = require('mongodb').ObjectId;
  */
 @Injectable()
 export class TaskRepository extends BaseAbstractRepository<Task> {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>)
-  {
+  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {
     super(taskModel);
   }
 
-  async getTasksProgress()
-  {
+  async getTasksProgress() {
     console.log(new Date());
     const tasksInProgress = await this.taskModel.countDocuments({
       endDate: { $lte: new Date() },
@@ -35,8 +38,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return { tasksInProgress, tasksFinished };
   }
 
-  async getHone(date: Date, @AuthUser() me: UserDocument,)
-  {
+  async getHone(date: Date, @AuthUser() me: UserDocument) {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
     return await this.taskModel.aggregate([
@@ -69,8 +71,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     ]);
   }
 
-  async getWeek(date: Date, @AuthUser() me: UserDocument)
-  {
+  async getWeek(date: Date, @AuthUser() me: UserDocument) {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
     /*  console.log(date); */
@@ -104,8 +105,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       },
     ]);
   }
-  async findPopulatedTask(taskId: string)
-  {
+  async findPopulatedTask(taskId: string) {
     const task = await this.taskModel.findOne({ _id: taskId }).populate({
       path: 'group',
       populate: {
@@ -118,13 +118,11 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return task;
   }
 
-
   public async findAllWithPaginationCustome(
     @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
-  ): Promise<TaskDocument[]>
-  {
-    console.log(queryFiltersAndOptions)
+  ): Promise<TaskDocument[]> {
+    console.log(queryFiltersAndOptions);
 
     let filters: FilterQuery<TaskDocument> = _.pick(queryFiltersAndOptions, [
       'university',
@@ -136,102 +134,119 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'nameEn',
       'nameAr',
       'group',
-      'isDeletedTask'
+      'isDeletedTask',
     ]);
-    console.log('here')
+    console.log('here');
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
       'page',
       'limit',
     ]);
     let query = {
-      ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
-        && {
-        'taskManager.id': queryFiltersAndOptions.teamMember,
-
-      }),
+      ...(me.role === 'admin' &&
+        queryFiltersAndOptions.teamMember && {
+          'taskManager.id': queryFiltersAndOptions.teamMember,
+        }),
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,
       }),
-      ...(queryFiltersAndOptions.isDeletedTask !== null &&
-        queryFiltersAndOptions.isDeletedTask !== undefined &&
-        { isDeletedTask: queryFiltersAndOptions.isDeletedTask == 'true' as any ? true : false }),
+      ...{
+        isDeletedTask: queryFiltersAndOptions.isDeletedTask,
+      },
 
       ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
         createdAt: {
-          ...(queryFiltersAndOptions.from && { $gte: moment(queryFiltersAndOptions.from).utc().startOf('d').toDate(), }),
-          ...(queryFiltersAndOptions.to && { $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(), })
-        }
+          ...(queryFiltersAndOptions.from && {
+            $gte: moment(queryFiltersAndOptions.from)
+              .utc()
+              .startOf('d')
+              .toDate(),
+          }),
+          ...(queryFiltersAndOptions.to && {
+            $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(),
+          }),
+        },
       }),
       ...(queryFiltersAndOptions.nameEn && {
-
-        "nameEn": { $regex: `.*${queryFiltersAndOptions.nameEn}.*`, $options: "i" }
-
+        nameEn: {
+          $regex: `.*${queryFiltersAndOptions.nameEn}.*`,
+          $options: 'i',
+        },
       }),
       ...(queryFiltersAndOptions.nameAr && {
-        "nameAr": { $regex: `.*${queryFiltersAndOptions.nameAr}.*`, $options: "i" }
+        nameAr: {
+          $regex: `.*${queryFiltersAndOptions.nameAr}.*`,
+          $options: 'i',
+        },
       }),
-      ...(queryFiltersAndOptions.group && { group: ObjectId(queryFiltersAndOptions.group) }),
-      ...(queryFiltersAndOptions.teamMember && { 'taskManager.id': ObjectId(queryFiltersAndOptions.teamMember) }),
-      ...(queryFiltersAndOptions.subject && { subject: ObjectId(queryFiltersAndOptions.subject) }),
-      ...(queryFiltersAndOptions.university && { university: ObjectId(queryFiltersAndOptions.university) }),
-      ...(queryFiltersAndOptions.state && { state: queryFiltersAndOptions.state }),
-    }
-    delete filters.subject
-    delete filters.nameAr
-    delete filters.nameEn
-    delete filters.state
-    delete filters.university
-    delete filters.group
-    delete filters.teamMember
-    delete filters.from
-    delete filters.to
-    delete filters.isDeletedTask
-
+      ...(queryFiltersAndOptions.group && {
+        group: ObjectId(queryFiltersAndOptions.group),
+      }),
+      ...(queryFiltersAndOptions.teamMember && {
+        'taskManager.id': ObjectId(queryFiltersAndOptions.teamMember),
+      }),
+      ...(queryFiltersAndOptions.subject && {
+        subject: ObjectId(queryFiltersAndOptions.subject),
+      }),
+      ...(queryFiltersAndOptions.university && {
+        university: ObjectId(queryFiltersAndOptions.university),
+      }),
+      ...(queryFiltersAndOptions.state && {
+        state: queryFiltersAndOptions.state,
+      }),
+    };
+    delete filters.subject;
+    delete filters.nameAr;
+    delete filters.nameEn;
+    delete filters.state;
+    delete filters.university;
+    delete filters.group;
+    delete filters.teamMember;
+    delete filters.from;
+    delete filters.to;
+    delete filters.isDeletedTask;
 
     let docs;
-    console.log(filters)
-    console.log(query)
-    if (queryFiltersAndOptions.allowPagination)
-    {
+    console.log(filters);
+    console.log(query);
+    if (queryFiltersAndOptions.allowPagination) {
       docs = await (this.taskModel as PaginateModel<TaskDocument>).paginate(
         // here we can but any option to to query like sort
         {
           filters,
-          ...query
+          ...query,
         },
         {
           ...options,
-          populate: ['group', 'university']
-        }
+          populate: ['group', 'university'],
+        },
       );
-    } else
-    {
-      docs = await this.taskModel.find({
-        filters,
-        ...query
-      },).populate(['group', 'university'])
+    } else {
+      docs = await this.taskModel
+        .find({
+          filters,
+          ...query,
+        })
+        .populate(['group', 'university']);
     }
     return docs;
   }
 
-  public async allTeamMemberMony(tramMember: string)
-  {
+  public async allTeamMemberMony(tramMember: string) {
     let stages = [
-
       {
         $match: {
-          "taskManager.id": ObjectId(tramMember)
-        }
+          'taskManager.id': ObjectId(tramMember),
+        },
       },
       {
         $group: {
           _id: null,
-          totalmony: { $sum: "$totalPrice" }
-        }
-      }
-    ]
-    console.log(stages)
-    let mony = await this.taskModel.aggregate(stages)
-    return mony[0]
+          totalmony: { $sum: '$totalPrice' },
+        },
+      },
+    ];
+    console.log(stages);
+    let mony = await this.taskModel.aggregate(stages);
+    return mony[0];
   }
 }
