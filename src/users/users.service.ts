@@ -49,34 +49,40 @@ export class UsersService
     return docs;
   }
 
-  async findAll(FilterQueryOptionsUser: FilterQueryOptionsUser,)
-  {
-    return await this.userRepository.findAllWithPaginationCustome(
-      FilterQueryOptionsUser,
-      // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
-      // { populate: ['group', 'university'] },
-    );
-  }
-
-
-
-  // async findAll(
-  //   queryFiltersAndOptions: FilterQueryOptionsUser,
-  // ): Promise<PaginateResult<UserDocument> | UserDocument[]>
+  // async findAll(FilterQueryOptionsUser: FilterQueryOptionsUser,)
   // {
-  //   const users = await this.userRepository.findAllWithPaginationOption(
-  //     queryFiltersAndOptions,
-  //     ['username', 'role', 'university'],
-  //     {
-  //       populate: {
-  //         path: 'university',
-  //         select: { nameAr: 1, nameEn: 1, _id: 1 },
-  //       },
-  //     },
+  //   return await this.userRepository.findAllWithPaginationCustome(
+  //     FilterQueryOptionsUser,
+  //     // ['university', 'subject', 'state', 'teamMember', 'nameAr', 'nameEn'],
+  //     // { populate: ['group', 'university'] },
   //   );
-
-  //   return users;
   // }
+
+
+  async findAll(
+    queryFiltersAndOptions: FilterQueryOptionsUser,
+  ): Promise<PaginateResult<UserDocument> | UserDocument[]>
+  {
+    if (queryFiltersAndOptions.university)
+    {
+      queryFiltersAndOptions.role =
+        queryFiltersAndOptions.role === undefined
+          ? UserRole.STUDENT
+          : queryFiltersAndOptions.role;
+    }
+    const users = await this.userRepository.findAllWithPaginationOption(
+      queryFiltersAndOptions,
+      ['username', 'usernameAr', 'role', 'university'],
+      {
+        populate: {
+          path: 'university',
+          select: { nameAr: 1, nameEn: 1, _id: 1 },
+        },
+      },
+    );
+
+    return users;
+  }
 
   async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument>
   {

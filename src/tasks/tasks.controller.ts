@@ -35,7 +35,6 @@ export class TasksController
   @Post('/add')
   async create(@Body() createTaskDto: CreateTaskDto)
   {
-    console.log('here')
     let manager = await this.usersService.findOne({ _id: createTaskDto.taskManager.id })
     if (!manager) throw new NotFoundException('user not found')
     createTaskDto.taskManager.id = manager._id

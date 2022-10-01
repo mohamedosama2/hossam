@@ -58,22 +58,19 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 as: 'task',
               },
             },
+            /*  {
+              $lookup: {
+                from: 'users',
+                localField: 'byWhom',
+                foreignField: '_id',
+                as: 'byWhom',
+              },
+            }, */
             {
               $unwind: {
-                path: '$task',//+ preserveNullAndEmptyArrays: true
-              }
+                path: '$task', //+ preserveNullAndEmptyArrays: true
+              },
             },
-            // {
-            //   $project: {
-            //     'task.nameEn': 1,
-            //     'task.nameAr': 1,
-            //     'task.createdAt': 1,
-            //     'task.totalPrice': 1,
-            //     'task.state ': 1,
-            //     'task.endDate': 1,
-
-            //   }
-            // }
           ],
           subject: [
             { $limit: 1 },
@@ -100,9 +97,9 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               $project: {
                 'subject.nameEn': 1,
                 'subject.nameAr': 1,
-                'subject.semester': 1
-              }
-            }
+                'subject.semester': 1,
+              },
+            },
           ],
           university: [
             { $limit: 1 },
@@ -123,18 +120,19 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 as: 'university',
               },
             },
-            { $unwind: { path: '$university', preserveNullAndEmptyArrays: true } },
+            {
+              $unwind: {
+                path: '$university',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
 
             {
               $project: {
                 'university.nameEn': 1,
                 'university.nameAr': 1,
-
-
-
-
-              }
-            }
+              },
+            },
           ],
           group: [
             { $limit: 1 },
@@ -156,7 +154,12 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
               },
             },
             { $unwind: { path: '$group', preserveNullAndEmptyArrays: true } },
-            { $unwind: { path: '$group.students', preserveNullAndEmptyArrays: true } },
+            {
+              $unwind: {
+                path: '$group.students',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
             {
               $lookup: {
                 from: 'users',
@@ -165,15 +168,19 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 as: 'group.students.student',
               },
             },
-            { $unwind: { path: '$group.students.student', preserveNullAndEmptyArrays: true } },
+            {
+              $unwind: {
+                path: '$group.students.student',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
             {
               $project: {
-
                 'group.students.student.username': 1,
                 'group.students.student.phone': 1,
                 'group.students.isTeamLeader': 1,
-              }
-            }
+              },
+            },
           ],
           paymentDetails: [
             {
@@ -224,11 +231,11 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 from: 'groups',
                 localField: 'task.group',
                 foreignField: '_id',
-                as: 'group',
+                as: 'task.group',
               },
             },
-            { $unwind: { path: '$group' } },
-            {
+            /* { $unwind: { path: '$task.group',preserveNullAndEmptyArrays: true  } }, */
+            /* {
               $project: {
                 byWhom: 1,
                 paid: 1,
@@ -248,7 +255,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                   ],
                 },
               },
-            },
+            }, */
           ],
         },
       },
@@ -258,7 +265,12 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   async findTaskDetailsTeam(taskId: string)
   {
     const taskDeatils = await this.paymentModel.aggregate([
-      { $match: { 'teamMember': ObjectId(taskId), paymentType: PaymentType.REVENUSE } },
+      {
+        $match: {
+          teamMember: ObjectId(taskId),
+          paymentType: PaymentType.REVENUSE,
+        },
+      },
 
       {
         $facet: {
@@ -327,29 +339,28 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         },
       },
     ]);
-    console.log()
+    console.log();
     return taskDeatils;
   }
   public async allTeamMemberMony(tramMember: string)
   {
     let stages = [
-
       {
         $match: {
           teamMember: ObjectId(tramMember),
-          paymentType: PaymentType.EXPENSIS
-        }
+          paymentType: PaymentType.EXPENSIS,
+        },
       },
       {
         $group: {
           _id: null,
-          totalExpensis: { $sum: "$paid" }
-        }
-      }
-    ]
-    console.log(stages)
-    let mony = await this.paymentModel.aggregate(stages)
-    return mony[0]
+          totalExpensis: { $sum: '$paid' },
+        },
+      },
+    ];
+    console.log(stages);
+    let mony = await this.paymentModel.aggregate(stages);
+    return mony[0];
   }
 
 
