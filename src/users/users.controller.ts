@@ -171,7 +171,7 @@ export class UsersController
     return newUser;
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.teamMember)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   @Patch('update-teamMember/:id')
@@ -180,8 +180,13 @@ export class UsersController
     @UploadedFiles()
     files,
     @Param() { id }: ParamsWithId,
+
   )
   {
+    if ((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
+    {
+      throw new BadRequestException('not allow !!')
+    }
     let user = await this.UserRepository.findOne({
       role: UserRole.teamMember,
       $or: [

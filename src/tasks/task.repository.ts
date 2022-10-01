@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  FilterQuery,
-  Model,
-  PaginateModel,
-  PaginateOptions,
-  PaginateResult,
-} from 'mongoose';
+import
+  {
+    FilterQuery,
+    Model,
+    PaginateModel,
+    PaginateOptions,
+    PaginateResult,
+  } from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
 import * as _ from 'lodash';
@@ -23,11 +24,13 @@ var ObjectId = require('mongodb').ObjectId;
  */
 @Injectable()
 export class TaskRepository extends BaseAbstractRepository<Task> {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {
+  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>)
+  {
     super(taskModel);
   }
 
-  async getTasksProgress() {
+  async getTasksProgress()
+  {
     console.log(new Date());
     const tasksInProgress = await this.taskModel.countDocuments({
       endDate: { $lte: new Date() },
@@ -38,7 +41,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return { tasksInProgress, tasksFinished };
   }
 
-  async getHone(date: Date, @AuthUser() me: UserDocument) {
+  async getHone(date: Date, @AuthUser() me: UserDocument)
+  {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
     return await this.taskModel.aggregate([
@@ -71,7 +75,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     ]);
   }
 
-  async getWeek(date: Date, @AuthUser() me: UserDocument) {
+  async getWeek(date: Date, @AuthUser() me: UserDocument)
+  {
     let strartDate = new Date(date);
     const endDate = date.setDate(date.getDate() + 30);
     /*  console.log(date); */
@@ -105,7 +110,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       },
     ]);
   }
-  async findPopulatedTask(taskId: string) {
+  async findPopulatedTask(taskId: string)
+  {
     const task = await this.taskModel.findOne({ _id: taskId }).populate({
       path: 'group',
       populate: {
@@ -121,7 +127,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
   public async findAllWithPaginationCustome(
     @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
-  ): Promise<TaskDocument[]> {
+  ): Promise<TaskDocument[]>
+  {
     console.log(queryFiltersAndOptions);
 
     let filters: FilterQuery<TaskDocument> = _.pick(queryFiltersAndOptions, [
@@ -144,14 +151,14 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     let query = {
       ...(me.role === 'admin' &&
         queryFiltersAndOptions.teamMember && {
-          'taskManager.id': queryFiltersAndOptions.teamMember,
-        }),
+        'taskManager.id': queryFiltersAndOptions.teamMember,
+      }),
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,
       }),
-      ...{
-        isDeletedTask: queryFiltersAndOptions.isDeletedTask,
-      },
+      // ...{
+      //   isDeletedTask: queryFiltersAndOptions.isDeletedTask,
+      // },
 
       ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
         createdAt: {
@@ -208,7 +215,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     let docs;
     console.log(filters);
     console.log(query);
-    if (queryFiltersAndOptions.allowPagination) {
+    if (queryFiltersAndOptions.allowPagination)
+    {
       docs = await (this.taskModel as PaginateModel<TaskDocument>).paginate(
         // here we can but any option to to query like sort
         {
@@ -220,7 +228,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
           populate: ['group', 'university'],
         },
       );
-    } else {
+    } else
+    {
       docs = await this.taskModel
         .find({
           filters,
@@ -231,7 +240,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     return docs;
   }
 
-  public async allTeamMemberMony(tramMember: string) {
+  public async allTeamMemberMony(tramMember: string)
+  {
     let stages = [
       {
         $match: {
