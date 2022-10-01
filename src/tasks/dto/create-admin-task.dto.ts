@@ -1,73 +1,67 @@
-import { Type } from 'class-transformer'
+import { Type } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
-;
-import
-{
-    IsBoolean,
-    IsDate,
-    IsEnum,
-    IsMongoId,
-    IsNotEmpty,
-    IsNotEmptyObject,
-    IsNumber,
-    IsObject,
-    IsOptional,
-    IsString,
-    ValidateNested,
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
 import { State } from '../models/task.model';
 
-export class TaskManagerDto 
-{
-    @IsString()
-    @IsOptional()
-    id?: string;
+export class TaskManagerDto {
+  @IsString()
+  @IsOptional()
+  id?: string;
 
-    @IsString()
-    @IsOptional()
-    @ApiHideProperty()
-    name?: string;
+  @IsString()
+  @IsOptional()
+  @ApiHideProperty()
+  name?: string;
 }
-export class CreateAdminTaskDto
-{
+export class CreateAdminTaskDto {
+  @IsBoolean()
+  @IsOptional()
+  @ApiHideProperty()
+  isDeletedTask: boolean;
 
-    @IsBoolean()
-    @IsOptional()
-    @ApiHideProperty()
-    isDeletedTask: boolean;
+  @IsString()
+  @IsNotEmpty()
+  nameEn: string;
 
-    @IsString()
-    @IsNotEmpty()
-    nameEn: string;
+  @IsString()
+  @IsNotEmpty()
+  nameAr: string;
 
-    @IsBoolean()
-    @IsOptional()
-    @ApiHideProperty()
-    isAdminTask: boolean;
+  @IsBoolean()
+  @IsOptional()
+  @ApiHideProperty()
+  isAdminTask: boolean;
 
+  @IsOptional()
+  @ApiHideProperty()
+  @Type(() => TaskManagerDto)
+  taskManager?: TaskManagerDto;
 
-    @IsOptional()
-    @ApiHideProperty()
-    @Type(() => TaskManagerDto)
-    taskManager?: TaskManagerDto;
+  @IsDate()
+  date: Date;
 
+  @IsDate()
+  startDate: Date;
 
-    @IsDate()
-    date: Date;
-
-
-    @IsDate()
-    startDate: Date;
-
-    @IsDate()
-    endDate: Date;
+  @IsDate()
+  endDate: Date;
 
 
 }
-
-
 
 /* 
 ex
