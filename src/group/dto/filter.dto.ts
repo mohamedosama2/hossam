@@ -1,22 +1,29 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { escapeRegExp } from 'lodash';
 import { PaginationParams } from 'src/utils/pagination/paginationParams.dto';
 
-export class FilterQueryGroup
-{
+export class FilterQueryGroup {
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.name), 'i');
   })
   name?: string;
 
   @IsOptional()
+  @IsMongoId()
+  university?: string;
+
+  @IsOptional()
   @IsBoolean()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return JSON.parse(obj.enable);
   })
   enable?: boolean;
@@ -25,4 +32,4 @@ export class FilterQueryGroup
 export class FilterQueryOptionsGroup extends IntersectionType(
   FilterQueryGroup,
   PaginationParams,
-) { }
+) {}
