@@ -18,10 +18,8 @@ export class GroupService
   async create(createGroupDto: CreateGroupDto)
   {
     let ids = createGroupDto.students.map((doc) => { return doc.student })
-
-    console.log(ids)
     let validateStudent = await this.usersService.getCustomeDocs(ids as [])
-    for (let i = 0; validateStudent.length; i++)
+    for (let i = 0; i < validateStudent.length; i++)
     {
       if (validateStudent[i].enabled === false)
       {
