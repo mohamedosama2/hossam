@@ -1,4 +1,10 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PaginateResult } from 'mongoose';
 import { UsersService } from 'src/users/users.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -8,22 +14,21 @@ import { GroupRepository } from './group.repository';
 import { GroupDocument } from './models/group.model';
 
 @Injectable()
-export class GroupService
-{
+export class GroupService {
   constructor(
     private readonly GroupRepository: GroupRepository,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
-  ) { }
-  async create(createGroupDto: CreateGroupDto)
-  {
-    let ids = createGroupDto.students.map((doc) => { return doc.student })
-    let validateStudent = await this.usersService.getCustomeDocs(ids as [])
-    for (let i = 0; i < validateStudent.length; i++)
-    {
-      if (validateStudent[i].enabled === false)
-      {
-        throw new BadRequestException('user desabled !!')
+    private readonly usersService: UsersService,
+  ) {}
+  async create(createGroupDto: CreateGroupDto) {
+    let ids = createGroupDto.students.map((doc) => {
+      return doc.student;
+    });
+    let validateStudent = await this.usersService.getCustomeDocs(ids as []);
+    console.log(validateStudent);
+    for (let i = 0; i < validateStudent.length; i++) {
+      if (validateStudent[i].enabled === false) {
+        throw new BadRequestException('user desabled !!');
       }
     }
 
@@ -32,18 +37,16 @@ export class GroupService
 
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsGroup,
-  ): Promise<PaginateResult<GroupDocument> | GroupDocument[]>
-  {
+  ): Promise<PaginateResult<GroupDocument> | GroupDocument[]> {
     const groups = await this.GroupRepository.findAllWithPaginationOption(
       queryFiltersAndOptions,
-      ['name', 'enable'],
+      ['name', 'enable', 'university'],
       { populate: ['students.student', 'university'] },
     );
     return groups;
   }
 
-  async findOne(_id: string)
-  {
+  async findOne(_id: string) {
     const isExisted = await this.GroupRepository.findOne(
       { _id },
       {
@@ -57,22 +60,19 @@ export class GroupService
     return isExisted;
   }
 
-  async update(_id: string, updateGroupDto: UpdateGroupDto)
-  {
+  async update(_id: string, updateGroupDto: UpdateGroupDto) {
     await this.findOne(_id);
     return await this.GroupRepository.updateOne({ _id }, updateGroupDto);
   }
 
-  async remove(_id: string)
-  {
+  async remove(_id: string) {
     await this.findOne(_id);
     return await this.GroupRepository.updateOne({ _id }, { enable: false });
 
     // return await this.GroupRepository.deleteOne({ _id });
   }
 
-  async removeStudent(_id: string)
-  {
+  async removeStudent(_id: string) {
     await this.GroupRepository.pullStudent(_id);
   }
 }

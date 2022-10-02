@@ -185,16 +185,10 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
         },
       }),
       ...(queryFiltersAndOptions.nameEn && {
-        nameEn: {
-          $regex: `.*${queryFiltersAndOptions.nameEn}.*`,
-          $options: 'i',
-        },
+        nameEn: queryFiltersAndOptions.nameEn,
       }),
       ...(queryFiltersAndOptions.nameAr && {
-        nameAr: {
-          $regex: `.*${queryFiltersAndOptions.nameAr}.*`,
-          $options: 'i',
-        },
+        nameAr: queryFiltersAndOptions.nameAr,
       }),
       ...(queryFiltersAndOptions.group && {
         group: ObjectId(queryFiltersAndOptions.group),
