@@ -81,11 +81,8 @@ export class CreateTaskDto
   endDate: Date;
 
   @IsOptional()
-  @IsNotEmptyObject()
-  @IsObject()
-  @ValidateNested()
   @Type(() => CreatePaymentTaskDto)
-  payment?: Record<string, any>;
+  payment?: CreatePaymentTaskDto[];
 }
 
 export class CreatePaymentTaskDto
