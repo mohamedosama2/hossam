@@ -421,7 +421,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         },
         {
           ...options,
-          // populate: ['group', 'university']
+          populate: ['byWhom', 'task']
         }
       );
     } else
@@ -430,12 +430,13 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         filters,
         ...query
       },)
-      // .populate(['group', 'university'])
+        .populate(['byWhom', 'task'])
     }
     return docs;
   }
 
-  async taskIndividualRemaining(byWhom: string, taskId: string) {
+  async taskIndividualRemaining(byWhom: string, taskId: string)
+  {
     console.log(byWhom, taskId);
     const remaining = await this.paymentModel.aggregate([
       {
