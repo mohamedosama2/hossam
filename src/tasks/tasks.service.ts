@@ -1,9 +1,9 @@
 import
-  {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
-  } from '@nestjs/common';
+{
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { QueryOptions } from 'mongoose';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { GroupService } from 'src/group/group.service';
@@ -17,6 +17,7 @@ import { UsersService } from 'src/users/users.service';
 import { CreatePaymentTaskDto, CreateTaskDto } from './dto/create-task.dto';
 import { FilterQueryOptionsTasks } from './dto/filter.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { State } from './models/task.model';
 import { TaskRepository } from './task.repository';
 
 @Injectable()
@@ -177,7 +178,13 @@ export class TasksService
 
   async deleteTask(id: string)
   {
-    let taskPayment = await this.PaymentService.findAndUpdateMany(id);
+
+    let task = await this.findOne(id)
+    // delete only payment of current or future tasks 
+    if (task.state !== State.COMPLETED)
+    {
+      let taskPayment = await this.PaymentService.findAndUpdateMany(id);
+    }
     return await this.TaskRepository.updateOne(
       { _id: id },
       { isDeletedTask: true },
