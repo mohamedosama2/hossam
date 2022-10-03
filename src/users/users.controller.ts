@@ -183,6 +183,10 @@ export class UsersController
 
   )
   {
+    console.log((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
+    console.log((this.req.me as UserDocument)._id)
+    console.log((this.req.me as UserDocument).role)
+
     if ((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
     {
       throw new BadRequestException('not allow !!')

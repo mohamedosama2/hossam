@@ -174,13 +174,13 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 preserveNullAndEmptyArrays: true,
               },
             },
-            {
-              $project: {
-                'group.students.student.username': 1,
-                'group.students.student.phone': 1,
-                'group.students.isTeamLeader': 1,
-              },
-            },
+            // {
+            //   $project: {
+            //     'group.students.student.username': 1,
+            //     'group.students.student.phone': 1,
+            //     'group.students.isTeamLeader': 1,
+            //   },
+            // },
           ],
           paymentDetails: [
             {
