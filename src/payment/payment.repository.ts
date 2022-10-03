@@ -421,7 +421,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         },
         {
           ...options,
-          populate: ['byWhom', 'task']
+          populate: ['byWhom', 'task', 'teamMember']
         }
       );
     } else
@@ -430,7 +430,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         filters,
         ...query
       },)
-        .populate(['byWhom', 'task'])
+        .populate(['byWhom', 'task', 'teamMember'])
     }
     return docs;
   }
