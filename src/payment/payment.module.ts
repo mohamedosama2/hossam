@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from './models/payment.model';
 import { PaymentRepository } from './payment.repository';
 import { TasksModule } from 'src/tasks/tasks.module';
+import { GroupModule } from 'src/group/group.module';
 
 @Module({
 
@@ -16,6 +17,7 @@ import { TasksModule } from 'src/tasks/tasks.module';
       },
     ]),
     forwardRef(() => TasksModule),
+    GroupModule
   ],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentRepository],
