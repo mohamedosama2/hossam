@@ -1,9 +1,9 @@
-import
-{
+import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { QueryOptions } from 'mongoose';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { GroupService } from 'src/group/group.service';
 import { NotificationService } from 'src/notification/notification.service';
@@ -19,8 +19,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskRepository } from './task.repository';
 
 @Injectable()
-export class TasksService
-{
+export class TasksService {
   constructor(
     private readonly TaskRepository: TaskRepository,
     private readonly PaymentService: PaymentService,
@@ -28,26 +27,21 @@ export class TasksService
     private readonly NotificationService: NotificationService,
     private readonly UserRepository: UserRepository,
     private readonly groupService: GroupService,
-  ) { }
-  async create(createTaskDto: CreateTaskDto)
-  {
+  ) {}
+  async create(createTaskDto: CreateTaskDto) {
     const payment = createTaskDto.payment as CreatePaymentTaskDto[];
     let task = await this.TaskRepository.create(createTaskDto);
     let group = await this.groupService.findOne(task.group);
-    if (payment)
-    {
-
-      console.log('created controller')
+    if (payment) {
+      console.log('created controller');
 
       console.log(createTaskDto.totalPrice);
       console.log(group.students.length);
       console.log(createTaskDto.totalPrice / group.students.length);
-      for (let i = 0; i < createTaskDto.payment.length; i++)
-      {
-        let payment = createTaskDto.payment[i]
+      for (let i = 0; i < createTaskDto.payment.length; i++) {
+        let payment = createTaskDto.payment[i];
 
-        if (payment.paid > createTaskDto.totalPrice / group.students.length)
-        {
+        if (payment.paid > createTaskDto.totalPrice / group.students.length) {
           throw new BadRequestException('paid greater than total price');
         }
         await this.PaymentService.create({
@@ -59,16 +53,13 @@ export class TasksService
         });
       }
     }
-    if (createTaskDto.group)
-    {
+    if (createTaskDto.group) {
       const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
       console.log(group.students);
       const tokens = [];
-      (group.students as any[]).forEach(({ student }) =>
-      {
+      (group.students as any[]).forEach(({ student }) => {
         console.log('St', student);
-        student.pushTokens.forEach(({ deviceToken }) =>
-        {
+        student.pushTokens.forEach(({ deviceToken }) => {
           /*  console.log('St2', deviceToken); */
           tokens.push({
             deviceToken: deviceToken ? deviceToken : 'testing',
@@ -88,19 +79,16 @@ export class TasksService
     }
     return task;
   }
-  async createAdmin(createTaskDto: CreateTaskDto)
-  {
+  async createAdmin(createTaskDto: CreateTaskDto) {
     // const payment = createTaskDto.payment as CreatePaymentTaskDto;
     let task = await this.TaskRepository.create(createTaskDto);
-    if (createTaskDto.taskManager)
-    {
+    if (createTaskDto.taskManager) {
       const admin = await this.usersService.findOne(createTaskDto.taskManager);
       console.log('inside notification', admin);
       const tokens = [];
 
       console.log('St', admin);
-      admin.pushTokens.forEach(({ deviceToken }) =>
-      {
+      admin.pushTokens.forEach(({ deviceToken }) => {
         /*  console.log('St2', deviceToken); */
         tokens.push({
           deviceToken: deviceToken ? deviceToken : 'testing',
@@ -118,8 +106,7 @@ export class TasksService
     }
     return task;
   }
-  async getHome(date: Date, @AuthUser() me: UserDocument)
-  {
+  async getHome(date: Date, @AuthUser() me: UserDocument) {
     const res = await this.TaskRepository.getTasksProgress();
     const studentRes = await this.UserRepository.coudeStudents();
     console.log(res, studentRes);
@@ -134,8 +121,7 @@ export class TasksService
   async findAll(
     FilterQueryOptionsTasks: FilterQueryOptionsTasks,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     return await this.TaskRepository.findAllWithPaginationCustome(
       me,
       FilterQueryOptionsTasks,
@@ -144,27 +130,23 @@ export class TasksService
     );
   }
 
-  async findOne(_id: string)
-  {
-    const isExisted = await this.TaskRepository.findOne({ _id });
+  async findOne(_id: string, options?: QueryOptions) {
+    const isExisted = await this.TaskRepository.findOne({ _id }, options);
     if (!isExisted) throw new NotFoundException();
     return isExisted;
   }
 
-  async teamMemberMony(teamMember: string)
-  {
+  async teamMemberMony(teamMember: string) {
     console.log('here');
     return await this.TaskRepository.allTeamMemberMony(teamMember);
   }
 
-  async update(_id: string, updateTaskDto: UpdateTaskDto)
-  {
+  async update(_id: string, updateTaskDto: UpdateTaskDto) {
     // await this.findOne(_id);
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto as any);
   }
 
-  async deleteTask(id: string)
-  {
+  async deleteTask(id: string) {
     let taskPayment = await this.PaymentService.findAndUpdateMany(id);
     return await this.TaskRepository.updateOne(
       { _id: id },
@@ -172,8 +154,7 @@ export class TasksService
     );
   }
 
-  async getWeek(date: Date, @AuthUser() me: UserDocument)
-  {
+  async getWeek(date: Date, @AuthUser() me: UserDocument) {
     return await this.TaskRepository.getWeek(date, me);
   }
 }

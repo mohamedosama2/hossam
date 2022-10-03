@@ -1,4 +1,4 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject,BadRequestException } from '@nestjs/common';
 import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -19,10 +19,42 @@ export class PaymentService
 
     private readonly PaymentRepository: PaymentRepository,
   ) { }
-  async create(createPaymentDto: CreatePaymentDto)
+  /* async create(createPaymentDto: CreatePaymentDto)
   {
     let task = await this.tasksService.findOne(createPaymentDto.task)
     createPaymentDto.teamMember = task.taskManager.id
+    return await this.PaymentRepository.create(createPaymentDto);
+  } */
+
+  async create(createPaymentDto: CreatePaymentDto) {
+    let task = await this.tasksService.findOne(createPaymentDto.task, {
+      populate: 'group',
+    });
+
+    console.log(task.totalPrice);
+    let studentsLength = task.group['students'].length
+      ? task.group['students'].length
+      : 1;
+    const taskIndividualPay = task.totalPrice / studentsLength;
+    const remaining = await this.PaymentRepository.taskIndividualRemaining(
+      createPaymentDto.byWhom,
+      task._id,
+    );
+    createPaymentDto.teamMember = task.taskManager.id;
+    if (remaining.length == 0) {
+      if (createPaymentDto.paid > taskIndividualPay) {
+        throw new BadRequestException(
+          ` want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
+        );
+      }
+      return await this.PaymentRepository.create(createPaymentDto);
+    }
+    if (remaining[0].allPaid + createPaymentDto.paid > taskIndividualPay) {
+      throw new BadRequestException(
+        `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
+      );
+    }
+
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
@@ -77,7 +109,8 @@ export class PaymentService
   }
 
 
-  findOne(id: number)
+}
+/*   findOne(id: number)
   {
     return `This action returns a #${id} payment`;
   }
@@ -90,5 +123,4 @@ export class PaymentService
   remove(id: number)
   {
     return `This action removes a #${id} payment`;
-  }
-}
+  } */
