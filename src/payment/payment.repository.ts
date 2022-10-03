@@ -435,6 +435,22 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     return docs;
   }
 
+  async taskIndividualRemaining(byWhom: string, taskId: string) {
+    console.log(byWhom, taskId);
+    const remaining = await this.paymentModel.aggregate([
+      {
+        $match: {
+          byWhom: new Types.ObjectId(byWhom),
+          task: taskId,
+        },
+      },
+      { $group: { _id: null, allPaid: { $sum: '$paid' } } },
+    ]);
+
+    console.log('REMAINING', remaining);
+    return remaining;
+  }
+
 
 
 
