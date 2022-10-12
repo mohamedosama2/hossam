@@ -78,6 +78,9 @@ export class CreateTaskDto
   startDate: Date;
 
   @IsDate()
+  deuDate: Date;
+
+  @IsDate()
   endDate: Date;
 
   @IsOptional()
