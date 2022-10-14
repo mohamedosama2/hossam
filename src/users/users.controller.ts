@@ -84,7 +84,7 @@ export class UsersController
     delete updateUserData.enabled;
 
     return await this.usersService.update(
-      { _id: id, role: UserRole.STUDENT } as FilterQuery<UserDocument>,
+      { _id: id, role: UserRole.STUDENT } as any,
       updateUserData,
     );
   }
@@ -157,9 +157,22 @@ export class UsersController
       ],
     });
     if (user)
-      throw new BadRequestException(
-        'phone,email and whatsapp should be unique',
-      );
+    {
+
+      if (user.email === registerationData.email)
+        throw new BadRequestException(
+          'email should be unique',
+        );
+      else if (user.phone === registerationData.phone)
+        throw new BadRequestException(
+          'phone should be unique',
+        );
+      else
+        throw new BadRequestException(
+          ' whatsapp should be unique',
+        );
+
+    }
     if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url;
 
@@ -174,47 +187,45 @@ export class UsersController
   @Roles(UserRole.ADMIN, UserRole.teamMember)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
-  @Patch('update-teamMember/:id')
-  async updateTeamMember(
-    @Body() registerationData: UpdateTeamMemberDto,
-    @UploadedFiles()
-    files,
+  @Patch('update-teamMember/:id/')
+  async updateMember(
+    @Body() updateUserData: UpdateTeamMemberDto,
     @Param() { id }: ParamsWithId,
-
-  )
+  ): Promise<UserDocument>
   {
-    console.log((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
-    console.log((this.req.me as UserDocument)._id)
-    console.log((this.req.me as UserDocument).role)
+    delete updateUserData.enabled;
 
-    if ((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
-    {
-      throw new BadRequestException('not allow !!')
-    }
-    let user = await this.UserRepository.findOne({
-      role: UserRole.teamMember,
-      $or: [
-        { phone: registerationData.phone },
-        { email: registerationData.email },
-        { whatsapp: registerationData.whatsapp },
-      ],
-    });
-    if (user)
-      throw new BadRequestException(
-        'phone,email and whatsapp should be unique',
-      );
-    if (files && files.photo)
-      registerationData.photo = files.photo[0].secure_url;
-
-    let newUser = await this.UserRepository.updateOne(
-      {
-        role: UserRole.teamMember,
-        enabled: true,
-      },
-      registerationData,
+    return await this.usersService.updateTest(
+      { _id: id, role: UserRole.teamMember } as any,
+      updateUserData,
     );
-    return newUser;
   }
+
+  // @Roles(UserRole.ADMIN, UserRole.teamMember)
+  // @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+  // @ApiConsumes('multipart/form-data')
+  // @Patch('update-teamMember/:id')
+  // async updateTeamMember(
+  //   @Body() registerationData: UpdateTeamMemberDto,
+  //   @UploadedFiles()
+  //   files,
+  //   @Param() { id }: ParamsWithId,
+
+  // )
+  // {
+
+  //   if ((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
+  //   {
+  //     throw new BadRequestException('not allow !!')
+  //   }
+  //   if (files && files.photo)
+  //     registerationData.photo = files.photo[0].secure_url;
+
+  //   return await this.usersService.update(
+  //     { _id: id, role: UserRole.teamMember } as any,
+  //     registerationData,
+  //   );
+  // }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
