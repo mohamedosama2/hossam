@@ -25,6 +25,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
 
     if (updateUserData.phone)
     {
+      console.log('inside')
       let user = await this.userModel.findOne({
 
         $or: [
@@ -34,12 +35,12 @@ export class UserRepository extends BaseAbstractRepository<User> {
         ]
 
       });
+      console.log(user)
       if (user)
       {
-        if (user.phone === updateUserData.phone)
-          throw new BadRequestException(
-            'phone should be unique',
-          );
+        throw new BadRequestException(
+          'phone should be unique',
+        );
       }
     }
 
