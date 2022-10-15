@@ -74,18 +74,41 @@ export class PaymentService
       );
     }
 
+
+
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
   async createExpensis(createPaymentDto: CreatePaymentDto)
   {
+    let task = await this.tasksService.findOne(createPaymentDto.task, {
+      populate: 'group',
+    });
+    console.log(task.taskManager.id)
+    console.log(createPaymentDto.byWhom)
+
+    if (task.taskManager.id != createPaymentDto.byWhom) throw new BadRequestException("this team member not inside this project")
+
+    const remaining = await this.PaymentRepository.testingRemaning(
+      createPaymentDto.byWhom,
+      task._id,
+    );
+
+    if (remaining.length != 0)
+    {
+      console.log('remaining[0].allPaid')
+      console.log(remaining[0].allPaid)
+      console.log(task.totalPrice)
+      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice)
+      {
+        throw new BadRequestException(
+          `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
+        );
+      }
+    }
     createPaymentDto.teamMember = createPaymentDto.byWhom
     return await this.PaymentRepository.create(createPaymentDto);
   }
-
-
-
-
   async findAll(
     FilterQueryOptionsTasks: FilterQueryOptionsPayment,
     @AuthUser() me: UserDocument,

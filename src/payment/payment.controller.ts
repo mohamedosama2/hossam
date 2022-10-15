@@ -33,7 +33,7 @@ export class PaymentController
   createExpensis(@Body() createPaymentDto: CreatePaymentDto)
   {
     createPaymentDto.paymentType = PaymentType.EXPENSIS;
-    return this.paymentService.create(createPaymentDto);
+    return this.paymentService.createExpensis(createPaymentDto);
   }
 
   @Roles(UserRole.ADMIN)
