@@ -44,14 +44,18 @@ export class UserRepository extends BaseAbstractRepository<User> {
     if (updateUserData.phone)
     {
       console.log('inside')
-      let user = await this.userModel.findOne({
-
+      let query = {
         $or: [
-          { whatsapp: updateUserData.whatsapp },
-          { phone: updateUserData.phone, }
-
+          { 'phone': updateUserData.phone },
+          // { $and: [{ 'whatsapp': updateUserData.phone }, { role: UserRole.teamMember }] }
         ]
-
+      }
+      console.log(query.$or)
+      let user = await this.userModel.findOne({
+        $or: [
+          { 'phone': updateUserData.phone },
+          { role: UserRole.teamMember, 'whatsapp': updateUserData.phone }
+        ]
       });
       console.log(user)
       if (user)
@@ -74,27 +78,22 @@ export class UserRepository extends BaseAbstractRepository<User> {
           'email should be unique',
         );
       }
-
     }
-
-
     if (updateUserData.whatsapp)
     {
-
       let user = await this.userModel.findOne({
         $or: [
-          { whatsapp: updateUserData.whatsapp },
-          { phone: updateUserData.phone }
+          { 'phone': updateUserData.whatsapp },
+          { role: UserRole.teamMember, 'whatsapp': updateUserData.whatsapp }
         ]
       });
+      console.log(user)
       if (user)
       {
         throw new BadRequestException(
           ' whatsapp should be unique',
         );
-
       }
-
     }
 
     await existUser.set(updateUserData).save()

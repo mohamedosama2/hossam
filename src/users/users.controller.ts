@@ -153,7 +153,7 @@ export class UsersController
       $or: [
         { phone: registerationData.phone },
         { email: registerationData.email },
-        { whatsapp: registerationData.whatsapp },
+        { role: UserRole.teamMember, 'whatsapp': registerationData.whatsapp }
       ],
     });
     console.log(user)
@@ -174,51 +174,6 @@ export class UsersController
         );
 
     }
-
-
-    // if (registerationData.phone)
-    // {
-    //   console.log('inside')
-    //   let user = await this.usersService.findOneUser(
-    //     registerationData.whatsapp, registerationData.phone,
-    //   );
-    //   console.log(user)
-    //   if (user)
-    //   {
-    //     throw new BadRequestException(
-    //       'phone should be unique',
-    //     );
-    //   }
-    // }
-
-    // if (registerationData.email)
-    // {
-
-    //   let user = await this.usersService.findOneUser(registerationData.email);
-    //   if (user)
-    //   {
-    //     throw new BadRequestException(
-    //       'email should be unique',
-    //     );
-    //   }
-
-    // }
-
-
-    // if (registerationData.whatsapp)
-    // {
-
-    //   let user = await this.usersService.findOneUser(registerationData.whatsapp, registerationData.phone,);
-    //   if (user)
-    //   {
-    //     throw new BadRequestException(
-    //       ' whatsapp should be unique',
-    //     );
-
-    //   }
-
-    // }
-
 
 
     if (files && files.photo)
@@ -257,33 +212,6 @@ export class UsersController
       updateUserData,
     );
   }
-
-  // @Roles(UserRole.ADMIN, UserRole.teamMember)
-  // @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
-  // @ApiConsumes('multipart/form-data')
-  // @Patch('update-teamMember/:id')
-  // async updateTeamMember(
-  //   @Body() registerationData: UpdateTeamMemberDto,
-  //   @UploadedFiles()
-  //   files,
-  //   @Param() { id }: ParamsWithId,
-
-  // )
-  // {
-
-  //   if ((this.req.me as UserDocument)._id != id && (this.req.me as UserDocument).role != UserRole.ADMIN)
-  //   {
-  //     throw new BadRequestException('not allow !!')
-  //   }
-  //   if (files && files.photo)
-  //     registerationData.photo = files.photo[0].secure_url;
-
-  //   return await this.usersService.update(
-  //     { _id: id, role: UserRole.teamMember } as any,
-  //     registerationData,
-  //   );
-  // }
-
   @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param() { id }: ParamsWithId)
