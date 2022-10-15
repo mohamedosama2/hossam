@@ -91,14 +91,71 @@ export class UsersService
   }
 
   async update(
-    filter: FilterQuery<UserDocument>,
+    id: string,
     updateUserData: UpdateUserDto,
   ): Promise<UserDocument>
   {
-    const user = await this.userRepository.updateOne(filter, updateUserData);
+    if (updateUserData.phone)
+    {
+      let user = await this.userRepository.findOne({
+        phone: updateUserData.phone,
+      });
+      if (user)
+      {
+        throw new BadRequestException(
+          'phone should be unique',
+        );
+      }
+    }
+
+    if (updateUserData.email)
+    {
+
+      let user = await this.userRepository.findOne({
+        email: updateUserData.email
+      });
+      if (user)
+      {
+        throw new BadRequestException(
+          'email should be unique',
+        );
+      }
+
+    }
+
+
+    if (updateUserData.whatsapp)
+    {
+
+      let user = await this.userRepository.findOne({
+
+        whatsapp: updateUserData.whatsapp
+
+      });
+      if (user)
+      {
+        throw new BadRequestException(
+          ' whatsapp should be unique',
+        );
+
+      }
+
+    }
+    console.log(id)
+
+    const user = await this.userRepository.updateOne({ id }, updateUserData);
+    console.log(user)
     return user;
   }
 
+  async updateTest(
+    id: string,
+    updateUserData: UpdateUserDto,
+  ): Promise<UserDocument>
+  {
+
+    return await this.userRepository.updateUser(id, updateUserData);
+  }
   async getProfile(me: UserDocument): Promise<UserDocument>
   {
     return me;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PaginateModel, PaginateOptions } from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
@@ -6,17 +6,87 @@ import { User, UserDocument, UserRole } from './models/_user.model';
 var ObjectId = require('mongodb').ObjectId;
 import * as _ from 'lodash';
 import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserRepository extends BaseAbstractRepository<User> {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>)
+  {
     super(userModel);
     /*  this.userModel.collection.dropIndex("whatsapp_1")
     this.userModel.collection.dropIndex("phone_1")
     console.log(this.userModel.listIndexes().then((data) => console.log(data))); */
   }
 
-  async coudeStudents() {
+  async updateUser(id: string, updateUserData: UpdateUserDto)
+  {
+    let existUser = await this.userModel.findById(id)
+    if (!existUser) throw new BadRequestException('user not found',);
+
+    if (updateUserData.phone)
+    {
+      console.log('inside')
+      let user = await this.userModel.findOne({
+
+        $or: [
+          { whatsapp: updateUserData.whatsapp },
+          { phone: updateUserData.phone, }
+
+        ]
+
+      });
+      console.log(user)
+      if (user)
+      {
+        throw new BadRequestException(
+          'phone should be unique',
+        );
+      }
+    }
+
+    if (updateUserData.email)
+    {
+
+      let user = await this.userModel.findOne({
+        email: updateUserData.email
+      });
+      if (user)
+      {
+        throw new BadRequestException(
+          'email should be unique',
+        );
+      }
+
+    }
+
+
+    if (updateUserData.whatsapp)
+    {
+
+      let user = await this.userModel.findOne({
+        $or: [
+          { whatsapp: updateUserData.whatsapp },
+          { phone: updateUserData.phone }
+        ]
+      });
+      if (user)
+      {
+        throw new BadRequestException(
+          ' whatsapp should be unique',
+        );
+
+      }
+
+    }
+
+    await existUser.set(updateUserData).save()
+
+    return existUser
+    // let updateUser = await this.userModel.updateOne()
+  }
+
+  async coudeStudents()
+  {
     const students = await this.userModel.countDocuments({
       role: UserRole.STUDENT,
     });
@@ -35,7 +105,8 @@ export class UserRepository extends BaseAbstractRepository<User> {
   async fetchUsersByFilter(
     filter: FilterQuery<UserDocument>,
     stage = 0,
-  ): Promise<UserDocument[]> {
+  ): Promise<UserDocument[]>
+  {
     return await this.userModel
       .find(filter)
       .skip(5000 * stage)
@@ -43,13 +114,15 @@ export class UserRepository extends BaseAbstractRepository<User> {
       .select('_id pushTokens');
   }
 
-  async fetchShouldSend() {
+  async fetchShouldSend()
+  {
     return await this.userModel.countDocuments({
       'pushTokens.0': { $exists: true },
     });
   }
 
-  async fetchCounts(filter: FilterQuery<UserDocument>): Promise<number> {
+  async fetchCounts(filter: FilterQuery<UserDocument>): Promise<number>
+  {
     const count = await this.userModel.aggregate([
       { $match: filter },
       { $count: 'usersCount' },
@@ -62,7 +135,8 @@ export class UserRepository extends BaseAbstractRepository<User> {
   ): Promise<{
     arrayOfObjects: { deviceToken: string; _id: string }[];
     arrayOfUsersIds: string[];
-  }> {
+  }>
+  {
     const chunk = await this.userModel.aggregate([
       { $match: filter },
       { $skip: stage * 1000 },
@@ -95,7 +169,8 @@ export class UserRepository extends BaseAbstractRepository<User> {
   public async findAllWithPaginationCustome(
     // @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
-  ): Promise<UserDocument[]> {
+  ): Promise<UserDocument[]>
+  {
     console.log(queryFiltersAndOptions);
 
     let filters: FilterQuery<UserDocument> = _.pick(queryFiltersAndOptions, [
@@ -110,14 +185,14 @@ export class UserRepository extends BaseAbstractRepository<User> {
       'limit',
     ]);
     let query = {
-    // ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
-    //   && {
-    //   'taskManager.id': queryFiltersAndOptions.teamMember,
+      // ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
+      //   && {
+      //   'taskManager.id': queryFiltersAndOptions.teamMember,
 
-    // }),
-    // ...(me.role === UserRole.teamMember && {
-    //   'taskManager.id': me._id,
-    // }),
+      // }),
+      // ...(me.role === UserRole.teamMember && {
+      //   'taskManager.id': me._id,
+      // }),
       ...(queryFiltersAndOptions.username && {
         username: {
           $regex: `.*${queryFiltersAndOptions.username}.*`,
@@ -141,7 +216,8 @@ export class UserRepository extends BaseAbstractRepository<User> {
     let docs;
     console.log(filters);
     console.log(query);
-    if (queryFiltersAndOptions.allowPagination) {
+    if (queryFiltersAndOptions.allowPagination)
+    {
       docs = await (this.userModel as PaginateModel<UserDocument>).paginate(
         // here we can but any option to to query like sort
         {
@@ -156,7 +232,8 @@ export class UserRepository extends BaseAbstractRepository<User> {
           // populate: ['group', 'university']
         },
       );
-    } else {
+    } else
+    {
       docs = await this.userModel
         .find({
           filters,

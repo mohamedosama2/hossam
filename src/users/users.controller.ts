@@ -79,7 +79,7 @@ export class UsersController {
     delete updateUserData.enabled;
 
     return await this.usersService.update(
-      { _id: id, role: UserRole.STUDENT } as FilterQuery<UserDocument>,
+      { _id: id, role: UserRole.STUDENT } as any,
       updateUserData,
     );
   }
@@ -166,6 +166,28 @@ export class UsersController {
   @Roles(UserRole.ADMIN, UserRole.teamMember)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
+  @Patch('update-teamMember/:id/')
+  async updateMember(
+    @Body() updateUserData: UpdateTeamMemberDto,
+    @UploadedFiles()
+    files,
+    @Param() { id }: ParamsWithId,
+  ): Promise<UserDocument> {
+    if (files && files.photo) {
+      console.log('files');
+      updateUserData.photo = files.photo[0].secure_url;
+      console.log(updateUserData.photo);
+    }
+
+    return await this.UserRepository.updateUser(
+      { _id: id, role: UserRole.teamMember } as any,
+      updateUserData,
+    );
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.teamMember)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
+  @ApiConsumes('multipart/form-data')
   @Patch('update-teamMember/:id')
   async updateTeamMember(
     @Body() registerationData: UpdateTeamMemberDto,
@@ -173,35 +195,19 @@ export class UsersController {
     files,
     @Param() { id }: ParamsWithId,
   ) {
-    if (
+  /*   if (
       (this.req.me as UserDocument)._id != id &&
       (this.req.me as UserDocument).role != UserRole.ADMIN
     ) {
       throw new BadRequestException('not allow !!');
-    }
-    let user = await this.UserRepository.findOne({
-      role: UserRole.teamMember,
-      $or: [
-        { phone: registerationData.phone },
-        { email: registerationData.email },
-        { whatsapp: registerationData.whatsapp },
-      ],
-    });
-    if (user)
-      throw new BadRequestException(
-        'phone,email and whatsapp should be unique',
-      );
+    } */
     if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url;
 
-    let newUser = await this.UserRepository.updateOne(
-      {
-        role: UserRole.teamMember,
-        enabled: true,
-      },
+    return await this.usersService.update(
+      { _id: id, role: UserRole.teamMember } as any,
       registerationData,
     );
-    return newUser;
   }
 
   @Roles(UserRole.ADMIN)

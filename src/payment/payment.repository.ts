@@ -174,13 +174,13 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 preserveNullAndEmptyArrays: true,
               },
             },
-            {
-              $project: {
-                'group.students.student.username': 1,
-                'group.students.student.phone': 1,
-                'group.students.isTeamLeader': 1,
-              },
-            },
+            // {
+            //   $project: {
+            //     'group.students.student.username': 1,
+            //     'group.students.student.phone': 1,
+            //     'group.students.isTeamLeader': 1,
+            //   },
+            // },
           ],
           paymentDetails: [
             {
@@ -421,7 +421,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         },
         {
           ...options,
-          // populate: ['group', 'university']
+          populate: ['byWhom', 'task', 'teamMember']
         }
       );
     } else
@@ -430,12 +430,13 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         filters,
         ...query
       },)
-      // .populate(['group', 'university'])
+        .populate(['byWhom', 'task', 'teamMember'])
     }
     return docs;
   }
 
-  async taskIndividualRemaining(byWhom: string, taskId: string) {
+  async taskIndividualRemaining(byWhom: string, taskId: string)
+  {
     console.log(byWhom, taskId);
     const remaining = await this.paymentModel.aggregate([
       {

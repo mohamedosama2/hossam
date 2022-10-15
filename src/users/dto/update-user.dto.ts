@@ -42,6 +42,11 @@ export class UpdateUserDto
 
   @IsOptional()
   @IsString()
+  @Matches(Constants.PHONE_REGX, { message: 'whatsapp is invalid' })
+  whatsapp?: string;
+
+  @IsOptional()
+  @IsString()
   @Matches(Constants.EMAIL_REGX, { message: 'email is invalid' })
   email?: string;
 }
