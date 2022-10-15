@@ -1,14 +1,14 @@
 import
-  {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    Query,
-  } from '@nestjs/common';
+{
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -33,7 +33,7 @@ export class PaymentController
   createExpensis(@Body() createPaymentDto: CreatePaymentDto)
   {
     createPaymentDto.paymentType = PaymentType.EXPENSIS;
-    return this.paymentService.createExpensis(createPaymentDto);
+    return this.paymentService.create(createPaymentDto);
   }
 
   @Roles(UserRole.ADMIN)

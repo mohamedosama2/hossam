@@ -44,7 +44,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   async findTaskDetails(taskId: string)
   {
     const taskDeatils = await this.paymentModel.aggregate([
-      { $match: { task: new Types.ObjectId(taskId) } },
+      { $match: { task: new Types.ObjectId(taskId), paymentType: PaymentType.REVENUSE } },
 
       {
         $facet: {

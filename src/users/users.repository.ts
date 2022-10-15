@@ -18,6 +18,24 @@ export class UserRepository extends BaseAbstractRepository<User> {
     console.log(this.userModel.listIndexes().then((data) => console.log(data))); */
   }
 
+  async findUserEmail(email?: string)
+  {
+    const user = await this.userModel.findOne({ email })
+    return user;
+  }
+
+  async findUser(phone?: string, whatsapp?: string)
+  {
+    const user = await this.userModel.findOne({
+      $or: [
+        { whatsapp: whatsapp },
+        { phone: phone, }
+
+      ]
+    })
+    return user;
+  }
+
   async updateUser(id: string, updateUserData: UpdateUserDto)
   {
     let existUser = await this.userModel.findById(id)
