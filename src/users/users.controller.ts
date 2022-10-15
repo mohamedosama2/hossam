@@ -190,12 +190,21 @@ export class UsersController
   @Patch('update-teamMember/:id/')
   async updateMember(
     @Body() updateUserData: UpdateTeamMemberDto,
+    @UploadedFiles()
+    files,
     @Param() { id }: ParamsWithId,
   ): Promise<UserDocument>
   {
-    delete updateUserData.enabled;
 
-    return await this.usersService.updateTest(
+    if (files && files.photo)
+    {
+      console.log('files')
+      updateUserData.photo = files.photo[0].secure_url;
+      console.log(updateUserData.photo)
+    }
+
+
+    return await this.UserRepository.updateUser(
       { _id: id, role: UserRole.teamMember } as any,
       updateUserData,
     );
