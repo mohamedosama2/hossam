@@ -156,6 +156,7 @@ export class UsersController
         { whatsapp: registerationData.whatsapp },
       ],
     });
+    console.log(user)
     if (user)
     {
 
@@ -173,6 +174,53 @@ export class UsersController
         );
 
     }
+
+
+    // if (registerationData.phone)
+    // {
+    //   console.log('inside')
+    //   let user = await this.usersService.findOneUser(
+    //     registerationData.whatsapp, registerationData.phone,
+    //   );
+    //   console.log(user)
+    //   if (user)
+    //   {
+    //     throw new BadRequestException(
+    //       'phone should be unique',
+    //     );
+    //   }
+    // }
+
+    // if (registerationData.email)
+    // {
+
+    //   let user = await this.usersService.findOneUser(registerationData.email);
+    //   if (user)
+    //   {
+    //     throw new BadRequestException(
+    //       'email should be unique',
+    //     );
+    //   }
+
+    // }
+
+
+    // if (registerationData.whatsapp)
+    // {
+
+    //   let user = await this.usersService.findOneUser(registerationData.whatsapp, registerationData.phone,);
+    //   if (user)
+    //   {
+    //     throw new BadRequestException(
+    //       ' whatsapp should be unique',
+    //     );
+
+    //   }
+
+    // }
+
+
+
     if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url;
 

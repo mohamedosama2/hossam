@@ -1,10 +1,10 @@
 import
-  {
-    Injectable,
-    forwardRef,
-    Inject,
-    BadRequestException,
-  } from '@nestjs/common';
+{
+  Injectable,
+  forwardRef,
+  Inject,
+  BadRequestException,
+} from '@nestjs/common';
 import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -79,6 +79,7 @@ export class PaymentService
 
   async createExpensis(createPaymentDto: CreatePaymentDto)
   {
+    createPaymentDto.teamMember = createPaymentDto.byWhom
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
