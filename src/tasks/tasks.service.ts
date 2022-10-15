@@ -161,17 +161,19 @@ export class TasksService
   async update(_id: string, updateTaskDto: UpdateTaskDto)
   {
     // await this.findOne(_id)\
-    if (updateTaskDto.taskManager.id)
+    console.log('created controller')
+    console.log(updateTaskDto.taskManager)
+    if (updateTaskDto.taskManager)
     {
 
       let manager = await this.usersService.findOne({
         _id: updateTaskDto.taskManager.id,
       });
       if (!manager) throw new NotFoundException('user not found');
-      console.log('created controller')
       updateTaskDto.taskManager.id = manager._id;
       updateTaskDto.taskManager.name = manager.username;;
     }
+    console.log('created controller2')
 
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto as any);
   }
