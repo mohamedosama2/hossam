@@ -69,7 +69,7 @@ export class Task
   @Prop({ type: Date, required: true })
   startDate?: Date;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date })
   deuDate?: Date;
 
   @Prop({ type: Date, required: true })
