@@ -70,6 +70,11 @@ export class CreateTaskDto
   @IsNumber()
   totalPrice: number;
 
+  @IsOptional()
+  @IsNumber()
+  totalPriceTeamMember: number;
+
+
   @IsString()
   @IsEnum(State)
   state: State;

@@ -36,13 +36,13 @@ export class TasksService
     const payment = createTaskDto.payment as CreatePaymentTaskDto[];
     let task = await this.TaskRepository.create(createTaskDto);
     let group = await this.groupService.findOne(task.group);
+    if (createTaskDto.totalPrice < createTaskDto.totalPriceTeamMember) throw new BadRequestException('totla team member  greater than total price');
     if (payment)
     {
-      console.log('created controller');
-
-      console.log(createTaskDto.totalPrice);
-      console.log(group.students.length);
-      console.log(createTaskDto.totalPrice / group.students.length);
+      // console.log('created controller');
+      // console.log(createTaskDto.totalPrice);
+      // console.log(group.students.length);
+      // console.log(createTaskDto.totalPrice / group.students.length);
       for (let i = 0; i < createTaskDto.payment.length; i++)
       {
         let payment = createTaskDto.payment[i];
@@ -63,7 +63,7 @@ export class TasksService
     if (createTaskDto.group)
     {
       const taskGroup = await this.TaskRepository.findPopulatedTask(task._id);
-      console.log(group.students);
+      // console.log(group.students);
       const tokens = [];
       (group.students as any[]).forEach(({ student }) =>
       {
@@ -177,6 +177,7 @@ export class TasksService
 
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto as any);
   }
+
 
   async deleteTask(id: string)
   {

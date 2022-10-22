@@ -99,7 +99,7 @@ export class PaymentService
       console.log('remaining[0].allPaid')
       console.log(remaining[0].allPaid)
       console.log(task.totalPrice)
-      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice)
+      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPriceTeamMember)
       {
         throw new BadRequestException(
           `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,

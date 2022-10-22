@@ -63,6 +63,9 @@ export class Task
   @Prop({ type: Number })
   totalPrice?: number;
 
+  @Prop({ type: Number, default: 0 })
+  totalPriceTeamMember?: number;
+
   @Prop({ type: String, enum: Object.values(State) })
   state?: State;
 
