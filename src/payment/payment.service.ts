@@ -79,6 +79,11 @@ export class PaymentService
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
+  async remaningMony(byWhom: string, task: string)
+  {
+    return await this.PaymentRepository.testingRemaning(byWhom, task)
+  }
+
   async createExpensis(createPaymentDto: CreatePaymentDto)
   {
     let task = await this.tasksService.findOne(createPaymentDto.task, {

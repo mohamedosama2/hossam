@@ -459,7 +459,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
       {
         $match: {
           teamMember: new Types.ObjectId(byWhom),
-          task: taskId,
+          task: new Types.ObjectId(taskId),
           paymentType: PaymentType.EXPENSIS,
 
         },

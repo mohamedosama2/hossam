@@ -173,6 +173,23 @@ export class TasksService
       updateTaskDto.taskManager.id = manager._id;
       updateTaskDto.taskManager.name = manager.username;;
     }
+
+    if (updateTaskDto.totalPriceTeamMember)
+    {
+      let task = await this.findOne(_id)
+      let member = task.taskManager.id
+      let totalPaid = await this.PaymentService.remaningMony(member, _id)
+
+      if (totalPaid.length != 0)
+      {
+        if (totalPaid[0].allPaid > updateTaskDto.totalPriceTeamMember)
+        {
+          throw new BadRequestException(
+            `You cant update to this number ${updateTaskDto.totalPriceTeamMember} it is smaller than you paid  `,
+          );
+        }
+      }
+    }
     console.log('created controller2')
 
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto as any);
