@@ -1,99 +1,69 @@
 import { NotFoundException } from '@nestjs/common';
 import * as _ from 'lodash';
-import
-{
-  CreateQuery,
-  FilterQuery,
-  UpdateQuery,
-  Model,
-  Document,
-  PaginateOptions,
-  PaginateModel,
-  PaginateResult,
-  QueryOptions,
-} from 'mongoose';
-import { AggregationOpptionsInterface } from './pagination/paginationParams.dto';
+import { Document, FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 
 type TDocument<T> = T & Document;
 export abstract class BaseAbstractRepository<T> {
-  private model: Model<TDocument<T>>;
+  protected model: Model<TDocument<T>>;
 
-  protected constructor(model: Model<TDocument<T>>)
-  {
+  protected constructor(model: Model<TDocument<T>>) {
     this.model = model;
   }
 
-  public async create(data: CreateQuery<TDocument<T>>): Promise<TDocument<T>>
-  {
-    const newDocument = new this.model(data).save();
+  public async create(data: any) {
+    console.log('data ======================')
+    console.log(data)
+    const newDocument = await new this.model(data).save();
     return newDocument;
   }
 
-  public async createDoc(data: T): Promise<TDocument<T>>
-  {
+  public async createDoc(data: T): Promise<TDocument<T>> {
     const newDocument = new this.model(data).save();
     return newDocument;
   }
-
   public async findOne(
     filterQuery: FilterQuery<TDocument<T>>,
     options: QueryOptions = {},
     projection: any = {},
-  ): Promise<TDocument<T>>
-  {
-    const doc = await this.model
-      .findOne(filterQuery, projection)
-      .setOptions(options);
+  ): Promise<TDocument<T>> {
+    // console.log('filterQuery')
+    // console.log(filterQuery)
+    const doc = await this.model.findOne(filterQuery, projection).setOptions(options);
+
     return doc;
   }
 
   public async findAllWithPaginationOption(
     queryFiltersAndOptions: any,
     arrayOfFilters: string[],
-    extraOptions: PaginateOptions = {},
-  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]>
-  {
-    const filters: FilterQuery<TDocument<T>> = _.pick(
-      queryFiltersAndOptions,
-      arrayOfFilters,
-    );
-    const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
-      'page',
-      'limit',
-    ]);
-
+    extraOptions = {},
+  ): Promise<TDocument<T>[]> {
+    const filters: FilterQuery<TDocument<T>> = _.pick(queryFiltersAndOptions, arrayOfFilters);
+    const options = _.pick(queryFiltersAndOptions, ['page', 'limit']);
     let docs;
-    if (queryFiltersAndOptions.allowPagination)
-    {
-      docs = await (this.model as PaginateModel<TDocument<T>>).paginate(
-        filters,
-        { ...options, ...extraOptions },
-      );
-    } else
-    {
-      docs = await this.model.find(filters).setOptions(options);
+    if (queryFiltersAndOptions.allowPagination) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      docs = await this.model.paginate(filters, {
+        ...options,
+        ...extraOptions,
+        collation: { locale: 'en', caseLevel: true, numericOrdering: true },
+      });
+      console.log('========================================');
+      console.log('True');
+    } else {
+      console.log('========================================');
+      console.log('False');
+      console.log(filters);
+
+      docs = await this.model.find(filters).setOptions({ ...extraOptions });
+
+      docs = { docs };
     }
     return docs;
   }
-  public async findAllWithPaginationAggregationOption(
-    queryFiltersAndOptions: AggregationOpptionsInterface,
-    arrayOfPiplines: Record<string, any>[],
-  ): Promise<PaginateResult<TDocument<T>> | TDocument<T>[]>
-  {
-    console.log(arrayOfPiplines);
-    var aggregate = this.model.aggregate(arrayOfPiplines);
 
-    const docs = await (this.model as any).aggregatePaginate(
-      aggregate,
-      queryFiltersAndOptions,
-    );
-    return docs;
-  }
-
-  public async deleteOne(
-    filterQuery: FilterQuery<TDocument<T>>,
-  ): Promise<void>
-  {
+  public async deleteOne(filterQuery: FilterQuery<TDocument<T>>): Promise<void> {
     await this.model.deleteOne(filterQuery);
   }
 
@@ -102,19 +72,14 @@ export abstract class BaseAbstractRepository<T> {
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
     projection: any = {},
-  ): Promise<TDocument<T>>
-  {
-    console.log('filter query')
-    console.log(filterQuery)
-    console.log(this.model)
-    const doc = await this.model
-      .findOne(filterQuery, projection)
-      .setOptions(options);
-    console.log(" doc from repo")
-    console.log(doc)
-    // console.log(doc)
+  ): Promise<TDocument<T>> {
+    console.log(filterQuery);
+    console.log(updateQuery);
+    const doc = await this.model.findOne(filterQuery, projection).setOptions(options);
     if (!doc) throw new NotFoundException(`${this.model.modelName} not found`);
     await doc.set(updateQuery).save();
+    console.log('========================================');
+    console.log(doc);
     return doc;
   }
 
@@ -122,31 +87,14 @@ export abstract class BaseAbstractRepository<T> {
     filterQuery: FilterQuery<TDocument<T>>,
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
-  ): Promise<void>
-  {
+  ): Promise<void> {
     await this.model.updateOne(filterQuery, updateQuery);
   }
   public async updateAllVoid(
     filterQuery: FilterQuery<TDocument<T>>,
     updateQuery: UpdateQuery<TDocument<T>>,
     options: QueryOptions = {},
-  ): Promise<void>
-  {
+  ): Promise<void> {
     await this.model.updateMany(filterQuery, updateQuery);
-  }
-  public async deleteAllVoid(
-    filterQuery: FilterQuery<TDocument<T>>,
-  ): Promise<void>
-  {
-    await this.model.deleteMany(filterQuery);
-  }
-
-  public async deleteAllReturnedData(
-    filterQuery: FilterQuery<TDocument<T>>,
-  ): Promise<TDocument<T>[]>
-  {
-    const data = await this.model.find(filterQuery);
-    await this.model.deleteMany(filterQuery);
-    return data;
   }
 }

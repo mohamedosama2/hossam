@@ -1,5 +1,4 @@
-import
-{
+import {
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -8,8 +7,7 @@ import
   ValidationPipe,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import
-{
+import {
   CreateQuery,
   FilterQuery,
   Model,
@@ -27,15 +25,13 @@ import { UserRepository } from './users.repository';
 import { cacheOperationsService } from 'src/cache/cache-operations.service';
 import { GroupService } from 'src/group/group.service';
 
-function randomInRange(from: number, to: number)
-{
+function randomInRange(from: number, to: number) {
   var r = Math.random();
   return Math.floor(r * (to - from) + from);
 }
 
 @Injectable()
-export class UsersService
-{
+export class UsersService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly GroupService: GroupService,
@@ -43,8 +39,7 @@ export class UsersService
 
 
 
-  async getCustomeDocs(countriesId: string[]): Promise<UserDocument[]>
-  {
+  async getCustomeDocs(countriesId: string[]): Promise<UserDocument[]> {
     const docs = await this.userRepository.findAllCustome(countriesId);
     return docs;
   }
@@ -61,10 +56,8 @@ export class UsersService
 
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsUser,
-  ): Promise<PaginateResult<UserDocument> | UserDocument[]>
-  {
-    if (queryFiltersAndOptions.university)
-    {
+  ): Promise<PaginateResult<UserDocument> | UserDocument[]> {
+    if (queryFiltersAndOptions.university) {
       queryFiltersAndOptions.role =
         queryFiltersAndOptions.role === undefined
           ? UserRole.STUDENT
@@ -84,8 +77,7 @@ export class UsersService
     return users;
   }
 
-  async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument>
-  {
+  async findOne(filter: FilterQuery<UserDocument>): Promise<UserDocument> {
     const user = await this.userRepository.findOne(filter);
     return user;
   }
@@ -93,29 +85,24 @@ export class UsersService
   async update(
     id: string,
     updateUserData: UpdateUserDto,
-  ): Promise<UserDocument>
-  {
-    if (updateUserData.phone)
-    {
+  ): Promise<UserDocument> {
+    if (updateUserData.phone) {
       let user = await this.userRepository.findOne({
         phone: updateUserData.phone,
       });
-      if (user)
-      {
+      if (user) {
         throw new BadRequestException(
           'phone should be unique',
         );
       }
     }
 
-    if (updateUserData.email)
-    {
+    if (updateUserData.email) {
 
       let user = await this.userRepository.findOne({
         email: updateUserData.email
       });
-      if (user)
-      {
+      if (user) {
         throw new BadRequestException(
           'email should be unique',
         );
@@ -124,16 +111,14 @@ export class UsersService
     }
 
 
-    if (updateUserData.whatsapp)
-    {
+    if (updateUserData.whatsapp) {
 
       let user = await this.userRepository.findOne({
 
         whatsapp: updateUserData.whatsapp
 
       });
-      if (user)
-      {
+      if (user) {
         throw new BadRequestException(
           ' whatsapp should be unique',
         );
@@ -151,28 +136,25 @@ export class UsersService
   async updateTest(
     id: string,
     updateUserData: UpdateUserDto,
-  ): Promise<UserDocument>
-  {
+  ): Promise<UserDocument> {
 
     return await this.userRepository.updateUser(id, updateUserData);
   }
-  async getProfile(me: UserDocument): Promise<UserDocument>
-  {
+  async getProfile(me: UserDocument): Promise<UserDocument> {
     return me;
   }
 
   async createUser(
     createUserData: CreateQuery<UserDocument>,
-  ): Promise<UserDocument>
-  {
+  ): Promise<UserDocument> {
+
     return await this.userRepository.create(createUserData);
   }
 
   async changePassword(
     { oldPassword, newPassword }: ChangePasswordDto,
     me: UserDocument,
-  ): Promise<UserDocument>
-  {
+  ): Promise<UserDocument> {
     if (!(await (me as any).isValidPassword(oldPassword)))
       throw new UnauthorizedException('password not match');
 
@@ -182,8 +164,7 @@ export class UsersService
     );
   }
 
-  async deleteStudent(_id: string)
-  {
+  async deleteStudent(_id: string) {
     await this.userRepository.updateOne({ _id }, { enabled: false });
     // await this.GroupService.removeStudent(_id);
   }
