@@ -34,7 +34,6 @@ export class CounterRepository extends BaseAbstractRepository<Counter> {
       counter = await this.counterModel.create({ entity: entity, seq: 1 } as any) as any;
       counter.seq = 1;
     }
-
     return counter.seq;
   }
 
