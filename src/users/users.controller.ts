@@ -1,25 +1,24 @@
-import
-  {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    UseInterceptors,
-    Inject,
-    UseFilters,
-    UploadedFiles,
-    ValidationPipe,
-    UsePipes,
-    HttpStatus,
-    HttpCode,
-    Query,
-    CacheInterceptor,
-    CacheKey,
-    BadRequestException,
-  } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  Inject,
+  UseFilters,
+  UploadedFiles,
+  ValidationPipe,
+  UsePipes,
+  HttpStatus,
+  HttpCode,
+  Query,
+  CacheInterceptor,
+  CacheKey,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { request } from 'http';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -40,15 +39,17 @@ import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
 import { UserRepository } from './users.repository';
 import { Constants } from 'src/utils/constants';
 import { CreateStudentDto, CreateTeamMemberDto } from './dto/create-user.dto';
+import { CounterRepository } from 'src/shared/counter.repository';
 
 @ApiBearerAuth()
 @ApiTags('USERS')
 @Controller('users')
-export class UsersController
-{
+export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly UserRepository: UserRepository,
+    private counterRepository: CounterRepository,
+
     @Inject(REQUEST) private readonly req: Record<string, unknown>,
   ) { }
 
@@ -59,16 +60,14 @@ export class UsersController
   @Get()
   async findAll(
     @Query() queryFiltersAndOptions: FilterQueryOptionsUser,
-  ): Promise<PaginateResult<UserDocument> | UserDocument[]>
-  {
+  ): Promise<PaginateResult<UserDocument> | UserDocument[]> {
     return await this.usersService.findAll(
       queryFiltersAndOptions as FilterQueryOptionsUser,
     );
   }
 
   @Get('profile')
-  async getProfile(): Promise<UserDocument>
-  {
+  async getProfile(): Promise<UserDocument> {
     return await this.usersService.getProfile(this.req.me as UserDocument);
   }
 
@@ -79,8 +78,7 @@ export class UsersController
   async updateProfile(
     @Body() updateUserData: UpdateUserDto,
     @Param() { id }: ParamsWithId,
-  ): Promise<UserDocument>
-  {
+  ): Promise<UserDocument> {
     delete updateUserData.enabled;
 
     return await this.usersService.update(
@@ -94,8 +92,7 @@ export class UsersController
   async changePassword(
     @Body() { oldPassword, newPassword }: ChangePasswordDto,
     @AuthUser() me: UserDocument,
-  ): Promise<UserDocument>
-  {
+  ): Promise<UserDocument> {
     return await this.usersService.changePassword(
       { oldPassword, newPassword },
       me,
@@ -104,8 +101,7 @@ export class UsersController
 
   @Public()
   @Get(':id')
-  async fetchUserById(@Param() { id }: ParamsWithId): Promise<UserDocument>
-  {
+  async fetchUserById(@Param() { id }: ParamsWithId): Promise<UserDocument> {
     return await this.usersService.findOne({
       _id: id,
     } as FilterQuery<UserDocument>);
@@ -117,8 +113,7 @@ export class UsersController
     @Body() registerationData: CreateStudentDto,
     /*  @UploadedFiles()
     files, */
-  )
-  {
+  ) {
     let user = await this.UserRepository.findOne({
       $or: [
         { email: registerationData.email },
@@ -128,12 +123,13 @@ export class UsersController
     if (user) throw new BadRequestException('phone and email should be unique');
     /* if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url; */
-
+    const counter = await this.counterRepository.getCounter('User');
+    registerationData.userId = counter + 1;
     let newUser = await this.UserRepository.createDoc({
       role: UserRole.STUDENT,
       enabled: true,
       ...registerationData,
-    });
+    } as any);
     return newUser;
   }
 
@@ -145,8 +141,7 @@ export class UsersController
     @Body() registerationData: CreateTeamMemberDto,
     @UploadedFiles()
     files,
-  )
-  {
+  ) {
     let user = await this.UserRepository.findOne({
       role: UserRole.teamMember,
       $or: [
@@ -156,8 +151,7 @@ export class UsersController
       ],
     });
     console.log(user)
-    if (user)
-    {
+    if (user) {
 
       if (user.email === registerationData.email)
         throw new BadRequestException(
@@ -177,12 +171,13 @@ export class UsersController
 
     if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url;
-
+    const counter = await this.counterRepository.getCounter('User');
+    registerationData.userId = counter + 1;
     let newUser = await this.UserRepository.createDoc({
       role: UserRole.teamMember,
       enabled: true,
       ...registerationData,
-    });
+    } as any);
     return newUser;
   }
 
@@ -195,10 +190,8 @@ export class UsersController
     @UploadedFiles()
     files,
     @Param() { id }: ParamsWithId,
-  ): Promise<UserDocument>
-  {
-    if (files && files.photo)
-    {
+  ): Promise<UserDocument> {
+    if (files && files.photo) {
       console.log('files');
       updateUserData.photo = files.photo[0].secure_url;
       console.log(updateUserData.photo);
@@ -211,8 +204,7 @@ export class UsersController
   }
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() { id }: ParamsWithId)
-  {
+  async remove(@Param() { id }: ParamsWithId) {
     return await this.usersService.deleteStudent(id);
   }
 }
