@@ -190,7 +190,7 @@ export class Task {
   @Prop({
     type: Boolean,
     default: false,
-  })
+  }) //testing
   isDeletedTask?: boolean;
 }
 
