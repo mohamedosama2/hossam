@@ -18,6 +18,7 @@ import { cacheOperationsModule } from 'src/cache/cache.module';
 import { TeamMemberSchema } from './models/teamMember.model';
 import { AdminSchema } from './models/admin.model';
 import { GroupModule } from 'src/group/group.module';
+import { CounterModule } from 'src/shared/counter.module';
 
 @Module({
   imports: [
@@ -38,9 +39,10 @@ import { GroupModule } from 'src/group/group.module';
       inject: [ConfigService],
     }),
     GroupModule,
+    CounterModule
   ],
   controllers: [UsersController],
   providers: [UsersService, UserRepository],
   exports: [UsersService, UserRepository],
 })
-export class UsersModule {}
+export class UsersModule { }
