@@ -149,7 +149,7 @@ export class Task {
   @Prop({ type: String, enum: Object.values(State) })
   taskType?: State;
 
-  // single task
+  // single task test
   @Prop({ type: String, required: true, enum: Object.values(Semester) })
   semester: Semester;
 
