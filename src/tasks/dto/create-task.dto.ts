@@ -1,8 +1,7 @@
 import { Type } from 'class-transformer'
 import { ApiHideProperty } from '@nestjs/swagger';
 ;
-import
-{
+import {
   IsBoolean,
   IsDate,
   IsEnum,
@@ -17,10 +16,46 @@ import
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { State } from '../models/task.model';
+import { LevelType, State, TaskLevels, TasksLevel } from '../models/task.model';
 
-export class TaskManagerDto 
-{
+
+export class Level {
+
+  @IsString()
+  @IsEnum(LevelType)
+  levelType: LevelType;
+
+
+  @IsString()
+  @IsEnum(State)
+  levelStatus: State;
+
+
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @IsNumber()
+  @IsOptional()
+  degree?: number;
+
+  @IsDate()
+  @IsOptional()
+  deuDate?: Date;
+}
+
+export class TaskLevel {
+
+  @IsString()
+  @IsEnum(TasksLevel)
+  taskLevel: TasksLevel;
+
+  @IsOptional()
+  @Type(() => Level)
+  taskLevelData?: Level[];
+}
+
+export class TaskManagerDto {
   @IsString()
   @IsOptional()
   id?: string;
@@ -30,8 +65,7 @@ export class TaskManagerDto
   @ApiHideProperty()
   name?: string;
 }
-export class CreateTaskDto
-{
+export class CreateTaskDto {
   @IsString()
   @IsNotEmpty()
   nameAr: string;
@@ -59,8 +93,18 @@ export class CreateTaskDto
   subject: string;
 
   @IsOptional()
+  logo?: string;
+
+
+  @IsOptional()
   @IsMongoId()
   group: string;
+
+  @IsOptional()
+  @Type(() => TaskLevel)
+  levels?: TaskLevel[];
+
+
 
   @IsOptional()
   @Type(() => TaskManagerDto)
@@ -94,8 +138,7 @@ export class CreateTaskDto
   payment?: CreatePaymentTaskDto[];
 }
 
-export class CreatePaymentTaskDto
-{
+export class CreatePaymentTaskDto {
   @IsString()
   @IsEnum(PaymentMethod)
   method: PaymentMethod;
@@ -110,8 +153,22 @@ export class CreatePaymentTaskDto
   recieveTime: Date;
 }
 
-export class CreateDtoTasks
-{
+export class CreateLevelTaskDto {
+  @IsString()
+  @IsEnum(PaymentMethod)
+  method: PaymentMethod;
+
+  @IsMongoId()
+  byWhom: string;
+
+  @IsNumber()
+  paid: number;
+
+  @IsDate()
+  recieveTime: Date;
+}
+
+export class CreateDtoTasks {
   @Type(() => Date)
   @IsDate()
   date: Date;

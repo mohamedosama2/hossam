@@ -19,19 +19,19 @@ export enum TaskType {
   PRIVATE = 'PRIVATE',
 }
 
-export enum TaskLevel {
+export enum TasksLevel {
   PORPOSAL = 'PORPOSAL',
   MIDTERM = 'MIDTERM',
   FINAL = 'FINAL',
   GRADE = 'GRADE',
- //test
+  //test
 }
 
 export enum LevelType {
-  PORPOSAL = 'PORPOSAL',
-  MIDTERM = 'MIDTERM',
-  PERSENTATION = 'PERSENTATION',
   REPORT = 'REPORT',
+  MIDTERM = 'MIDTERM',
+  PORPOSAL = 'PORPOSAL',
+  PERSENTATION = 'PERSENTATION',
   DEMO = 'DEMO',
   TOTAL = 'TOTAL',
 }
@@ -73,8 +73,8 @@ export class Level {
 export class TaskLevels {
 
 
-  @Prop({ type: String, enum: Object.values(LevelType), required: false })
-  taskLevel?: LevelType;
+  @Prop({ type: String, enum: Object.values(TasksLevel), required: false })
+  taskLevel?: TasksLevel;
 
   @Prop({ type: () => Level, required: false })
   taskLevelData?: Level[];
@@ -93,12 +93,22 @@ export class Task {
   @Prop({ type: String, required: true })
   nameEn?: string;
 
+  @Prop({ type: String, required: true })
+  logo?: string;
+
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,
     // required: true,
   })
   university?: string;
+
+  // @Prop({
+  //   type: MongooseSchema.Types.ObjectId,
+  //   // ref: Collage.name,
+  //   // required: true,
+  // })
+  // collage?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
@@ -167,8 +177,8 @@ export class Task {
   pricePerHour?: number;
 
 
-  @Prop({ type: () => Level })
-  levels?: Level[];
+  @Prop({ type: () => TaskLevels })
+  levels?: TaskLevels[];
 
 
   @Prop({ type: Date, required: true })

@@ -38,7 +38,7 @@ export class TasksService
     let group = await this.groupService.findOne(task.group);
     if (createTaskDto.totalPrice < createTaskDto.totalPriceTeamMember) throw new BadRequestException('totla team member  greater than total price');
     if (payment)
-    {
+    { 
       // console.log('created controller');
       // console.log(createTaskDto.totalPrice);
       // console.log(group.students.length);

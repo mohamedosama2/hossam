@@ -1,14 +1,13 @@
-import
-  {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    Query,
-  } from '@nestjs/common';
+import {
+Controller,
+Get,
+Post,
+Body,
+Patch,
+Param,
+Delete,
+Query,
+} from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { TasksService } from './tasks.service';
@@ -25,8 +24,7 @@ import { CreateAdminTaskDto } from './dto/create-admin-task.dto';
 @ApiBearerAuth()
 @ApiTags('tasks'.toUpperCase())
 @Controller('tasks')
-export class TasksController
-{
+export class TasksController {
   constructor(
     private readonly usersService: UsersService,
     private readonly tasksService: TasksService,
@@ -35,27 +33,14 @@ export class TasksController
   async findAllTasks(
     @Query() FilterQueryOptionsTasks: FilterQueryOptionsTasks,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     console.log('CONTROLLER', FilterQueryOptionsTasks);
     return this.tasksService.findAll(FilterQueryOptionsTasks, me);
   }
 
   @Roles(UserRole.ADMIN)
   @Post('/add')
-  async create(@Body() createTaskDto: CreateTaskDto)
-  {
-    let manager = await this.usersService.findOne({
-      _id: createTaskDto.taskManager.id,
-    });
-    if (!manager) throw new NotFoundException('user not found');
-    console.log('created controller')
-    createTaskDto.taskManager.id = manager._id;
-    createTaskDto.taskManager.name = manager.username;
-    console.log(createTaskDto.taskManager);
-    createTaskDto.isAdminTask = false;
-    createTaskDto.isDeletedTask = false;
-
+  async create(@Body() createTaskDto: CreateTaskDto) {
     return await this.tasksService.create(createTaskDto);
   }
 
@@ -63,8 +48,7 @@ export class TasksController
   async createAdminTask(
     @Body() createTaskDto: CreateAdminTaskDto,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     console.log('here22');
     console.log(me);
     console.log(me.username);
@@ -88,8 +72,7 @@ export class TasksController
   async hetHone(
     @Query() CreateDtoTasks: CreateDtoTasks,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     return await this.tasksService.getHome(CreateDtoTasks.date, me);
   }
 
@@ -97,27 +80,23 @@ export class TasksController
   async getWeek(
     @Query() CreateDtoTasks: CreateDtoTasks,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     console.log(CreateDtoTasks);
     return await this.tasksService.getWeek(CreateDtoTasks.date, me);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string)
-  {
+  findOne(@Param('id') id: string) {
     return this.tasksService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto)
-  {
+  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string)
-  {
+  remove(@Param('id') id: string) {
     return this.tasksService.deleteTask(id);
   }
 }
