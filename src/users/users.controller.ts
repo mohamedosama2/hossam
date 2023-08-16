@@ -133,7 +133,8 @@ export class UsersController {
     return newUser;
   }
 
-  @Roles(UserRole.ADMIN)
+  // @Roles(UserRole.ADMIN)
+  @Public()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   @Post('add-teamMember')

@@ -1,13 +1,12 @@
-import
-{
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
+import {
+Controller,
+Get,
+Post,
+Body,
+Patch,
+Param,
+Delete,
+Query,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -20,26 +19,24 @@ import { AggregationOpptionsDto } from 'src/utils/pagination/paginationParams.dt
 import { PaymentType } from './models/payment.model';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { FilterQueryOptionsPayment } from './dto/filter.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('payment'.toUpperCase())
 @Controller('payment')
-export class PaymentController
-{
+export class PaymentController {
   constructor(private readonly paymentService: PaymentService) { }
 
   @Roles(UserRole.ADMIN)
   @Post('/expensis')
-  createExpensis(@Body() createPaymentDto: CreatePaymentDto)
-  {
+  createExpensis(@Body() createPaymentDto: CreatePaymentDto) {
     createPaymentDto.paymentType = PaymentType.EXPENSIS;
     return this.paymentService.createExpensis(createPaymentDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Post('/revenue')
-  createRevenue(@Body() createPaymentDto: CreatePaymentDto)
-  {
+  createRevenue(@Body() createPaymentDto: CreatePaymentDto) {
     createPaymentDto.paymentType = PaymentType.REVENUSE;
     return this.paymentService.create(createPaymentDto);
   }
@@ -48,26 +45,23 @@ export class PaymentController
   findAll(
     @Query() FilterQueryOptionsTasks: FilterQueryOptionsPayment,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     return this.paymentService.findAll(FilterQueryOptionsTasks, me);
   }
 
+  @Public()
   @Get('task-details/:id')
-  async findTaskDetails(@Param() { id }: ParamsWithId)
-  {
+  async findTaskDetails(@Param() { id }: ParamsWithId) {
     return await this.paymentService.findTaskDetails(id);
   }
 
   @Get('team-member/task-details/:id')
-  async findTaskDetailsTeam(@Param() { id }: ParamsWithId)
-  {
+  async findTaskDetailsTeam(@Param() { id }: ParamsWithId) {
     return await this.paymentService.findTaskDetailsTeam(id);
   }
 
   @Get(':teamMember/all-payments')
-  MonyTest(@Param('teamMember') teamMember: string)
-  {
+  MonyTest(@Param('teamMember') teamMember: string) {
     return this.paymentService.teamMemberMony(teamMember);
   }
 

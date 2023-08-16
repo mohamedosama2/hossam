@@ -1,5 +1,4 @@
-import
-{
+import {
   Injectable,
   forwardRef,
   Inject,
@@ -16,10 +15,10 @@ import { FilterQueryOptionsPayment } from './dto/filter.dto';
 import { UserDocument } from 'src/users/models/_user.model';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { GroupRepository } from 'src/group/group.repository';
+import { TaskType } from 'src/tasks/models/task.model';
 
 @Injectable()
-export class PaymentService
-{
+export class PaymentService {
   constructor(
     @Inject(forwardRef(() => TasksService))
     private readonly tasksService: TasksService,
@@ -34,58 +33,70 @@ export class PaymentService
     return await this.PaymentRepository.create(createPaymentDto);
   } */
 
-  async create(createPaymentDto: CreatePaymentDto)
-  {
+  async create(createPaymentDto: CreatePaymentDto) {
     let task = await this.tasksService.findOne(createPaymentDto.task, {
       populate: 'group',
     });
-
     console.log(task.totalPrice);
-    let studentsLength = task.group['students'].length
-      ? task.group['students'].length
-      : 1;
-    const taskIndividualPay = task.totalPrice / studentsLength;
-    const remaining = await this.PaymentRepository.taskIndividualRemaining(
-      createPaymentDto.byWhom,
-      task._id,
-    );
-    createPaymentDto.teamMember = task.taskManager.id;
-    if (remaining.length == 0)
-    {
-      //check if this person in this group
-      const isExisted = await this.GroupRepository.findOne({
-        _id: task.group['_id'],
-        'students.student': createPaymentDto.byWhom,
-      });
-      console.log(isExisted)
-      if (!isExisted) throw new BadRequestException("this user cant pay for this")
-      if (createPaymentDto.paid > taskIndividualPay)
-      {
-        throw new BadRequestException(
-          ` want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
+    if (task.student) {
+      if (task.taskType == TaskType.SINGLE) {
+
+        const remaining = await this.PaymentRepository.taskIndividualRemaining(
+          createPaymentDto.byWhom,
+          task._id,
         );
+        if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice) {
+          throw new BadRequestException(
+            `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
+          );
+        }
       }
-      return await this.PaymentRepository.create(createPaymentDto);
     }
-    if (remaining[0].allPaid + createPaymentDto.paid > taskIndividualPay)
-    {
-      throw new BadRequestException(
-        `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
-      );
+    if (task.group) {
+
+      if (task.taskType == TaskType.GRADUATION) {
+        let studentsLength = task.group['students'].length
+          ? task.group['students'].length
+          : 1;
+        const taskIndividualPay = task.totalPrice / studentsLength;
+        const remaining = await this.PaymentRepository.taskIndividualRemaining(
+          createPaymentDto.byWhom,
+          task._id,
+        );
+        createPaymentDto.teamMember = task._id;
+        if (remaining.length == 0) {
+          //check if this person in this group
+          const isExisted = await this.GroupRepository.findOne({
+            _id: task.group['_id'],
+            'students.student': createPaymentDto.byWhom,
+          });
+          console.log(isExisted)
+          if (!isExisted) throw new BadRequestException("this user cant pay for this")
+          if (createPaymentDto.paid > taskIndividualPay) {
+            throw new BadRequestException(
+              ` want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
+            );
+          }
+          return await this.PaymentRepository.create(createPaymentDto);
+        }
+        if (remaining[0].allPaid + createPaymentDto.paid > taskIndividualPay) {
+          throw new BadRequestException(
+            `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} and you must pay just ${taskIndividualPay} `,
+          );
+        }
+      }
+
+      // if()
     }
-
-
 
     return await this.PaymentRepository.create(createPaymentDto);
   }
 
-  async remaningMony(byWhom: string, task: string)
-  {
+  async remaningMony(byWhom: string, task: string) {
     return await this.PaymentRepository.testingRemaning(byWhom, task)
   }
 
-  async createExpensis(createPaymentDto: CreatePaymentDto)
-  {
+  async createExpensis(createPaymentDto: CreatePaymentDto) {
     let task = await this.tasksService.findOne(createPaymentDto.task, {
       populate: 'group',
     });
@@ -99,13 +110,11 @@ export class PaymentService
       task._id,
     );
 
-    if (remaining.length != 0)
-    {
+    if (remaining.length != 0) {
       console.log('remaining[0].allPaid')
       console.log(remaining[0].allPaid)
       console.log(task.totalPrice)
-      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPriceTeamMember)
-      {
+      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPriceTeamMember) {
         throw new BadRequestException(
           `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
         );
@@ -117,8 +126,7 @@ export class PaymentService
   async findAll(
     FilterQueryOptionsTasks: FilterQueryOptionsPayment,
     @AuthUser() me: UserDocument,
-  )
-  {
+  ) {
     return await this.PaymentRepository.findAllWithPaginationCustome(
       me,
       FilterQueryOptionsTasks,
@@ -127,8 +135,7 @@ export class PaymentService
     );
   }
 
-  async teamMemberMony(teamMember: string)
-  {
+  async teamMemberMony(teamMember: string) {
     console.log('here');
     let totalPrice = await this.tasksService.teamMemberMony(teamMember);
 
@@ -141,18 +148,15 @@ export class PaymentService
     };
   }
 
-  async findTaskDetails(taskId: string)
-  {
+  async findTaskDetails(taskId: string) {
     return await this.PaymentRepository.findTaskDetails(taskId);
   }
 
-  async findAndUpdateMany(taskId: string)
-  {
+  async findAndUpdateMany(taskId: string) {
     return await this.PaymentRepository.updateManyPayment(taskId);
   }
 
-  async findTaskDetailsTeam(taskId: string)
-  {
+  async findTaskDetailsTeam(taskId: string) {
     return await this.PaymentRepository.findTaskDetailsTeam(taskId);
   }
 }

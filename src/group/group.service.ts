@@ -56,6 +56,8 @@ export class GroupService {
         ],
       },
     );
+    console.log('test services grou')
+    console.log(isExisted)
     if (!isExisted || isExisted.enable == false) throw new NotFoundException();
     return isExisted;
   }

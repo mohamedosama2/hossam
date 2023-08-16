@@ -16,7 +16,7 @@ import {
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { LevelType, State, TaskLevels, TasksLevel } from '../models/task.model';
+import { LevelType, State, WeekDay, TaskType, TasksLevel, ATTENDENCEPALCE, LessonFor } from '../models/task.model';
 
 
 export class Level {
@@ -43,6 +43,25 @@ export class Level {
   @IsOptional()
   deuDate?: Date;
 }
+
+
+export class Day {
+
+  @IsString()
+  @IsEnum(WeekDay)
+  day: WeekDay;
+
+
+  @IsDate()
+  @IsOptional()
+  start?: Date;
+
+
+  @IsDate()
+  @IsOptional()
+  end?: Date;
+}
+
 
 export class TaskLevel {
 
@@ -74,6 +93,13 @@ export class CreateTaskDto {
   @IsNotEmpty()
   nameEn: string;
 
+
+
+  @IsString()
+  @IsEnum(TaskType)
+  taskType: TaskType;
+
+
   @IsBoolean()
   @IsOptional()
   @ApiHideProperty()
@@ -87,6 +113,16 @@ export class CreateTaskDto {
   @IsOptional()
   @IsMongoId()
   university: string;
+
+  @IsOptional()
+  @IsMongoId()
+  collage: string;
+
+  @IsOptional()
+  @IsMongoId()
+  @IsOptional()
+  student?: string;
+
 
   @IsOptional()
   @IsMongoId()
@@ -105,6 +141,10 @@ export class CreateTaskDto {
   levels?: TaskLevel[];
 
 
+  @IsOptional()
+  @Type(() => Day)
+  days?: Day[];
+
 
   @IsOptional()
   @Type(() => TaskManagerDto)
@@ -117,6 +157,25 @@ export class CreateTaskDto {
   @IsOptional()
   @IsNumber()
   totalPriceTeamMember: number;
+
+  @IsOptional()
+  @IsNumber()
+  numberOfHours: number;
+  @IsOptional()
+  @IsNumber()
+  hourPrice: number;
+
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(ATTENDENCEPALCE)
+  attendancePlace?: ATTENDENCEPALCE;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(LessonFor)
+  lessonFor?: LessonFor;
+
 
 
   @IsString()

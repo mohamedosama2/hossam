@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Schema as MongooseSchema, Document } from 'mongoose';
+import { Collage } from 'src/collage/entities/collage.entity';
 import { Group } from 'src/group/models/group.model';
 import { Subject } from 'src/subjects/models/subject.model';
 import { University } from 'src/university/models/university.model';
@@ -36,6 +37,15 @@ export enum LevelType {
   TOTAL = 'TOTAL',
 }
 
+export enum WeekDay {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
 export enum Semester {
   FIRST = 'FIRST',
   SECOND = 'SECOND',
@@ -45,8 +55,12 @@ export enum ATTENDENCEPALCE {
   ONSITE = 'ONSITE',
   REMOTE = 'REMOTE',
 }
+export enum LessonFor {
+  STUDENT = 'STUDENT',
+  GROUP = 'GROUP',
+}
 export class Manager {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   id?: string;
 
   @Prop()
@@ -69,6 +83,19 @@ export class Level {
   deuDate?: Date;
 }
 
+export class TaskDay {
+  @Prop({ type: String, enum: Object.values(LevelType), required: false })
+  day?: LevelType;
+
+  @Prop({ type: Date, required: false })
+  start?: Date;
+
+  @Prop({ type: Date, required: false })
+  end?: Date;
+}
+
+
+
 
 export class TaskLevels {
 
@@ -80,47 +107,47 @@ export class TaskLevels {
   taskLevelData?: Level[];
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: false })
 export class Task {
   id?: string;
 
   @Prop({
     type: String,
-    // required: true
+    // required: false
   })
   nameAr?: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   nameEn?: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   logo?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,
-    // required: true,
+    // required: false,
   })
   university?: string;
 
-  // @Prop({
-  //   type: MongooseSchema.Types.ObjectId,
-  //   // ref: Collage.name,
-  //   // required: true,
-  // })
-  // collage?: string;
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Collage.name,
+    required: false,
+  })
+  collage?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Subject.name,
-    // required: true,
+    // required: false,
   })
   subject?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Group.name,
-    // required: true,
+    // required: false,
   })
   group?: string;
 
@@ -140,7 +167,7 @@ export class Task {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,
-    // required: true,
+    // required: false,
   })
   reporter?: string;
 
@@ -150,6 +177,12 @@ export class Task {
   @Prop({ type: Number })
   totalPrice?: number;
 
+  @Prop({ type: Number })
+  hourPrice?: number;
+
+  @Prop({ type: Number, required: false })
+  numberOfHours?: number;
+
   @Prop({ type: Number, default: 0 })
   totalPriceTeamMember?: number;
 
@@ -157,41 +190,45 @@ export class Task {
   state?: State;
 
   @Prop({ type: String, enum: Object.values(State) })
-  taskType?: State;
+  attendPlace?: State;
+
+  @Prop({ type: String, enum: Object.values(TaskType) })
+  taskType?: TaskType;
 
   // single task
-  @Prop({ type: String, required: true, enum: Object.values(Semester) })
+  @Prop({ type: String, required: false, enum: Object.values(Semester) })
   semester: Semester;
+
+
 
   // private task
 
-  @Prop({ type: String, required: true, enum: Object.values(ATTENDENCEPALCE) })
+  @Prop({ type: String, required: false, enum: Object.values(ATTENDENCEPALCE) })
   attendancePlace: ATTENDENCEPALCE;
 
+  @Prop({ type: String, required: false, enum: Object.values(LessonFor) })
+  lessonFor: LessonFor;
 
-  @Prop({ type: Number, required: true })
-  numberOfHours?: number;
-
-
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number, required: false })
   pricePerHour?: number;
-
 
   @Prop({ type: () => TaskLevels })
   levels?: TaskLevels[];
 
+  @Prop({ type: () => TaskDay })
+  days?: TaskDay[];
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, required: false })
   startDate?: Date;
 
   // ================== here question single task 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, required: false })
   studyYear?: Date;
 
   @Prop({ type: Date, required: false })
   deuDate?: Date;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, required: false })
   endDate?: Date;
 
   @Prop({ type: Boolean })

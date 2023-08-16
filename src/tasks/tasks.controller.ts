@@ -1,12 +1,12 @@
 import {
-Controller,
-Get,
-Post,
-Body,
-Patch,
-Param,
-Delete,
-Query,
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
 } from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -20,6 +20,7 @@ import { FilterQueryOptionsTasks } from './dto/filter.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { CreateAdminTaskDto } from './dto/create-admin-task.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('tasks'.toUpperCase())
@@ -38,7 +39,8 @@ export class TasksController {
     return this.tasksService.findAll(FilterQueryOptionsTasks, me);
   }
 
-  @Roles(UserRole.ADMIN)
+  // @Roles(UserRole.ADMIN)
+  @Public()
   @Post('/add')
   async create(@Body() createTaskDto: CreateTaskDto) {
     return await this.tasksService.create(createTaskDto);

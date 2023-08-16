@@ -1,5 +1,6 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
@@ -9,6 +10,7 @@ import {
 } from 'class-validator';
 import { RegisterDto } from 'src/auth/dto/register.dto';
 import { Constants } from 'src/utils/constants';
+import { JopTitle } from '../models/teamMember.model';
 
 export class CreateStudentDto {
   @IsString()
@@ -54,8 +56,8 @@ export class CreateTeamMemberDto extends RegisterDto {
   userId?: number;
 
   @IsString()
-  @IsNotEmpty()
-  jobTitle: string;
+  @IsEnum(JopTitle)
+  jobTitle: JopTitle;
 
   @IsString()
   @IsOptional()
