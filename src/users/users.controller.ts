@@ -143,14 +143,20 @@ export class UsersController {
     @UploadedFiles()
     files,
   ) {
-    let user = await this.UserRepository.findOne({
-      role: UserRole.teamMember,
-      $or: [
-        { phone: registerationData.phone },
-        { email: registerationData.email },
-        { role: UserRole.teamMember, 'whatsapp': registerationData.whatsapp }
-      ],
-    });
+    // console.log(registerationData)
+    // let user = await this.UserRepository.findOne({
+    //   // role: UserRole.teamMember,
+    //   $or: [
+    //     {
+    //       phone: registerationData.phone,
+    //     },
+    //     {
+    //       email: registerationData.email,
+    //     }
+    //     // role: UserRole.teamMember, 'whatsapp': registerationData.whatsapp
+    //   ]
+    // });
+    let user = await this.UserRepository.findUser(registerationData.phone, registerationData.whatsapp, registerationData.email, UserRole.teamMember)
     console.log(user)
     if (user) {
 

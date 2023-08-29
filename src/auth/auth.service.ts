@@ -1,11 +1,10 @@
-import
-  {
-    Injectable,
-    UnauthorizedException,
-    HttpException,
-    HttpStatus,
-    BadRequestException,
-  } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  HttpException,
+  HttpStatus,
+  BadRequestException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -23,33 +22,37 @@ import { CreateQuery, FilterQuery } from 'mongoose';
 import { UserRepository } from 'src/users/users.repository';
 import * as SendGrid from '@sendgrid/mail';
 import * as nodemailer from '@nestjs-modules/mailer';
+import { Password } from './utils/Password';
 @Injectable()
-export class AuthService
-{
+export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
+    // private readonly userRepository: Users,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-  )
-  {
+  ) {
     SendGrid.setApiKey(this.configService.get<string>('SEND_GRID_KEY'));
   }
 
   async login(loginDto: LoginDto): Promise<{
     user: UserDocument;
     token: string;
-  }>
-  {
+  }> {
     const { email } = loginDto;
     console.log(email);
 
-    let user = await this.userRepository.findOne({
-      email,
-    } as FilterQuery<UserDocument>);
-    console.log(user)
+    // let user = await this.userRepository.findOne({
+    //   email: email,
+    // } as FilterQuery<UserDocument>);
+
+    let user = await this.userRepository.findUserEmail(email)
     if (!user) throw new UserNotFoundException();
-    /*   console.log(user, "1"); */
-    if (!(await (user as any).isValidPassword(loginDto.password)))
+    console.log(user, "1");
+    // let test = (user as any).isValidPassword(loginDto.password)
+    // console.log(test)
+    let test = Password.isCorrectPassword(loginDto.password, user.password);
+
+    if (!test)
       throw new UnauthorizedException('invalid credentials');
     /*     console.log(user); */
 
@@ -65,13 +68,10 @@ export class AuthService
 
   async verifyUserByTokenFromSocket(
     token: string,
-  ): Promise<false | UserDocument>
-  {
-    try
-    {
+  ): Promise<false | UserDocument> {
+    try {
       const decoded: TokenPayload = await this.jwtService.verify(token);
-      if (decoded.userId === undefined)
-      {
+      if (decoded.userId === undefined) {
         return false;
       }
 
@@ -79,19 +79,16 @@ export class AuthService
         _id: decoded.userId,
       } as FilterQuery<UserDocument>);
 
-      if (!user || user.enabled === false)
-      {
+      if (!user || user.enabled === false) {
         return false;
       }
       return user;
-    } catch (err)
-    {
+    } catch (err) {
       return false;
     }
   }
 
-  async send(mail: SendGrid.MailDataRequired)
-  {
+  async send(mail: SendGrid.MailDataRequired) {
     //  nodemailer.MAILER_TRANSPORT_FACTORY({
     //     service: 'gmail',
     //     auth: {

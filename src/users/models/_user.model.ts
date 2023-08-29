@@ -157,13 +157,13 @@ UserSchema.pre('save', async function () {
       }
     }
   }
-  if ((this as UserDocument).password && this.isModified('password')) {
+  if ((this as unknown as UserDocument).password && this.isModified('password')) {
     // (this as UserDocument).password = await hash(
     //   (this as UserDocument).password,
     //   10,
     // );
-    (this as UserDocument).password = await Password.hash(
-      (this as UserDocument).password,
+    (this as unknown as UserDocument).password = await Password.hash(
+      (this as unknown as UserDocument).password,
     );
   }
 });
@@ -192,10 +192,14 @@ UserSchema.methods.sendNotification = async function (message) {
 
 UserSchema.methods.isValidPassword = async function (password) {
   // return compare(password, (this as UserDocument).password);
-  return Password.isCorrectPassword(password, (this as UserDocument).password);
+  console.log("password")
+  console.log(password)
+  return Password.isCorrectPassword(password, (this as unknown as UserDocument).password);
 };
 
 UserSchema.methods.hashing = async function (password) {
+  console.log("password")
+  console.log(password)
   // return compare(password, (this as UserDocument).password);
   return Password.hash(password);
 };

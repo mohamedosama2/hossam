@@ -164,6 +164,9 @@ export class UsersService {
     );
   }
 
+  async testFind(email: string) {
+    return await this.userRepository.findUserEmail(email)
+  }
   async deleteStudent(_id: string) {
     await this.userRepository.updateOne({ _id }, { enabled: false });
     // await this.GroupService.removeStudent(_id);
