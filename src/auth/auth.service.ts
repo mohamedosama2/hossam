@@ -59,8 +59,9 @@ export class AuthService {
     if (user.enabled === false)
       throw new UnauthorizedException('your account is deactivated');
     const payload: TokenPayload = {
-      userId: user.id,
+      userId: user._id,
     };
+
     const options = {};
     const token = jwt.sign(payload, process.env.JWT_SECRET, options);
     return { user, token };

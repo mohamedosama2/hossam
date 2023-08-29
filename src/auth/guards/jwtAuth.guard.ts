@@ -21,7 +21,7 @@ export class JwtAuthGuard implements CanActivate {
     private readonly reflector: Reflector,
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     let token = null;
     const isPublic = this.reflector.get(IS_PUBLIC_KEY, context.getHandler());
