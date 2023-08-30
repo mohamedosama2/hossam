@@ -2,8 +2,7 @@ import { ApiHideProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsEnum, IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PaymentMethod, PaymentType } from '../models/payment.model';
 
-export class CreatePaymentDto
-{
+export class CreatePaymentDto {
   @IsString()
   @IsEnum(PaymentMethod)
   method: PaymentMethod;
@@ -14,6 +13,12 @@ export class CreatePaymentDto
 
   @IsMongoId()
   byWhom: string;
+
+
+  @IsString()
+  @IsOptional()
+  note?: String;
+
 
 
 
