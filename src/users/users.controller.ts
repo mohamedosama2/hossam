@@ -114,13 +114,33 @@ export class UsersController {
     /*  @UploadedFiles()
     files, */
   ) {
-    let user = await this.UserRepository.findOne({
-      $or: [
-        { email: registerationData.email },
-        { phone: registerationData.phone },
-      ],
-    });
+    // let user = await this.UserRepository.findOne({
+    //   $or: [
+    //     { email: registerationData.email },
+    //     { phone: registerationData.phone },
+    //   ],
+    // });
+    let user = await this.UserRepository.findUser(registerationData.phone, registerationData.email, UserRole.STUDENT)
+    console.log(user)
     if (user) throw new BadRequestException('phone and email should be unique');
+    if (user) {
+
+      if (user.email === registerationData.email)
+        throw new BadRequestException(
+          'email should be unique',
+        );
+      else if (user.phone === registerationData.phone)
+        throw new BadRequestException(
+          'phone should be unique',
+        );
+      else
+        throw new BadRequestException(
+          ' whatsapp should be unique',
+        );
+
+    }
+
+
     /* if (files && files.photo)
       registerationData.photo = files.photo[0].secure_url; */
     const counter = await this.counterRepository.getCounter('User');

@@ -1,13 +1,12 @@
-import
-{
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
+import {
+Controller,
+Get,
+Post,
+Body,
+Patch,
+Param,
+Delete,
+Query,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -23,23 +22,21 @@ import ParamsWithId from 'src/utils/paramsWithId.dto';
 @ApiBearerAuth()
 @ApiTags('subjects'.toUpperCase())
 @Controller('subjects')
-export class SubjectsController
-{
+export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) { }
 
   @Roles(UserRole.ADMIN)
   @Post()
-  async create(@Body() createSubjectDto: CreateSubjectDto)
-  {
+  async create(@Body() createSubjectDto: CreateSubjectDto) {
     createSubjectDto.enable = true
+    createSubjectDto.subjectYear = createSubjectDto.subjectYear == undefined ? Date.now() : createSubjectDto.subjectYear as any
     return this.subjectsService.create(createSubjectDto);
   }
 
   @Get()
   async findAll(
     @Query() queryFiltersAndOptions: FilterQueryOptionsSubject,
-  ): Promise<PaginateResult<SubjectDocument> | SubjectDocument[]>
-  {
+  ): Promise<PaginateResult<SubjectDocument> | SubjectDocument[]> {
     return await this.subjectsService.findAll(queryFiltersAndOptions);
   }
 
@@ -47,8 +44,7 @@ export class SubjectsController
 
 
   @Get(':id')
-  async findOne(@Param() { id }: ParamsWithId)
-  {
+  async findOne(@Param() { id }: ParamsWithId) {
     return await this.subjectsService.findOne(id);
   }
 
@@ -57,15 +53,13 @@ export class SubjectsController
   update(
     @Param() { id }: ParamsWithId,
     @Body() updateSubjectDto: UpdateSubjectDto,
-  )
-  {
+  ) {
     return this.subjectsService.update(id, updateSubjectDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param() { id }: ParamsWithId)
-  {
+  remove(@Param() { id }: ParamsWithId) {
     return this.subjectsService.remove(id);
   }
 }

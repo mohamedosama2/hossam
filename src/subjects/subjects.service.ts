@@ -38,7 +38,7 @@ export class SubjectsService
   async update(_id: string, updateSubjectDto: UpdateSubjectDto)
   {
     await this.findOne(_id);
-    return await this.SubjectRepository.updateOne({ _id }, updateSubjectDto);
+    return await this.SubjectRepository.updateOne({ _id }, updateSubjectDto as any);
   }
 
   async remove(_id: string)

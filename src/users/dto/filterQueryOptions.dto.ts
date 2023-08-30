@@ -5,25 +5,21 @@ import { PaginationParams } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
 import { UserRole } from '../models/_user.model';
 
-export class FilterQueryUser
-{
+export class FilterQueryUser {
   @IsOptional()
   @IsBoolean()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return JSON.parse(obj.enabled);
   })
   enabled?: boolean;
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.username), 'i');
   })
   username?: string;
 
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.usernameAr), 'i');
   })
   usernameAr?: string;
@@ -35,6 +31,11 @@ export class FilterQueryUser
   @IsOptional()
   @IsMongoId()
   university?: string;
+
+
+  @IsOptional()
+  @IsMongoId()
+  collage?: string;
 }
 
 export class FilterQueryOptionsUser extends IntersectionType(

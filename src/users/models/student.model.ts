@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import { User, UserRole } from './_user.model';
 import { Types, Schema as MongooseSchema } from 'mongoose';
 import { University } from 'src/university/models/university.model';
+import { Collage } from 'src/collage/entities/collage.entity';
 
 export type StudentDocument = Student & Document;
 
@@ -16,6 +17,12 @@ export class Student {
     required: true,
   })
   university: string;
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Collage.name,
+    required: true,
+  })
+  collage: string;
 }
 
 const StudentSchema = SchemaFactory.createForClass(Student);

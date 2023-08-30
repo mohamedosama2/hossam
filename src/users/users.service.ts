@@ -65,12 +65,18 @@ export class UsersService {
     }
     const users = await this.userRepository.findAllWithPaginationOption(
       queryFiltersAndOptions,
-      ['username', 'usernameAr', 'role', 'university', 'enabled'],
+      ['username', 'usernameAr', 'role', 'university', 'collage', 'enabled'],
       {
-        populate: {
-          path: 'university',
-          select: { nameAr: 1, nameEn: 1, _id: 1 },
-        },
+        populate: [
+          {
+            path: 'university',
+            select: { nameAr: 1, nameEn: 1, _id: 1 }
+          },
+          {
+            path: 'collage',
+            select: { nameAr: 1, nameEn: 1, _id: 1 }
+          }
+        ]
       },
     );
 

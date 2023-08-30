@@ -1,16 +1,14 @@
 import { IsBoolean, IsEnum, IsMongoId, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { escapeRegExp } from 'lodash';
-import
-{
-  AggregationOpptionsDto,
-  PaginationParams,
+import {
+AggregationOpptionsDto,
+PaginationParams,
 } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
-import { State } from 'src/tasks/models/task.model';
+import { State, TaskType } from 'src/tasks/models/task.model';
 
-export class FilterQueryTasksUpdated
-{
+export class FilterQueryTasksUpdated {
   @IsOptional()
   // @IsBoolean()
   // @Transform(({ obj }) =>
@@ -55,15 +53,17 @@ export class FilterQueryTasksUpdated
   state?: State;
 
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
+  @IsEnum(TaskType)
+  taskType?: TaskType
+
+  @IsOptional()
+  @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.nameEn), 'i');
   })
   nameEn?: string;
 
   @IsOptional()
-  @Transform(({ obj }) =>
-  {
+  @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.nameAr), 'i');
   })
   nameAr?: string;

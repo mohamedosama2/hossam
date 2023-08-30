@@ -1,11 +1,16 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Semester } from '../models/subject.model';
 
-export class CreateSubjectDto
-{
+export class CreateSubjectDto {
   @IsMongoId()
   university: string;
+
+  @IsMongoId()
+  collage?: string;
+
+  @IsDate()
+  subjectYear: Date;
 
   @IsEnum(Semester)
   semester: Semester;
