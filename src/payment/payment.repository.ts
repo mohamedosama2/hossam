@@ -14,22 +14,19 @@ import { UserDocument, UserRole } from 'src/users/models/_user.model';
 export class PaymentRepository extends BaseAbstractRepository<Payment> {
   constructor(
     @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
-  )
-  {
+  ) {
     super(paymentModel);
   }
 
 
-  async findTaskPayments(taskId: string)
-  {
+  async findTaskPayments(taskId: string) {
     const taskDeatils = await this.paymentModel.aggregate([
       { $match: { task: new Types.ObjectId(taskId) } }])
 
     return taskDeatils
   }
 
-  async updateManyPayment(_id: string)
-  {
+  async updateManyPayment(_id: string) {
     // const taskDeatils = await this.paymentModel.aggregate([
     //   { $match: { task: new Types.ObjectId(_id) } }])
 
@@ -41,8 +38,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     );
   }
 
-  async findTaskDetails(taskId: string)
-  {
+  async findTaskDetails(taskId: string) {
     const taskDeatils = await this.paymentModel.aggregate([
       { $match: { task: new Types.ObjectId(taskId), paymentType: PaymentType.REVENUSE } },
 
@@ -262,8 +258,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     ]);
     return taskDeatils;
   }
-  async findTaskDetailsTeam(taskId: string)
-  {
+  async findTaskDetailsTeam(taskId: string) {
     const taskDeatils = await this.paymentModel.aggregate([
       {
         $match: {
@@ -342,8 +337,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     console.log();
     return taskDeatils;
   }
-  public async allTeamMemberMony(tramMember: string)
-  {
+  public async allTeamMemberMony(tramMember: string) {
     let stages = [
       {
         $match: {
@@ -367,14 +361,14 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   public async findAllWithPaginationCustome(
     @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
-  ): Promise<PaymentDocument[]>
-  {
+  ): Promise<PaymentDocument[]> {
     console.log(queryFiltersAndOptions)
 
     let filters: FilterQuery<PaymentDocument> = _.pick(queryFiltersAndOptions, [
       'task',
       'from',
       'to',
+      'title',
       'paymentType',
       'isDeletedPayment'
     ]);
@@ -399,6 +393,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         }
       }),
       ...(queryFiltersAndOptions.task && { task: ObjectId(queryFiltersAndOptions.task) }),
+      ...(queryFiltersAndOptions.title && { title: new RegExp(_.escapeRegExp(queryFiltersAndOptions.title), 'i') }),
       ...(queryFiltersAndOptions.paymentType && { paymentType: queryFiltersAndOptions.paymentType }),
     }
     delete filters.task
@@ -411,8 +406,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     let docs;
     console.log(filters)
     console.log(query)
-    if (queryFiltersAndOptions.allowPagination)
-    {
+    if (queryFiltersAndOptions.allowPagination) {
       docs = await (this.paymentModel as PaginateModel<PaymentDocument>).paginate(
         // here we can but any option to to query like sort
         {
@@ -424,8 +418,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
           populate: ['byWhom', 'task', 'teamMember']
         }
       );
-    } else
-    {
+    } else {
       docs = await this.paymentModel.find({
         filters,
         ...query
@@ -435,8 +428,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     return docs;
   }
 
-  async taskIndividualRemaining(byWhom: string, taskId: string)
-  {
+  async taskIndividualRemaining(byWhom: string, taskId: string) {
     console.log(byWhom, taskId);
     const remaining = await this.paymentModel.aggregate([
       {
@@ -452,8 +444,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     return remaining;
   }
 
-  async testingRemaning(byWhom: string, taskId: string)
-  {
+  async testingRemaning(byWhom: string, taskId: string) {
     console.log(byWhom, taskId);
     const remaining = await this.paymentModel.aggregate([
       {

@@ -100,10 +100,10 @@ export class PaymentService {
     let task = await this.tasksService.findOne(createPaymentDto.task, {
       populate: 'group',
     });
-    console.log(task.taskManager.id)
-    console.log(createPaymentDto.byWhom)
+    // console.log(task.taskManager.id)
+    // console.log(createPaymentDto.byWhom)
 
-    if (task.taskManager.id != createPaymentDto.byWhom) throw new BadRequestException("this team member not inside this project")
+    // if (task.taskManager.id != createPaymentDto.byWhom) throw new BadRequestException("this team member not inside this project")
 
     const remaining = await this.PaymentRepository.testingRemaning(
       createPaymentDto.byWhom,

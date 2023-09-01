@@ -1,19 +1,17 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import
-{
-  IsBoolean,
-  IsEnum,
-  IsMongoId,
-  IsOptional,
-  IsString,
+import {
+IsBoolean,
+IsEnum,
+IsMongoId,
+IsOptional,
+IsString,
 } from 'class-validator';
 import { escapeRegExp } from 'lodash';
 import { PaginationParams } from 'src/utils/pagination/paginationParams.dto';
 import { PaymentType } from '../models/payment.model';
 
-export class FilterQueryPayment
-{
+export class FilterQueryPayment {
   @IsOptional()
   @IsMongoId()
   task?: string;
@@ -23,6 +21,9 @@ export class FilterQueryPayment
 
   @IsOptional()
   to?: string;
+
+  @IsOptional()
+  title?: string;
 
   @IsOptional()
   @IsEnum(PaymentType)

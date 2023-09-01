@@ -17,8 +17,11 @@ export class CreatePaymentDto {
 
   @IsString()
   @IsOptional()
-  note?: String;
+  note?: string;
 
+  @IsString()
+  @IsOptional()
+  title?: string;
 
 
 

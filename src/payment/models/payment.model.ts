@@ -52,6 +52,9 @@ export class Payment {
   @Prop({ type: String, required: false })
   note: string;
 
+  @Prop({ type: String, required: false })
+  title: string;
+
   @Prop({ type: Date, required: true })
   recieveTime: Date;
 
