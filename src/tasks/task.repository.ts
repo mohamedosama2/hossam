@@ -261,7 +261,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
         },
         {
           ...options,
-          populate: ['group', 'university'],
+          populate: ['group', 'university', 'student', 'collage', 'subject'],
         },
       );
     } else {
@@ -270,7 +270,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
           filters,
           ...query,
         })
-        .populate(['group', 'university']);
+        .populate(['group', 'university', 'student', 'collage', 'subject']);
     }
     return docs;
   }
