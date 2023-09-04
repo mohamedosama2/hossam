@@ -2,8 +2,8 @@ import { IsBoolean, IsEnum, IsMongoId, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { escapeRegExp } from 'lodash';
 import {
-AggregationOpptionsDto,
-PaginationParams,
+  AggregationOpptionsDto,
+  PaginationParams,
 } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
 import { State, TaskType } from 'src/tasks/models/task.model';
@@ -47,6 +47,10 @@ export class FilterQueryTasksUpdated {
   @IsOptional()
   @IsMongoId()
   group?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  collage?: string;
 
   @IsOptional()
   @IsEnum(State)

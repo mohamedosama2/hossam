@@ -19,7 +19,7 @@ export class GroupService {
     private readonly GroupRepository: GroupRepository,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
   async create(createGroupDto: CreateGroupDto) {
     let ids = createGroupDto.students.map((doc) => {
       return doc.student;
@@ -40,8 +40,8 @@ export class GroupService {
   ): Promise<PaginateResult<GroupDocument> | GroupDocument[]> {
     const groups = await this.GroupRepository.findAllWithPaginationOption(
       queryFiltersAndOptions,
-      ['name', 'enable', 'university'],
-      { populate: ['students.student', 'university'] },
+      ['name', 'enable', 'university', 'collage'],
+      { populate: ['students.student', 'university', 'collage'] },
     );
     return groups;
   }
@@ -53,6 +53,7 @@ export class GroupService {
         populate: [
           { path: 'students.student' },
           { path: 'university', select: 'nameAr nameEn' },
+          { path: 'collage', select: 'nameAr nameEn' },
         ],
       },
     );

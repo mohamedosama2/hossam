@@ -22,6 +22,12 @@ export class FilterQueryGroup {
   university?: string;
 
   @IsOptional()
+  @IsMongoId()
+  collage?: string;
+
+
+
+  @IsOptional()
   @IsBoolean()
   @Transform(({ obj }) => {
     return JSON.parse(obj.enable);
@@ -32,4 +38,4 @@ export class FilterQueryGroup {
 export class FilterQueryOptionsGroup extends IntersectionType(
   FilterQueryGroup,
   PaginationParams,
-) {}
+) { }

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
-FilterQuery,
-Model,
-PaginateModel,
-PaginateOptions,
-PaginateResult,
+  FilterQuery,
+  Model,
+  PaginateModel,
+  PaginateOptions,
+  PaginateResult,
 } from 'mongoose';
 import { BaseAbstractRepository } from 'src/utils/base.abstract.repository';
 import { Task, TaskDocument } from './models/task.model';
@@ -157,6 +157,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'nameEn',
       'nameAr',
       'group',
+      'collage',
       'isDeletedTask',
       'isAdminTask',
     ]);
@@ -219,6 +220,10 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       }),
       ...(queryFiltersAndOptions.group && {
         group: ObjectId(queryFiltersAndOptions.group),
+      }),
+
+      ...(queryFiltersAndOptions.collage && {
+        collage: ObjectId(queryFiltersAndOptions.collage),
       }),
       ...(queryFiltersAndOptions.teamMember && {
         'taskManager.id': ObjectId(queryFiltersAndOptions.teamMember),

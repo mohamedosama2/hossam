@@ -21,6 +21,10 @@ export class CreateGroupDto
   @IsMongoId()
   university: string;
 
+  @IsMongoId()
+  collage: string;
+  
+
   @IsArray()
   @ValidateNested({ each: true })
   @IsNonPrimitiveArray()

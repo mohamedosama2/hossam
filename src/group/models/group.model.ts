@@ -4,12 +4,12 @@ import { Types, Schema as MongooseSchema } from 'mongoose';
 import { University } from 'src/university/models/university.model';
 import { Student } from 'src/users/models/student.model';
 import { User } from 'src/users/models/_user.model';
+import { Collage } from 'src/collage/entities/collage.entity';
 
 export type GroupDocument = Group & Document;
 
 @Schema({ timestamps: true })
-export class Group
-{
+export class Group {
   @Prop({ type: String, required: true })
   name: string;
 
@@ -19,6 +19,13 @@ export class Group
     required: true,
   })
   university: string;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Collage.name,
+    required: true,
+  })
+  collage: string;
 
   @Prop(
     raw([

@@ -26,6 +26,7 @@ export class CollageService {
       await this.collageRepository.findAllWithPaginationOption(
         queryFiltersAndOptions,
         ['nameAr', 'nameEn', 'university', 'enable'],
+        { populate: ['university'] },
       );
     return universities;
   }

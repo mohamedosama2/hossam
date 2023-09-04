@@ -190,7 +190,7 @@ export class Task {
   state?: State;
 
   @Prop({ type: String, enum: Object.values(State) })
-  attendPlace?: State;
+  attendPlace?: State;c
 
   @Prop({ type: String, enum: Object.values(TaskType) })
   taskType?: TaskType;
