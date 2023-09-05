@@ -7,6 +7,8 @@ var ObjectId = require('mongodb').ObjectId;
 import * as _ from 'lodash';
 import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as moment from 'moment';
+
 
 @Injectable()
 export class UserRepository extends BaseAbstractRepository<User> {
@@ -25,7 +27,140 @@ export class UserRepository extends BaseAbstractRepository<User> {
 
     return user[0];
   }
+  // public async findAllWithPaginationCustome(
+  //   @AuthUser() me: UserDocument,
+  //   queryFiltersAndOptions: any,
+  // ): Promise<TaskDocument[]> {
+  //   console.log(queryFiltersAndOptions);
 
+  //   let filters: FilterQuery<TaskDocument> = _.pick(queryFiltersAndOptions, [
+  //     'university',
+  //     'from',
+  //     'to',
+  //     'subject',
+  //     'teamMember',
+  //     'state',
+  //     'TaskType',
+  //     'nameEn',
+  //     'nameAr',
+  //     'group',
+  //     'collage',
+  //     'isDeletedTask',
+  //     'isAdminTask',
+  //   ]);
+  //   console.log('here');
+  //   const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
+  //     'page',
+  //     'limit',
+  //   ]);
+  //   let query = {
+  //     ...(me.role === 'admin' &&
+  //       queryFiltersAndOptions.teamMember && {
+  //       'taskManager.id': queryFiltersAndOptions.teamMember,
+  //     }),
+  //     ...(me.role === 'admin' &&
+  //       queryFiltersAndOptions.taskType && {
+  //       taskType: queryFiltersAndOptions.taskType,
+  //     }),
+  //     ...(me.role === UserRole.teamMember && {
+  //       'taskManager.id': me._id,
+  //     }),
+
+  //     ...(queryFiltersAndOptions.isDeletedTask !== null &&
+  //       queryFiltersAndOptions.isDeletedTask !== undefined && {
+  //       isDeletedTask:
+  //         queryFiltersAndOptions.isDeletedTask == ('true' as any)
+  //           ? { $ne: false, $exists: true }
+  //           : { $ne: true },
+  //     }),
+
+  //     ...(queryFiltersAndOptions.isAdminTask !== null &&
+  //       queryFiltersAndOptions.isAdminTask !== undefined && {
+  //       isAdminTask:
+  //         queryFiltersAndOptions.isAdminTask == ('true' as any)
+  //           ? { $ne: false, $exists: true }
+  //           : { $ne: true },
+  //     }),
+
+  //     // ...{
+  //     //   isDeletedTask: queryFiltersAndOptions.isDeletedTask,
+  //     // },
+
+  //     ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
+  //       createdAt: {
+  //         ...(queryFiltersAndOptions.from && {
+  //           $gte: moment(queryFiltersAndOptions.from)
+  //             .utc()
+  //             .startOf('d')
+  //             .toDate(),
+  //         }),
+  //         ...(queryFiltersAndOptions.to && {
+  //           $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(),
+  //         }),
+  //       },
+  //     }),
+  //     ...(queryFiltersAndOptions.nameEn && {
+  //       nameEn: queryFiltersAndOptions.nameEn,
+  //     }),
+  //     ...(queryFiltersAndOptions.nameAr && {
+  //       nameAr: queryFiltersAndOptions.nameAr,
+  //     }),
+  //     ...(queryFiltersAndOptions.group && {
+  //       group: ObjectId(queryFiltersAndOptions.group),
+  //     }),
+
+  //     ...(queryFiltersAndOptions.collage && {
+  //       collage: ObjectId(queryFiltersAndOptions.collage),
+  //     }),
+  //     ...(queryFiltersAndOptions.teamMember && {
+  //       'taskManager.id': ObjectId(queryFiltersAndOptions.teamMember),
+  //     }),
+  //     ...(queryFiltersAndOptions.subject && {
+  //       subject: ObjectId(queryFiltersAndOptions.subject),
+  //     }),
+  //     ...(queryFiltersAndOptions.university && {
+  //       university: ObjectId(queryFiltersAndOptions.university),
+  //     }),
+  //     ...(queryFiltersAndOptions.state && {
+  //       state: queryFiltersAndOptions.state,
+  //     }),
+  //   };
+  //   delete filters.subject;
+  //   delete filters.nameAr;
+  //   delete filters.nameEn;
+  //   delete filters.state;
+  //   delete filters.university;
+  //   delete filters.group;
+  //   delete filters.teamMember;
+  //   delete filters.from;
+  //   delete filters.to;
+  //   delete filters.isDeletedTask;
+
+  //   let docs;
+  //   console.log(filters);
+  //   console.log(query);
+  //   if (queryFiltersAndOptions.allowPagination) {
+  //     docs = await (this.taskModel as PaginateModel<TaskDocument>).paginate(
+  //       // here we can but any option to to query like sort
+  //       {
+  //         filters,
+  //         ...query,
+  //       },
+  //       {
+  //         ...options,
+  //         populate: ['group', 'university', 'student', 'collage', 'subject'],
+  //       },
+  //     );
+  //   } else {
+  //     docs = await this.taskModel
+  //       .find({
+  //         filters,
+  //         ...query,
+  //       })
+  //       .populate(['group', 'university', 'student', 'collage', 'subject']);
+  //   }
+  //   return docs;
+  // }
   async findUser(phone?: string, whatsapp?: string, email?: string, role?: UserRole): Promise<UserDocument> {
     let query = {
       role: role,
@@ -186,30 +321,149 @@ export class UserRepository extends BaseAbstractRepository<User> {
 
   public async findAllWithPaginationCustome(
     // @AuthUser() me: UserDocument,
+    FilterQueryOptionsUser: any,
+  ): Promise<UserDocument[]> {
+    console.log(FilterQueryOptionsUser);
+
+    let filters: FilterQuery<UserDocument> = _.pick(FilterQueryOptionsUser, [
+      'university',
+      'username',
+      'usernameAr',
+      'role', 'collage', 'enabled', 'from', 'to'
+    ]);
+    console.log('here');
+    const options: PaginateOptions = _.pick(FilterQueryOptionsUser, [
+      'page',
+      'limit',
+    ]);
+    let query = {
+      ...((FilterQueryOptionsUser.from || FilterQueryOptionsUser.to) && {
+        enrolmentDate: {
+          ...(FilterQueryOptionsUser.from && {
+            $gte: moment(FilterQueryOptionsUser.from)
+              .utc()
+              .startOf('d')
+              .toDate(),
+          }),
+          ...(FilterQueryOptionsUser.to && {
+            $lte: moment(FilterQueryOptionsUser.to).utc().endOf('d').toDate(),
+          }),
+        },
+      }),
+      ...(FilterQueryOptionsUser.username && {
+        username: {
+          $regex: `.*${FilterQueryOptionsUser.username}.*`,
+          $options: 'i',
+        },
+      }),
+      ...(FilterQueryOptionsUser.usernameAr && {
+        usernameAr: {
+          $regex: `.*${FilterQueryOptionsUser.usernameAr}.*`,
+          $options: 'i',
+        },
+      }),
+      ...(FilterQueryOptionsUser.university && {
+        university: ObjectId(FilterQueryOptionsUser.university),
+      }),
+      ...(FilterQueryOptionsUser.role && { role: FilterQueryOptionsUser.role }),
+
+      ...(FilterQueryOptionsUser.enabled !== null &&
+        FilterQueryOptionsUser.enable !== undefined && {
+        enabled:
+          FilterQueryOptionsUser.enabled == ('true' as any)
+            ? { $ne: false, $exists: true }
+            : { $ne: true },
+      }),
+    };
+    delete filters.university;
+    delete filters.role;
+    delete filters.username;
+    delete filters.usernameAr;
+    delete filters.from;
+    delete filters.to;
+    delete filters.collage;
+    delete filters.enabled;
+    let docs;
+    console.log(filters);
+    console.log(query);
+    if (FilterQueryOptionsUser.allowPagination) {
+      docs = await (this.userModel as PaginateModel<UserDocument>).paginate(
+        // here we can but any option to to query like sort
+        {
+          ...query,
+        },
+        {
+          ...options,
+          populate: [{
+            path: 'university',
+            select: { nameAr: 1, nameEn: 1, _id: 1 },
+
+
+          },
+
+          {
+            path: 'collage',
+            select: { nameAr: 1, nameEn: 1, _id: 1 }
+          }
+
+          ],
+          // populate: ['group', 'university']
+        },
+      );
+    } else {
+      docs = await this.userModel
+        .find({
+          filters,
+          ...query,
+        })
+        .populate({
+          path: 'university',
+          select: { nameAr: 1, nameEn: 1, _id: 1 },
+        }, {
+          path: 'collage',
+          select: { nameAr: 1, nameEn: 1, _id: 1 }
+        });
+    }
+    return docs;
+  }
+
+  public async findAllWithPaginationCustome2(
+    // @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,
   ): Promise<UserDocument[]> {
     console.log(queryFiltersAndOptions);
 
     let filters: FilterQuery<UserDocument> = _.pick(queryFiltersAndOptions, [
-      'university',
+      'enabled',
       'username',
       'usernameAr',
       'role',
+      'university',
+      'collage',
+      'from',
+      'to'
     ]);
     console.log('here');
     const options: PaginateOptions = _.pick(queryFiltersAndOptions, [
       'page',
       'limit',
     ]);
-    let query = {
-      // ...(me.role === 'admin' && queryFiltersAndOptions.teamMember
-      //   && {
-      //   'taskManager.id': queryFiltersAndOptions.teamMember,
 
-      // }),
-      // ...(me.role === UserRole.teamMember && {
-      //   'taskManager.id': me._id,
-      // }),
+
+    let query = {
+      ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
+        createdAt: {
+          ...(queryFiltersAndOptions.from && {
+            $gte: moment(queryFiltersAndOptions.from)
+              .utc()
+              .startOf('d')
+              .toDate(),
+          }),
+          ...(queryFiltersAndOptions.to && {
+            $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(),
+          }),
+        },
+      }),
       ...(queryFiltersAndOptions.username && {
         username: {
           $regex: `.*${queryFiltersAndOptions.username}.*`,
@@ -226,10 +480,24 @@ export class UserRepository extends BaseAbstractRepository<User> {
         university: ObjectId(queryFiltersAndOptions.university),
       }),
       ...(queryFiltersAndOptions.role && { role: queryFiltersAndOptions.role }),
+
+      ...(queryFiltersAndOptions.enabled !== null &&
+        queryFiltersAndOptions.enabled !== undefined && {
+        enabled:
+          queryFiltersAndOptions.enabled == ('true' as any)
+            ? { $ne: false, $exists: true }
+            : { $ne: true },
+      }),
     };
     delete filters.university;
     delete filters.role;
     delete filters.username;
+    delete filters.usernameAr;
+    delete filters.from;
+    delete filters.to;
+    delete filters.collage;
+    delete filters.enabled;
+
     let docs;
     console.log(filters);
     console.log(query);
@@ -237,16 +505,30 @@ export class UserRepository extends BaseAbstractRepository<User> {
       docs = await (this.userModel as PaginateModel<UserDocument>).paginate(
         // here we can but any option to to query like sort
         {
+          filters,
           ...query,
         },
         {
           ...options,
-          populate: {
+          populate: [{
             path: 'university',
             select: { nameAr: 1, nameEn: 1, _id: 1 },
+
+
           },
-          // populate: ['group', 'university']
+
+          {
+            path: 'collage',
+            select: { nameAr: 1, nameEn: 1, _id: 1 }
+          }
+
+          ],
+
         },
+
+
+
+
       );
     } else {
       docs = await this.userModel
@@ -254,10 +536,14 @@ export class UserRepository extends BaseAbstractRepository<User> {
           filters,
           ...query,
         })
-        .populate({
+        .populate([{
           path: 'university',
           select: { nameAr: 1, nameEn: 1, _id: 1 },
-        });
+        }, {
+          path: 'collage',
+          select: { nameAr: 1, nameEn: 1, _id: 1 }
+        }]);
+      // .populate(['group', 'university', 'student', 'collage', 'subject']);
     }
     return docs;
   }

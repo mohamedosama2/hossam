@@ -57,27 +57,29 @@ export class UsersService {
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsUser,
   ): Promise<PaginateResult<UserDocument> | UserDocument[]> {
-    if (queryFiltersAndOptions.university) {
-      queryFiltersAndOptions.role =
-        queryFiltersAndOptions.role === undefined
-          ? UserRole.STUDENT
-          : queryFiltersAndOptions.role;
-    }
-    const users = await this.userRepository.findAllWithPaginationOption(
+    // if (queryFiltersAndOptions.university) {
+    //   queryFiltersAndOptions.role =
+    //     queryFiltersAndOptions.role === undefined
+    //       ? UserRole.STUDENT
+    //       : queryFiltersAndOptions.role;
+    // }
+    const users = await this.userRepository.findAllWithPaginationCustome2(
       queryFiltersAndOptions,
-      ['username', 'usernameAr', 'role', 'university', 'collage', 'enabled'],
-      {
-        populate: [
-          {
-            path: 'university',
-            select: { nameAr: 1, nameEn: 1, _id: 1 }
-          },
-          {
-            path: 'collage',
-            select: { nameAr: 1, nameEn: 1, _id: 1 }
-          }
-        ]
-      },
+
+      // queryFiltersAndOptions,
+      // ['username', 'usernameAr', 'role', 'university', 'collage', 'enabled' ],
+      // {
+      //   populate: [
+      //     {
+      //       path: 'university',
+      //       select: { nameAr: 1, nameEn: 1, _id: 1 }
+      //     },
+      //     {
+      //       path: 'collage',
+      //       select: { nameAr: 1, nameEn: 1, _id: 1 }
+      //     }
+      //   ]
+      // },
     );
 
     return users;

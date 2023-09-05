@@ -1,5 +1,6 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
+  IsDate,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -41,6 +42,12 @@ export class CreateStudentDto {
   @IsString()
   @IsNotEmpty()
   password?: string;
+
+  
+  @IsDate()
+  @IsOptional()
+  enrolmentDate?: Date;
+  
 
   @IsString()
   @IsOptional()

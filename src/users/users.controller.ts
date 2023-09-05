@@ -145,6 +145,7 @@ export class UsersController {
       registerationData.photo = files.photo[0].secure_url; */
     const counter = await this.counterRepository.getCounter('User');
     registerationData.userId = counter + 1;
+    registerationData.enrolmentDate = registerationData.enrolmentDate == undefined ? Date.now() : registerationData.enrolmentDate as any
     let newUser = await this.UserRepository.createDoc({
       role: UserRole.STUDENT,
       enabled: true,

@@ -23,6 +23,10 @@ export class Student {
     required: true,
   })
   collage: string;
+
+  @Prop({ type: Date, required: false })
+  enrolmentDate?: Date;
+
 }
 
 const StudentSchema = SchemaFactory.createForClass(Student);

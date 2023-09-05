@@ -7,11 +7,13 @@ import { UserRole } from '../models/_user.model';
 
 export class FilterQueryUser {
   @IsOptional()
-  @IsBoolean()
-  @Transform(({ obj }) => {
-    return JSON.parse(obj.enabled);
-  })
-  enabled?: boolean;
+  // @IsBoolean()
+  // @Transform(({ obj }) => {
+  //   return JSON.parse(obj.enabled);
+  // })
+  enabled?: string;
+
+
   @IsOptional()
   @Transform(({ obj }) => {
     return new RegExp(escapeRegExp(obj.username), 'i');
@@ -36,19 +38,15 @@ export class FilterQueryUser {
   @IsOptional()
   @IsMongoId()
   collage?: string;
-}
 
+  @IsOptional()
+  from?: string;
+
+  @IsOptional()
+  to?: string;
+}
 export class FilterQueryOptionsUser extends IntersectionType(
   FilterQueryUser,
   PaginationParams,
 ) { }
 
-/* export class FilterQueryNotification {
-  @IsMongoId()
-  receiver: string;
-}
-
-export class FilterQueryOptionsNotification extends IntersectionType(
-  FilterQueryUser,
-  PaginationParams,
-) {} */
