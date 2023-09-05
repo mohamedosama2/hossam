@@ -59,6 +59,7 @@ export class User {
   userId: number;
 
 
+  @Prop({ type: String })
   email: string;
 
   @Prop({

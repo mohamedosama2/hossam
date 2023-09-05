@@ -15,15 +15,15 @@ export class FilterQueryUser {
 
 
   @IsOptional()
-  @Transform(({ obj }) => {
-    return new RegExp(escapeRegExp(obj.username), 'i');
-  })
+  // @Transform(({ obj }) => {
+  //   return new RegExp(escapeRegExp(obj.username), 'i');
+  // })
   username?: string;
 
   @IsOptional()
-  @Transform(({ obj }) => {
-    return new RegExp(escapeRegExp(obj.usernameAr), 'i');
-  })
+  // @Transform(({ obj }) => {
+  //   return new RegExp(escapeRegExp(obj.usernameAr), 'i');
+  // })
   usernameAr?: string;
 
   @IsEnum(UserRole)

@@ -16,6 +16,8 @@ import {
   PaginateResult,
   UpdateQuery,
 } from 'mongoose';
+var ObjectId = require('mongodb').ObjectId;
+
 import { ChangePasswordDto } from 'src/users/dto/change-password.dto';
 import { FilterQueryOptionsUser } from './dto/filterQueryOptions.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -136,7 +138,7 @@ export class UsersService {
     }
     console.log(id)
 
-    const user = await this.userRepository.updateOne({ id }, updateUserData);
+    const user = await this.userRepository.updateOne({ _id: id }, updateUserData);
     console.log(user)
     return user;
   }

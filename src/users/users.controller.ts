@@ -40,6 +40,7 @@ import { UserRepository } from './users.repository';
 import { Constants } from 'src/utils/constants';
 import { CreateStudentDto, CreateTeamMemberDto } from './dto/create-user.dto';
 import { CounterRepository } from 'src/shared/counter.repository';
+var ObjectId = require('mongodb').ObjectId;
 
 @ApiBearerAuth()
 @ApiTags('USERS')
@@ -82,7 +83,7 @@ export class UsersController {
     delete updateUserData.enabled;
 
     return await this.usersService.update(
-      { _id: id, role: UserRole.STUDENT } as any,
+      { _id: ObjectId(id), role: UserRole.STUDENT } as any,
       updateUserData,
     );
   }
@@ -227,7 +228,7 @@ export class UsersController {
 
     return await this.UserRepository.updateUser(
       { _id: id, role: UserRole.teamMember } as any,
-      updateUserData,
+      updateUserData as any,
     );
   }
   @Roles(UserRole.ADMIN)

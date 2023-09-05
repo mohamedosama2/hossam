@@ -479,6 +479,9 @@ export class UserRepository extends BaseAbstractRepository<User> {
       ...(queryFiltersAndOptions.university && {
         university: ObjectId(queryFiltersAndOptions.university),
       }),
+      ...(queryFiltersAndOptions.collage && {
+        collage: ObjectId(queryFiltersAndOptions.collage),
+      }),
       ...(queryFiltersAndOptions.role && { role: queryFiltersAndOptions.role }),
 
       ...(queryFiltersAndOptions.enabled !== null &&

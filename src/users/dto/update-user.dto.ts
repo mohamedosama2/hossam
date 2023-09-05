@@ -1,5 +1,4 @@
-import
-{
+import {
   IsBoolean,
   IsMongoId,
   IsNotEmpty,
@@ -10,8 +9,7 @@ import
 import { ApiProperty } from '@nestjs/swagger';
 import { Constants } from 'src/utils/constants';
 
-export class UpdateUserDto
-{
+export class UpdateUserDto {
   @IsBoolean()
   @IsOptional()
   enabled?: boolean;
@@ -24,6 +22,12 @@ export class UpdateUserDto
   @IsString()
   @IsMongoId()
   university?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsMongoId()
+  collage: string;
+
 
   @IsOptional()
   @IsString()
@@ -51,8 +55,7 @@ export class UpdateUserDto
   email?: string;
 }
 
-export class UpdateTeamMemberDto
-{
+export class UpdateTeamMemberDto {
   @IsBoolean()
   @IsOptional()
   enabled?: boolean;
