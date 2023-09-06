@@ -25,6 +25,9 @@ export class Payment {
   @Prop({ type: String, enum: Object.values(PaymentType), required: true })
   paymentType: PaymentType;
 
+  @Prop({ type: String, required: false })
+  photo?: string;
+
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,

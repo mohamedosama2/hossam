@@ -154,6 +154,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'teamMember',
       'state',
       'TaskType',
+      'semester',
       'nameEn',
       'nameAr',
       'group',
@@ -174,6 +175,10 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       ...(me.role === 'admin' &&
         queryFiltersAndOptions.taskType && {
         taskType: queryFiltersAndOptions.taskType,
+      }),
+      ...(me.role === 'admin' &&
+        queryFiltersAndOptions.semester && {
+        semester: queryFiltersAndOptions.semester,
       }),
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,

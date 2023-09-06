@@ -123,6 +123,9 @@ export class Task {
   @Prop({ type: String, required: false })
   logo?: string;
 
+  @Prop({ type: String, required: false })
+  projectIdiea?: string;
+
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,

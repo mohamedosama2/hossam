@@ -4,6 +4,7 @@ import { escapeRegExp } from 'lodash';
 import { PaginationParams } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
 import { UserRole } from '../models/_user.model';
+import { JopTitle } from '../models/teamMember.model';
 
 export class FilterQueryUser {
   @IsOptional()
@@ -29,6 +30,11 @@ export class FilterQueryUser {
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
+
+  @IsEnum(JopTitle)
+  @IsOptional()
+  jobTitle?: JopTitle;
+
 
   @IsOptional()
   @IsMongoId()

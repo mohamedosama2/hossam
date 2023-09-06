@@ -1,17 +1,17 @@
 import {
-Controller,
-Get,
-Post,
-Body,
-Patch,
-Param,
-Delete,
-Query,
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserDocument, UserRole } from 'src/users/models/_user.model';
 import ParamsWithId from 'src/utils/paramsWithId.dto';
@@ -55,9 +55,10 @@ export class PaymentController {
     return await this.paymentService.findTaskDetails(id);
   }
 
-  @Get('team-member/task-details/:id')
-  async findTaskDetailsTeam(@Param() { id }: ParamsWithId) {
-    return await this.paymentService.findTaskDetailsTeam(id);
+  @ApiQuery({ name: 'paymentType', description: '[REVENUSE , EXPENSIS ]', required: true, type: String })
+  @Get('all/type')
+  async findTaskDetailsTeam(@Query('paymentType') paymentType: PaymentType) {
+    return await this.paymentService.allPaymentMony(paymentType);
   }
 
   @Get(':teamMember/all-payments')

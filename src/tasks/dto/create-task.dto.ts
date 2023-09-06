@@ -16,7 +16,7 @@ import {
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { LevelType, State, WeekDay, TaskType, TasksLevel, ATTENDENCEPALCE, LessonFor } from '../models/task.model';
+import { LevelType, State, WeekDay, TaskType, TasksLevel, ATTENDENCEPALCE, LessonFor, Semester } from '../models/task.model';
 
 
 export class Level {
@@ -93,11 +93,21 @@ export class CreateTaskDto {
   @IsNotEmpty()
   nameEn: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  projectIdiea?: string;
 
 
   @IsString()
   @IsEnum(TaskType)
   taskType: TaskType;
+
+
+  @IsString()
+  @IsEnum(Semester)
+  semester: Semester;
+
 
 
   @IsBoolean()

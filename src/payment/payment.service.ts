@@ -148,6 +148,15 @@ export class PaymentService {
     };
   }
 
+  async allPaymentMony(paymentType: PaymentType) {
+    // let totalPrice = await this.tasksService.teamMemberMony(teamMember);
+
+    let paidPayment = await this.PaymentRepository.allPaymentMony(paymentType);
+    return {
+      paidPayment
+    };
+  }
+
   async findTaskDetails(taskId: string) {
     return await this.PaymentRepository.findTaskDetails(taskId);
   }

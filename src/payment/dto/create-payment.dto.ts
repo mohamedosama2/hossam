@@ -21,6 +21,11 @@ export class CreatePaymentDto {
 
   @IsString()
   @IsOptional()
+  photo?: string;
+
+
+  @IsString()
+  @IsOptional()
   title?: string;
 
 

@@ -358,6 +358,27 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   }
 
 
+
+  public async allPaymentMony(paymentType: PaymentType) {
+    let stages = [
+      {
+        $match: {
+          paymentType: paymentType,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalExpensis: { $sum: '$paid' },
+        },
+      },
+    ];
+    console.log(stages);
+    let mony = await this.paymentModel.aggregate(stages);
+    return mony[0];
+  }
+
+
   public async findAllWithPaginationCustome(
     @AuthUser() me: UserDocument,
     queryFiltersAndOptions: any,

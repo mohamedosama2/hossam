@@ -438,6 +438,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
       'username',
       'usernameAr',
       'role',
+      'jobTitle',
       'university',
       'collage',
       'from',
@@ -483,6 +484,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
         collage: ObjectId(queryFiltersAndOptions.collage),
       }),
       ...(queryFiltersAndOptions.role && { role: queryFiltersAndOptions.role }),
+      ...(queryFiltersAndOptions.JopTitle && { JopTitle: queryFiltersAndOptions.JopTitle }),
 
       ...(queryFiltersAndOptions.enabled !== null &&
         queryFiltersAndOptions.enabled !== undefined && {
