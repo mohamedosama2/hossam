@@ -15,7 +15,7 @@ import {
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { State } from '../models/task.model';
+import { ATTENDENCEPALCE, Methods, State, TaskFor } from '../models/task.model';
 
 export class TaskManagerDto {
   @IsString()
@@ -33,13 +33,39 @@ export class CreateAdminTaskDto {
   @ApiHideProperty()
   isDeletedTask: boolean;
 
+  @IsOptional()
+  @IsMongoId()
+  university: string;
+
+  @IsMongoId()
+  @IsOptional()
+  collage: string;
+
+  @IsMongoId()
+  @IsOptional()
+  subject: string;
+
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
+  lecture: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiHideProperty()
   nameEn: string;
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
+  @ApiHideProperty()
   nameAr: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  note: string;
 
   @IsBoolean()
   @IsOptional()
@@ -59,6 +85,22 @@ export class CreateAdminTaskDto {
 
   @IsDate()
   endDate: Date;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(ATTENDENCEPALCE)
+  attendancePlace?: ATTENDENCEPALCE;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(TaskFor)
+  taskFor?: TaskFor;
+
+
+
+  @IsString()
+  @IsEnum(Methods)
+  paymentMethod: Methods;
 
 
 }

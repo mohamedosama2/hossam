@@ -14,6 +14,11 @@ export enum State {
   COMPLETED = 'COMPLETED',
 }
 
+export enum Methods {
+  VISA = 'VISA',
+  CASH = 'CASH',
+}
+
 export enum TaskType {
   GRADUATION = 'GRADUATION',
   SINGLE = 'SINGLE',
@@ -58,6 +63,10 @@ export enum ATTENDENCEPALCE {
 export enum LessonFor {
   STUDENT = 'STUDENT',
   GROUP = 'GROUP',
+}
+export enum TaskFor {
+  UNIVERSITY = 'UNIVERSITY',
+  COMPANY = 'COMPANY',
 }
 export class Manager {
   @Prop({ type: String, required: false })
@@ -119,6 +128,12 @@ export class Task {
 
   @Prop({ type: String, required: false })
   nameEn?: string;
+
+  @Prop({ type: String, required: false })
+  lecture?: string;
+
+  @Prop({ type: String, required: false })
+  note?: string;
 
   @Prop({ type: String, required: false })
   logo?: string;
@@ -192,8 +207,11 @@ export class Task {
   @Prop({ type: String, enum: Object.values(State) })
   state?: State;
 
+  @Prop({ type: String, required: false, enum: Object.values(Methods) })
+  methods: Methods;
+
   @Prop({ type: String, enum: Object.values(State) })
-  attendPlace?: State;c
+  attendPlace?: State;
 
   @Prop({ type: String, enum: Object.values(TaskType) })
   taskType?: TaskType;
@@ -202,7 +220,8 @@ export class Task {
   @Prop({ type: String, required: false, enum: Object.values(Semester) })
   semester: Semester;
 
-
+  // @Prop({ type: String, required: false, enum: Object.values(PaymentMethod) })
+  // paymentMethod?: any;
 
   // private task
 
@@ -211,6 +230,9 @@ export class Task {
 
   @Prop({ type: String, required: false, enum: Object.values(LessonFor) })
   lessonFor: LessonFor;
+
+  @Prop({ type: String, required: false, enum: Object.values(TaskFor) })
+  taskFor?: TaskFor;
 
   @Prop({ type: Number, required: false })
   pricePerHour?: number;
