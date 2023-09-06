@@ -67,7 +67,7 @@ export class FilterQueryTasksUpdated {
 
   @IsOptional()
   @IsEnum(Semester)
-  semester: Semester;
+  semester?: Semester;
 
 
   @IsOptional()
