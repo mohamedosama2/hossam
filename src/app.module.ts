@@ -17,6 +17,7 @@ import { GroupModule } from './group/group.module';
 import { TasksModule } from './tasks/tasks.module';
 import { PaymentModule } from './payment/payment.module';
 import { CollageModule } from './collage/collage.module';
+import { FilesModule } from './files/files.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -32,6 +33,7 @@ import { CollageModule } from './collage/collage.module';
     TasksModule,
     PaymentModule,
     CollageModule,
+    FilesModule
 
     // MessageQueueModule,
     // cacheOperationsModule,
@@ -39,4 +41,4 @@ import { CollageModule } from './collage/collage.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

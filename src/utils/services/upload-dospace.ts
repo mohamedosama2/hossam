@@ -10,7 +10,7 @@ import * as multerS3 from 'multer-s3';
 import { Injectable } from '@nestjs/common';
 @Injectable()
 export class UploadDigitalOceanSpace implements MulterOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) { }
   createMulterOptions(): MulterModuleOptions {
     return {
       storage: multerS3({
@@ -27,8 +27,7 @@ export class UploadDigitalOceanSpace implements MulterOptionsFactory {
           const raw = crypto.pseudoRandomBytes(8);
           cb(
             null,
-            `${raw.toString('hex')}_${Date.now().toString()}/${
-              file.originalname
+            `${raw.toString('hex')}_${Date.now().toString()}/${file.originalname
             }`,
           );
         },
