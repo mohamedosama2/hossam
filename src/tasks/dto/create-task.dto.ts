@@ -86,12 +86,14 @@ export class TaskManagerDto {
 }
 export class CreateTaskDto {
   @IsString()
+  @IsOptional()
   @IsNotEmpty()
-  nameAr: string;
+  nameAr?: string;
 
   @IsString()
+  @IsOptional()
   @IsNotEmpty()
-  nameEn: string;
+  nameEn?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -101,32 +103,43 @@ export class CreateTaskDto {
 
   @IsString()
   @IsEnum(TaskType)
-  taskType: TaskType;
+  taskType?: TaskType;
 
 
   @IsString()
   @IsEnum(Semester)
-  semester: Semester;
+  semester?: Semester;
 
 
 
   @IsBoolean()
   @IsOptional()
   @ApiHideProperty()
-  isAdminTask: boolean;
+  isAdminTask?: boolean;
 
   @IsBoolean()
   @IsOptional()
   @ApiHideProperty()
-  isDeletedTask: boolean;
+  isDeletedTask?: boolean;
 
   @IsOptional()
   @IsMongoId()
-  university: string;
+  university?: string;
+
 
   @IsOptional()
   @IsMongoId()
-  collage: string;
+  programmer?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  reporter?: string;
+
+
+
+  @IsOptional()
+  @IsMongoId()
+  collage?: string;
 
   @IsOptional()
   @IsMongoId()
@@ -136,7 +149,7 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsMongoId()
-  subject: string;
+  subject?: string;
 
   @IsOptional()
   logo?: string;
@@ -144,7 +157,7 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsMongoId()
-  group: string;
+  group?: string;
 
   @IsOptional()
   @Type(() => TaskLevel)
@@ -162,18 +175,19 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsNumber()
-  totalPrice: number;
+  totalPrice?: number;
 
   @IsOptional()
   @IsNumber()
-  totalPriceTeamMember: number;
+  totalPriceTeamMember?: number;
 
   @IsOptional()
   @IsNumber()
-  numberOfHours: number;
+  numberOfHours?: number;
+
   @IsOptional()
   @IsNumber()
-  hourPrice: number;
+  hourPrice?: number;
 
 
   @IsOptional()
@@ -190,17 +204,18 @@ export class CreateTaskDto {
 
   @IsString()
   @IsEnum(State)
-  state: State;
+  state?: State;
 
   @IsDate()
-  startDate: Date;
+  @IsOptional()
+  startDate?: Date;
 
   @IsDate()
   @IsOptional()
   deuDate?: Date;
 
   @IsDate()
-  endDate: Date;
+  endDate?: Date;
 
   @IsOptional()
   @Type(() => CreatePaymentTaskDto)
