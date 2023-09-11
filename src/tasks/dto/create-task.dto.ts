@@ -103,7 +103,7 @@ export class CreateTaskDto {
 
   @IsString()
   @IsEnum(TaskType)
-  taskType?: TaskType;
+  taskType: TaskType;
 
 
   @IsString()

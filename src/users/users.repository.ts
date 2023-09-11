@@ -484,7 +484,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
         collage: ObjectId(queryFiltersAndOptions.collage),
       }),
       ...(queryFiltersAndOptions.role && { role: queryFiltersAndOptions.role }),
-      ...(queryFiltersAndOptions.JopTitle && { JopTitle: queryFiltersAndOptions.JopTitle }),
+      ...(queryFiltersAndOptions.jobTitle && { jobTitle: queryFiltersAndOptions.jobTitle }),
 
       ...(queryFiltersAndOptions.enabled !== null &&
         queryFiltersAndOptions.enabled !== undefined && {
@@ -493,10 +493,13 @@ export class UserRepository extends BaseAbstractRepository<User> {
             ? { $ne: false, $exists: true }
             : { $ne: true },
       }),
+
+      // jobTitle: "DEVELOPER"
     };
     delete filters.university;
     delete filters.role;
-    delete filters.username;
+    delete filters.role;
+    delete filters.JopTitle;
     delete filters.usernameAr;
     delete filters.from;
     delete filters.to;
@@ -504,8 +507,7 @@ export class UserRepository extends BaseAbstractRepository<User> {
     delete filters.enabled;
 
     let docs;
-    console.log(filters);
-    console.log(query);
+
     if (queryFiltersAndOptions.allowPagination) {
       docs = await (this.userModel as PaginateModel<UserDocument>).paginate(
         // here we can but any option to to query like sort

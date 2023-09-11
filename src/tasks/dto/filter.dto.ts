@@ -25,6 +25,9 @@ export class FilterQueryTasksUpdated {
   // })
   isAdminTask?: string;
 
+  @IsOptional()
+  lecture?: string
+
 
   @IsOptional()
   @IsMongoId()

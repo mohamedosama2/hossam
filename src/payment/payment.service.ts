@@ -41,6 +41,7 @@ export class PaymentService {
     if (task.student) {
       if (task.taskType == TaskType.SINGLE) {
 
+        console.log('inside 2')
         const remaining = await this.PaymentRepository.taskIndividualRemaining(
           createPaymentDto.byWhom,
           task._id,
@@ -53,6 +54,8 @@ export class PaymentService {
       }
     }
     if (task.group) {
+      console.log('inside 5555')
+      console.log(task.taskType)
 
       if (task.taskType == TaskType.GRADUATION) {
         let studentsLength = task.group['students'].length

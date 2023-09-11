@@ -12,6 +12,7 @@ export class CreatePaymentDto {
   paymentType: PaymentType;
 
   @IsMongoId()
+  @IsOptional()
   byWhom: string;
 
 

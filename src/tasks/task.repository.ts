@@ -221,8 +221,12 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       ...(queryFiltersAndOptions.nameEn && {
         nameEn: queryFiltersAndOptions.nameEn,
       }),
+
       ...(queryFiltersAndOptions.nameAr && {
         nameAr: queryFiltersAndOptions.nameAr,
+      }),
+      ...(queryFiltersAndOptions.lecture && {
+        lecture: queryFiltersAndOptions.lecture,
       }),
       ...(queryFiltersAndOptions.group && {
         group: ObjectId(queryFiltersAndOptions.group),
