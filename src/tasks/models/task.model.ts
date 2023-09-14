@@ -123,6 +123,7 @@ export class Task {
   @Prop({
     type: String,
     // required: false
+    required: false
   })
   nameAr?: string;
 
@@ -131,6 +132,9 @@ export class Task {
 
   @Prop({ type: String, required: false })
   lecture?: string;
+
+  @Prop({ type: String, required: false })
+  companyName?: string;
 
   @Prop({ type: String, required: false })
   note?: string;
@@ -144,7 +148,7 @@ export class Task {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: University.name,
-    // required: false,
+    required: false,
   })
   university?: string;
 
@@ -158,14 +162,14 @@ export class Task {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Subject.name,
-    // required: false,
+    required: false,
   })
   subject?: string;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Group.name,
-    // required: false,
+    required: false,
   })
   group?: string;
 
@@ -185,35 +189,35 @@ export class Task {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,
-    // required: false,
+    required: false,
   })
   reporter?: string;
 
-  @Prop({ type: () => Manager })
+  @Prop({ type: () => Manager   ,required: false})
   taskManager?: Manager;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number,required: false })
   totalPrice?: number;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number ,required: false})
   hourPrice?: number;
 
   @Prop({ type: Number, required: false })
   numberOfHours?: number;
 
-  @Prop({ type: Number, default: 0 })
+  @Prop({ type: Number, default: 0 ,required: false})
   totalPriceTeamMember?: number;
 
-  @Prop({ type: String, enum: Object.values(State) })
+  @Prop({ type: String, enum: Object.values(State),required: false })
   state?: State;
 
   @Prop({ type: String, required: false, enum: Object.values(Methods) })
   methods: Methods;
 
-  @Prop({ type: String, enum: Object.values(State) })
+  @Prop({ type: String, enum: Object.values(State),required: false })
   attendPlace?: State;
 
-  @Prop({ type: String, enum: Object.values(TaskType) })
+  @Prop({ type: String, enum: Object.values(TaskType),required: false })
   taskType?: TaskType;
 
   // single task
@@ -237,10 +241,10 @@ export class Task {
   @Prop({ type: Number, required: false })
   pricePerHour?: number;
 
-  @Prop({ type: () => TaskLevels })
+  @Prop({ type: () => TaskLevels,required: false })
   levels?: TaskLevels[];
 
-  @Prop({ type: () => TaskDay })
+  @Prop({ type: () => TaskDay,required: false })
   days?: TaskDay[];
 
   @Prop({ type: Date, required: false })
@@ -256,12 +260,12 @@ export class Task {
   @Prop({ type: Date, required: false })
   endDate?: Date;
 
-  @Prop({ type: Boolean })
+  @Prop({ type: Boolean,required: false })
   isAdminTask?: boolean;
 
   @Prop({
     type: Boolean,
-    default: false,
+    default: false,required: false
   }) //testing
   isDeletedTask?: boolean;
 }

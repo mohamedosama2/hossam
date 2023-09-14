@@ -103,7 +103,7 @@ export class CreateTaskDto {
 
   @IsString()
   @IsEnum(TaskType)
-  taskType: TaskType;
+  taskType?: TaskType;
 
 
   @IsString()
@@ -186,6 +186,11 @@ export class CreateTaskDto {
   numberOfHours?: number;
 
   @IsOptional()
+  @IsString()
+  companyName?: string;
+
+
+  @IsOptional()
   @IsNumber()
   hourPrice?: number;
 
@@ -228,10 +233,10 @@ export class CreatePaymentTaskDto {
   method: PaymentMethod;
 
   @IsMongoId()
-  byWhom: string;
+  byWhom?: string;
 
   @IsNumber()
-  paid: number;
+  paid?: number;
 
   @IsDate()
   recieveTime: Date;

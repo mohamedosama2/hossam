@@ -101,7 +101,7 @@ export class TasksService {
             paymentType: PaymentType.REVENUSE,
             teamMember: payment.byWhom as any,
             isDeletedPayment: false,
-          });
+          } as any);
         }
       }
     }

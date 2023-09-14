@@ -9,6 +9,7 @@ export class CreatePaymentDto {
 
   @IsString()
   @IsEnum(PaymentType)
+  @IsOptional()
   paymentType: PaymentType;
 
   @IsMongoId()
