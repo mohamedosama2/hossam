@@ -97,6 +97,11 @@ export class TasksController {
     return this.tasksService.update(id, updateTaskDto);
   }
 
+  @Roles(UserRole.ADMIN)
+  @Patch(':id/admin')
+  updateAdminTask(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.tasksService.update(id, updateTaskDto);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.deleteTask(id);

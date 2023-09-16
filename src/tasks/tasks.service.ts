@@ -18,6 +18,7 @@ import { FilterQueryOptionsTasks } from './dto/filter.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { State, TaskType } from './models/task.model';
 import { TaskRepository } from './task.repository';
+import { UpdateAdminTaskDto } from './dto/update-admin-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -227,6 +228,11 @@ export class TasksService {
     console.log('created controller2')
 
     return await this.TaskRepository.updateOne({ _id }, updateTaskDto as any);
+  }
+
+  async updateAdmin(_id: string, updateAdminTaskDto: UpdateAdminTaskDto) {
+    await this.findOne(_id);
+    return await this.TaskRepository.updateOne({ _id }, updateAdminTaskDto);
   }
 
 
