@@ -193,31 +193,31 @@ export class Task {
   })
   reporter?: string;
 
-  @Prop({ type: () => Manager   ,required: false})
+  @Prop({ type: () => Manager, required: false })
   taskManager?: Manager;
 
-  @Prop({ type: Number,required: false })
+  @Prop({ type: Number, required: false })
   totalPrice?: number;
 
-  @Prop({ type: Number ,required: false})
+  @Prop({ type: Number, required: false })
   hourPrice?: number;
 
   @Prop({ type: Number, required: false })
   numberOfHours?: number;
 
-  @Prop({ type: Number, default: 0 ,required: false})
+  @Prop({ type: Number, default: 0, required: false })
   totalPriceTeamMember?: number;
 
-  @Prop({ type: String, enum: Object.values(State),required: false })
+  @Prop({ type: String, enum: Object.values(State), required: false })
   state?: State;
 
   @Prop({ type: String, required: false, enum: Object.values(Methods) })
   methods: Methods;
 
-  @Prop({ type: String, enum: Object.values(State),required: false })
+  @Prop({ type: String, enum: Object.values(State), required: false })
   attendPlace?: State;
 
-  @Prop({ type: String, enum: Object.values(TaskType),required: false })
+  @Prop({ type: String, enum: Object.values(TaskType), required: false })
   taskType?: TaskType;
 
   // single task
@@ -241,10 +241,10 @@ export class Task {
   @Prop({ type: Number, required: false })
   pricePerHour?: number;
 
-  @Prop({ type: () => TaskLevels,required: false })
+  @Prop({ type: () => TaskLevels, required: false })
   levels?: TaskLevels[];
 
-  @Prop({ type: () => TaskDay,required: false })
+  @Prop({ type: () => TaskDay, required: false })
   days?: TaskDay[];
 
   @Prop({ type: Date, required: false })
@@ -260,12 +260,12 @@ export class Task {
   @Prop({ type: Date, required: false })
   endDate?: Date;
 
-  @Prop({ type: Boolean,required: false })
+  @Prop({ type: Boolean, required: false })
   isAdminTask?: boolean;
 
   @Prop({
     type: Boolean,
-    default: false,required: false
+    default: false, required: false
   }) //testing
   isDeletedTask?: boolean;
 }
