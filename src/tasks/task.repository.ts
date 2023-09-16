@@ -136,8 +136,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
           path: 'student',
         },
       }
-
-    }).populate('student');
+      //['group', 'university', 'student', 'collage', 'subject', 'programmer', 'reporter']
+    }).populate('student').populate('university').populate('collage')
+      .populate('subject').populate('programmer').populate('reporter');
     return task;
   }
 
