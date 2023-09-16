@@ -459,15 +459,25 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
   }
 
   async taskIndividualRemaining(byWhom: string, taskId: string) {
+    console.log('byWhom, taskId');
     console.log(byWhom, taskId);
     const remaining = await this.paymentModel.aggregate([
       {
         $match: {
-          byWhom: new Types.ObjectId(byWhom),
-          task: taskId,
+          byWhom: ObjectId(byWhom),
+          task: ObjectId(taskId),
         },
       },
       { $group: { _id: null, allPaid: { $sum: '$paid' } } },
+      // {
+      //   $project:
+      //   {
+      //     _id: 1,
+      //     allPaid: 1
+      //     // { $ifNull: ['$allPaid', 0] }
+      //     // { $sum: '$paid' }
+      //   }
+      // },
     ]);
 
     console.log('REMAINING', remaining);

@@ -46,10 +46,30 @@ export class PaymentService {
           createPaymentDto.byWhom,
           task._id,
         );
-        if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice) {
-          throw new BadRequestException(
-            `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
-          );
+        if (remaining.length > 0) {
+
+          if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice) {
+            throw new BadRequestException(
+              `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
+            );
+          }
+        }
+      }
+
+      if (task.taskType == TaskType.PRIVATE) {
+
+        console.log('inside 2')
+        const remaining = await this.PaymentRepository.taskIndividualRemaining(
+          createPaymentDto.byWhom,
+          task._id,
+        );
+        if (remaining.length > 0) {
+
+          if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice) {
+            throw new BadRequestException(
+              `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
+            );
+          }
         }
       }
     }
