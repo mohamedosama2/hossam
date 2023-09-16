@@ -34,7 +34,7 @@ export class TasksService {
 
     if (createTaskDto.taskType === TaskType.GRADUATION) {
       // if (!createTaskDto.group || !createTaskDto.levels || !createTaskDto.logo) throw new BadRequestException('must fill all data ');
-      if (!createTaskDto.group ||  !createTaskDto.logo) throw new BadRequestException('must fill all data ');
+      if (!createTaskDto.group || !createTaskDto.logo) throw new BadRequestException('must fill all data ');
     }
     if (createTaskDto.taskType === TaskType.SINGLE) {
       if (!createTaskDto.student) throw new BadRequestException('must fill all data ');
@@ -187,7 +187,7 @@ export class TasksService {
   }
 
   async findOne(_id: string, options?: QueryOptions) {
-    const isExisted = await this.TaskRepository.findOne({ _id }, options);
+    const isExisted = await this.TaskRepository.findPopulatedTask(_id);
     if (!isExisted) throw new NotFoundException();
     return isExisted;
   }

@@ -135,8 +135,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
         populate: {
           path: 'student',
         },
-      },
-    });
+      }
+
+    }).populate('student');
     return task;
   }
 
@@ -284,7 +285,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
         },
         {
           ...options,
-          populate: ['group', 'university', 'student', 'collage', 'subject'],
+          populate: ['group', 'university', 'student', 'collage', 'subject', 'programmer', 'reporter'],
         },
       );
     } else {
@@ -293,7 +294,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
           filters,
           ...query,
         })
-        .populate(['group', 'university', 'student', 'collage', 'subject']);
+        .populate(['group', 'university', 'student', 'collage', 'subject', 'programmer', 'reporter']);
     }
     return docs;
   }
