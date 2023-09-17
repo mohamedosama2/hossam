@@ -38,7 +38,7 @@ export class Payment {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,
-    required: true,
+    required: false,
   })
   teamMember: string;
 

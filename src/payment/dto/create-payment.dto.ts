@@ -41,7 +41,7 @@ export class CreatePaymentDto {
   @IsOptional()
   @ApiHideProperty()
   @IsMongoId()
-  teamMember: string;
+  teamMember?: string;
 
   @IsMongoId()
   task: string;
