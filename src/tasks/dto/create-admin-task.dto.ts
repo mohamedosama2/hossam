@@ -31,46 +31,56 @@ export class CreateAdminTaskDto {
   @IsBoolean()
   @IsOptional()
   @ApiHideProperty()
-  isDeletedTask: boolean;
+  isDeletedTask?: boolean;
 
   @IsOptional()
   @IsMongoId()
-  university: string;
+  university?: string;
 
   @IsMongoId()
   @IsOptional()
-  collage: string;
+  collage?: string;
+
+  @IsOptional()
+  @IsString()
+  companyName?: string;
+
+  @IsOptional()
+  @IsNumber()
+  totalPrice?: number;
+
+
 
   @IsMongoId()
   @IsOptional()
-  subject: string;
+  subject?: string;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  lecture: string;
+  lecture?: string;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   @ApiHideProperty()
-  nameEn: string;
+  nameEn?: string;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
   @ApiHideProperty()
-  nameAr: string;
+  nameAr?: string;
 
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  note: string;
+  note?: string;
 
   @IsBoolean()
   @IsOptional()
   @ApiHideProperty()
-  isAdminTask: boolean;
+  isAdminTask?: boolean;
 
   @IsOptional()
   @ApiHideProperty()
@@ -78,13 +88,13 @@ export class CreateAdminTaskDto {
   taskManager?: TaskManagerDto;
 
   @IsDate()
-  date: Date;
+  date?: Date;
 
   @IsDate()
-  startDate: Date;
+  startDate?: Date;
 
   @IsDate()
-  endDate: Date;
+  endDate?: Date;
 
   @IsOptional()
   @IsString()
@@ -101,7 +111,7 @@ export class CreateAdminTaskDto {
   @IsString()
   @IsEnum(Methods)
   @IsOptional()
-  paymentMethod: Methods;
+  paymentMethod?: Methods;
 
 
 }
