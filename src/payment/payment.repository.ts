@@ -396,6 +396,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
 
     let filters: FilterQuery<PaymentDocument> = _.pick(queryFiltersAndOptions, [
       'task',
+      'teamMember',
       'from',
       'to',
       'title',
@@ -423,6 +424,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
         }
       }),
       ...(queryFiltersAndOptions.task && { task: ObjectId(queryFiltersAndOptions.task) }),
+      ...(queryFiltersAndOptions.teamMember && { teamMember: ObjectId(queryFiltersAndOptions.teamMember) }),
       ...(queryFiltersAndOptions.title && { title: new RegExp(_.escapeRegExp(queryFiltersAndOptions.title), 'i') }),
       ...(queryFiltersAndOptions.paymentType && { paymentType: queryFiltersAndOptions.paymentType }),
     }

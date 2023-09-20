@@ -34,6 +34,14 @@ export class FilterQueryTasksUpdated {
   university?: string;
 
   @IsOptional()
+  @IsMongoId()
+  reporter?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  programmer?: string;
+
+  @IsOptional()
   from?: string;
 
   @IsOptional()

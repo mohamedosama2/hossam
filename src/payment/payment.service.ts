@@ -163,10 +163,17 @@ export class PaymentService {
     let totalPrice = await this.tasksService.teamMemberMony(teamMember);
 
     let paidPrice = await this.PaymentRepository.allTeamMemberMony(teamMember);
-    let remaning = totalPrice.totalmony - paidPrice.totalExpensis;
+
+    console.log('totalPrice')
+    console.log(totalPrice)
+    console.log('paidPrice')
+    console.log(paidPrice)
+    let totalMony = totalPrice == undefined ? 0 : totalPrice.totalmony
+    let totalExpensis = paidPrice == undefined ? 0 : paidPrice.totalExpensis
+    let remaning = totalMony - totalExpensis;
     return {
-      totalPrice: totalPrice.totalmony,
-      paidPrice: paidPrice.totalExpensis,
+      totalPrice: totalMony,
+      paidPrice: totalExpensis,
       remaning,
     };
   }

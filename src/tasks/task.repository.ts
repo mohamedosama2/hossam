@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { UserDocument, UserRole } from 'src/users/models/_user.model';
+import { JopTitle } from 'src/users/models/teamMember.model';
 var ObjectId = require('mongodb').ObjectId;
 
 /* function addDays(days) {
@@ -150,6 +151,8 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
 
     let filters: FilterQuery<TaskDocument> = _.pick(queryFiltersAndOptions, [
       'university',
+      'reporter',
+      'programmer',
       'from',
       'to',
       'subject',
@@ -185,6 +188,13 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       }),
       ...(me.role === UserRole.teamMember && {
         'taskManager.id': me._id,
+      }),
+
+      ...(me.role === UserRole.teamMember && (me as any).jobTitle === JopTitle.REPORTER && {
+        'reporter': me._id,
+      }),
+      ...(me.role === UserRole.teamMember && (me as any).jobTitle === JopTitle.DEVELOPER && {
+        'programmer': me._id,
       }),
 
       ...(queryFiltersAndOptions.isDeletedTask !== null &&
@@ -241,6 +251,14 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
 
       ...(queryFiltersAndOptions.group && {
         group: ObjectId(queryFiltersAndOptions.group),
+      }),
+
+      ...(queryFiltersAndOptions.reporter && {
+        reporter: ObjectId(queryFiltersAndOptions.reporter),
+      }),
+
+      ...(queryFiltersAndOptions.programmer && {
+        programmer: ObjectId(queryFiltersAndOptions.programmer),
       }),
 
       ...(queryFiltersAndOptions.collage && {
@@ -316,6 +334,10 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
     ];
     console.log(stages);
     let mony = await this.taskModel.aggregate(stages);
+    console.log('mony')
+    console.log(mony)
+    // console.log(mony)totalmony
     return mony[0];
+
   }
 }
