@@ -158,6 +158,15 @@ export class PaymentService {
     );
   }
 
+  async findAllNew(
+    FilterQueryOptionsTasks: FilterQueryOptionsPayment,
+    @AuthUser() me: UserDocument,
+  ) {
+    return await this.PaymentRepository.findAllNew(
+      me,
+      FilterQueryOptionsTasks);
+  }
+
   async teamMemberMony(teamMember: string) {
     console.log('here');
     let totalPrice = await this.tasksService.teamMemberMony(teamMember);

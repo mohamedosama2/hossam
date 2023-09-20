@@ -49,6 +49,14 @@ export class PaymentController {
     return this.paymentService.findAll(FilterQueryOptionsTasks, me);
   }
 
+  @Get('/all/grouped')
+  findAllNew(
+    @Query() FilterQueryOptionsTasks: FilterQueryOptionsPayment,
+    @AuthUser() me: UserDocument,
+  ) {
+    return this.paymentService.findAllNew(FilterQueryOptionsTasks, me);
+  }
+
   @Public()
   @Get('task-details/:id')
   async findTaskDetails(@Param() { id }: ParamsWithId) {

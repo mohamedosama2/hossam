@@ -460,6 +460,147 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
     return docs;
   }
 
+  public async findAllNew(@AuthUser() me: UserDocument,
+    queryFiltersAndOptions: any,
+  ): Promise<PaymentDocument[]> {
+
+    const skip = queryFiltersAndOptions.limit * (queryFiltersAndOptions.page - 1);
+
+
+    const allowLimit = {
+      ...(queryFiltersAndOptions.allowPagination && { $limit: queryFiltersAndOptions.limit }),
+    };
+
+
+
+    const allowSkip = {
+      ...(queryFiltersAndOptions.allowPagination && { $skip: skip }),
+    };
+    let query = {
+      ...(queryFiltersAndOptions.isDeletedPayment !== null &&
+        // queryFiltersAndOptions.isDeletedPayment !== undefined &&
+        { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment == 'true' as any ? { $ne: false } : { $ne: true } }),
+
+      // ...(queryFiltersAndOptions.isDeletedPayment &&
+      //   { isDeletedPayment: queryFiltersAndOptions.isDeletedPayment }),
+
+
+      ...((queryFiltersAndOptions.from || queryFiltersAndOptions.to) && {
+        createdAt: {
+          ...(queryFiltersAndOptions.from && { $gte: moment(queryFiltersAndOptions.from).utc().startOf('d').toDate(), }),
+          ...(queryFiltersAndOptions.to && { $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(), })
+        }
+      }),
+      ...(queryFiltersAndOptions.task && { task: ObjectId(queryFiltersAndOptions.task) }),
+      ...(queryFiltersAndOptions.teamMember && { teamMember: ObjectId(queryFiltersAndOptions.teamMember) }),
+      ...(queryFiltersAndOptions.title && { title: new RegExp(_.escapeRegExp(queryFiltersAndOptions.title), 'i') }),
+      ...(queryFiltersAndOptions.paymentType && { paymentType: queryFiltersAndOptions.paymentType }),
+    }
+
+    let docs = await this.paymentModel.aggregate([
+      {
+        $match: query
+      },
+      {
+        $sort: { _id: -1 }
+      },
+      {
+        $lookup: {
+          from: 'tasks',
+          localField: 'task',
+          foreignField: '_id',
+          as: 'task',
+        },
+      },
+      {
+        $unwind: {
+          path: '$task',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'teamMember',
+          foreignField: '_id',
+          as: 'teamMember',
+        },
+      },
+      {
+        $unwind: {
+          path: '$teamMember',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'byWhom',
+          foreignField: '_id',
+          as: 'byWhom',
+        },
+      },
+      {
+        $unwind: {
+          path: '$byWhom',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $group: {
+          _id: '$byWhom._id',
+          payments: { $push: '$$ROOT' },
+          // rewardStreams: { $first: '$rewardStreams' },
+          // priceInfo: { $first: '$priceInfo' },
+          // productType: { $first: '$productType' },
+          // priceList: { $first: '$priceList' },
+          // vertical: { $first: '$vertical' },
+          // userType: { $first: '$userType' },
+          // baseInsentive: { $first: '$baseInsentive' },
+        },
+      },
+
+      {
+        $facet: {
+          totalDocs: [{ $count: 'count' }],
+          docs: queryFiltersAndOptions.allowPagination == true ? [allowSkip, allowLimit] : [],
+        },
+      },
+      {
+        $project: {
+          totalDocs: { $first: '$totalDocs.count' },
+          docs: 1,
+        },
+      },
+      {
+        $addFields: {
+          paginationMeta: {
+            _id: '$$REMOVE',
+            page: queryFiltersAndOptions.allowPagination == false ? null : queryFiltersAndOptions.page,
+            limit: queryFiltersAndOptions.allowPagination == false ? null : queryFiltersAndOptions.limit,
+            skip: queryFiltersAndOptions.allowPagination == false ? null : skip,
+            totalDocs: '$totalDocs',
+            totalPages: {
+              $ceil: {
+                $divide: ['$totalDocs', queryFiltersAndOptions.allowPagination == false ? null : queryFiltersAndOptions.limit],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          totalDocs: 0,
+        },
+      },
+    ])
+
+    return docs[0]
+  }
+
   async taskIndividualRemaining(byWhom: string, taskId: string) {
     console.log('byWhom, taskId');
     console.log(byWhom, taskId);
