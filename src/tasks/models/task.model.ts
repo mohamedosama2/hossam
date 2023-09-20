@@ -208,6 +208,12 @@ export class Task {
   @Prop({ type: Number, default: 0, required: false })
   totalPriceTeamMember?: number;
 
+  @Prop({ type: Number, default: 0, required: false })
+  totalPriceProgrammer?: number;
+
+  @Prop({ type: Number, default: 0, required: false })
+  totalPriceReporter?: number;
+
   @Prop({ type: String, enum: Object.values(State), required: false })
   state?: State;
 

@@ -179,6 +179,14 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsNumber()
+  totalPriceReporter?: number;
+
+  @IsOptional()
+  @IsNumber()
+  totalPriceProgrammer?: number;
+
+  @IsOptional()
+  @IsNumber()
   totalPriceTeamMember?: number;
 
   @IsOptional()
