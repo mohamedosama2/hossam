@@ -29,6 +29,12 @@ export class CreateStudentDto {
   @IsNotEmpty()
   username: string;
 
+
+  @IsString()
+  @IsOptional()
+  // @IsNotEmpty()
+  usernameAr: string;
+
   @IsNumber()
   @IsOptional()
   @ApiHideProperty()
@@ -43,11 +49,11 @@ export class CreateStudentDto {
   @IsNotEmpty()
   password?: string;
 
-  
+
   @IsDate()
   @IsOptional()
   enrolmentDate?: Date;
-  
+
 
   @IsString()
   @IsOptional()

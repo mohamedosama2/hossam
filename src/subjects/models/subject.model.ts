@@ -44,10 +44,10 @@ export class Subject {
   @Prop({ type: String, required: true })
   doctorNameEn: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   driveLink: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   driveMaterials: string;
 
   @Prop({ type: Date, required: true })

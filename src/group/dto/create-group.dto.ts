@@ -4,12 +4,14 @@ import
   {
     IsArray,
     IsBoolean,
+    IsEnum,
     IsMongoId,
     IsNotEmpty,
     IsOptional,
     IsString,
     ValidateNested,
   } from 'class-validator';
+import { Semester } from 'src/subjects/models/subject.model';
 import { IsNonPrimitiveArray } from 'src/utils/custumValidationDecorator';
 
 export class CreateGroupDto
@@ -36,6 +38,9 @@ export class CreateGroupDto
   @ApiHideProperty()
   enable: boolean;
 
+  
+  @IsEnum(Semester)
+  semester: Semester;
 
 }
 

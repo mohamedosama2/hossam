@@ -5,6 +5,7 @@ import { University } from 'src/university/models/university.model';
 import { Student } from 'src/users/models/student.model';
 import { User } from 'src/users/models/_user.model';
 import { Collage } from 'src/collage/entities/collage.entity';
+import { Semester } from 'src/subjects/models/subject.model';
 
 export type GroupDocument = Group & Document;
 
@@ -26,6 +27,9 @@ export class Group {
     required: true,
   })
   collage: string;
+
+  @Prop({ type: String, required: true, enum: Object.values(Semester) })
+  semester: Semester;
 
   @Prop(
     raw([

@@ -37,10 +37,11 @@ export class CreateSubjectDto {
   doctorNameEn: string;
 
   @IsString()
-  @IsNotEmpty()
-  driveLink: string;
+  @IsOptional()
+  // @IsNotEmpty()
+  driveLink?: string;
 
   @IsString()
-  @IsNotEmpty()
-  driveMaterials: string;
+  @IsOptional()
+  driveMaterials?: string;
 }
