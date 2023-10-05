@@ -160,6 +160,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'state',
       'TaskType',
       'taskFor',
+      'lessonFor',
       'semester',
       'nameEn',
       'nameAr',
@@ -280,6 +281,12 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       ...(queryFiltersAndOptions.taskFor && {
         taskFor: queryFiltersAndOptions.taskFor,
       }),
+
+      ...(queryFiltersAndOptions.lessonFor && {
+        lessonFor: queryFiltersAndOptions.lessonFor,
+      }),
+
+
     };
     delete filters.subject;
     delete filters.nameAr;

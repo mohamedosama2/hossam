@@ -75,6 +75,10 @@ export class FilterQueryTasksUpdated {
   @IsEnum(TaskFor)
   taskFor?: TaskFor
 
+  @IsOptional()
+  @IsEnum(TaskFor)
+  lessonFor?: TaskFor
+
 
   @IsOptional()
   @IsEnum(Semester)
