@@ -6,7 +6,7 @@ import {
   PaginationParams,
 } from 'src/utils/pagination/paginationParams.dto';
 import { IntersectionType } from '@nestjs/swagger';
-import { Semester, State, TaskFor, TaskType } from 'src/tasks/models/task.model';
+import { LessonFor, Semester, State, TaskFor, TaskType } from 'src/tasks/models/task.model';
 
 export class FilterQueryTasksUpdated {
   @IsOptional()
@@ -76,8 +76,8 @@ export class FilterQueryTasksUpdated {
   taskFor?: TaskFor
 
   @IsOptional()
-  @IsEnum(TaskFor)
-  lessonFor?: TaskFor
+  @IsEnum(LessonFor)
+  lessonFor?: LessonFor
 
 
   @IsOptional()
