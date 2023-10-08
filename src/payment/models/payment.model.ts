@@ -7,7 +7,7 @@ import { User } from 'src/users/models/_user.model';
 export enum PaymentMethod {
   VISA = 'VISA',
   CASH = 'CASH',
-  KNET = 'KNET',
+  KNET = 'K-NET',
 }
 
 export enum PaymentType {

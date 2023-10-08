@@ -109,9 +109,9 @@ export class CreateAdminTaskDto {
 
 
   @IsString()
-  @IsEnum(Methods)
+  @IsEnum(PaymentMethod)
   @IsOptional()
-  paymentMethod?: Methods;
+  paymentMethod?: PaymentMethod;
 
 
 }

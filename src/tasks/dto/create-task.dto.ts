@@ -236,9 +236,9 @@ export class CreateTaskDto {
 }
 
 export class CreatePaymentTaskDto {
-  @IsString()
+
   @IsEnum(PaymentMethod)
-  method: PaymentMethod;
+  method?: PaymentMethod;
 
   @IsMongoId()
   byWhom?: string;
