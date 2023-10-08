@@ -35,7 +35,7 @@ export class TasksService {
 
     if (createTaskDto.taskType === TaskType.GRADUATION) {
       // if (!createTaskDto.group || !createTaskDto.levels || !createTaskDto.logo) throw new BadRequestException('must fill all data ');
-      if (!createTaskDto.group || !createTaskDto.logo) throw new BadRequestException('must fill all data ');
+      if (!createTaskDto.group) throw new BadRequestException('must fill all data ');
     }
     if (createTaskDto.taskType === TaskType.SINGLE) {
       if (!createTaskDto.student) throw new BadRequestException('must fill all data ');
