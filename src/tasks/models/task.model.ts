@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Schema as MongooseSchema, Document } from 'mongoose';
 import { Collage } from 'src/collage/entities/collage.entity';
 import { Group } from 'src/group/models/group.model';
+import { PaymentMethod } from 'src/payment/models/payment.model';
 import { Subject } from 'src/subjects/models/subject.model';
 import { University } from 'src/university/models/university.model';
 import { User } from 'src/users/models/_user.model';
@@ -230,8 +231,8 @@ export class Task {
   @Prop({ type: String, required: false, enum: Object.values(Semester) })
   semester: Semester;
 
-  // @Prop({ type: String, required: false, enum: Object.values(PaymentMethod) })
-  // paymentMethod?: any;
+  @Prop({ type: String, required: false, })
+  paymentMethod?: PaymentMethod | any;
 
   // private task
 
