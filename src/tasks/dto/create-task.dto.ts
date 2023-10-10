@@ -16,7 +16,7 @@ import {
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { LevelType, State, WeekDay, TaskType, TasksLevel, ATTENDENCEPALCE, LessonFor, Semester } from '../models/task.model';
+import { LevelType, State, WeekDay, TaskType, TasksLevel, ATTENDENCEPALCE, LessonFor, Semester, PaymentStatus } from '../models/task.model';
 
 
 export class Level {
@@ -179,6 +179,10 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsNumber()
+  totalDegree?: number;
+
+  @IsOptional()
+  @IsNumber()
   totalPriceReporter?: number;
 
   @IsOptional()
@@ -197,6 +201,13 @@ export class CreateTaskDto {
   @IsString()
   companyName?: string;
 
+  @IsOptional()
+  @IsString()
+  grade?: string;
+
+  @IsOptional()
+  @IsString()
+  year?: string;
 
   @IsOptional()
   @IsNumber()
@@ -230,6 +241,11 @@ export class CreateTaskDto {
   @IsDate()
   endDate?: Date;
 
+  @IsEnum(PaymentStatus)
+  @IsOptional()
+  paymentStatus?: PaymentStatus;
+
+
   @IsOptional()
   @Type(() => CreatePaymentTaskDto)
   payment?: CreatePaymentTaskDto[];
@@ -239,6 +255,8 @@ export class CreatePaymentTaskDto {
 
   @IsEnum(PaymentMethod)
   method?: PaymentMethod;
+
+
 
   @IsMongoId()
   byWhom?: string;

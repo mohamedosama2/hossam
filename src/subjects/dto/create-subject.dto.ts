@@ -10,7 +10,8 @@ export class CreateSubjectDto {
   collage?: string;
 
   @IsDate()
-  subjectYear: Date;
+  @IsOptional()
+  subjectYear?: Date;
 
   @IsEnum(Semester)
   semester: Semester;

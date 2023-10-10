@@ -69,6 +69,11 @@ export enum TaskFor {
   UNIVERSITY = 'UNIVERSITY',
   COMPANY = 'COMPANY',
 }
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+}
 export class Manager {
   @Prop({ type: String, required: false })
   id?: string;
@@ -117,7 +122,7 @@ export class TaskLevels {
   taskLevelData?: Level[];
 }
 
-@Schema({ timestamps: false })
+@Schema({ timestamps: true })
 export class Task {
   id?: string;
 
@@ -234,6 +239,8 @@ export class Task {
   @Prop({ type: String, required: false, })
   paymentMethod?: PaymentMethod | any;
 
+  @Prop({ type: String, required: false, })
+  paymentStatus?: PaymentStatus | any;
   // private task
 
   @Prop({ type: String, required: false, enum: Object.values(ATTENDENCEPALCE) })
@@ -256,6 +263,15 @@ export class Task {
 
   @Prop({ type: Date, required: false })
   startDate?: Date;
+
+  @Prop({ type: String, required: false })
+  year?: string;
+
+  @Prop({ type: String, required: false })
+  grade?: string;
+
+  @Prop({ type: Number, required: false })
+  totalDegree?: number;
 
   // ================== here question single task 
   @Prop({ type: Date, required: false })

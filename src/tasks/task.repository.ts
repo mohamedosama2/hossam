@@ -140,6 +140,9 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       //['group', 'university', 'student', 'collage', 'subject', 'programmer', 'reporter']
     }).populate('student').populate('university').populate('collage')
       .populate('subject').populate('programmer').populate('reporter');
+
+    console.log('task')
+    console.log(task)
     return task;
   }
 

@@ -15,7 +15,7 @@ import {
 } from 'class-validator';
 import { CreatePaymentDto } from 'src/payment/dto/create-payment.dto';
 import { PaymentMethod } from 'src/payment/models/payment.model';
-import { ATTENDENCEPALCE, Methods, State, TaskFor } from '../models/task.model';
+import { ATTENDENCEPALCE, Methods, PaymentStatus, State, TaskFor } from '../models/task.model';
 
 export class TaskManagerDto {
   @IsString()
@@ -112,6 +112,11 @@ export class CreateAdminTaskDto {
   @IsEnum(PaymentMethod)
   @IsOptional()
   paymentMethod?: PaymentMethod;
+
+  @IsEnum(PaymentStatus)
+  @IsOptional()
+  paymentStatus?: PaymentStatus;
+
 
 
 }

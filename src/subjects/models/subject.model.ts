@@ -32,6 +32,10 @@ export class Subject {
   @Prop({ type: String, required: true, enum: Object.values(Semester) })
   semester: Semester;
 
+  // @Prop({ type: String, required: false })
+  // year?: string;
+
+
   @Prop({ type: String, required: true })
   nameAr: string;
 
@@ -50,7 +54,7 @@ export class Subject {
   @Prop({ type: String, required: false })
   driveMaterials: string;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, required: false })
   subjectYear: Date;
 
   @Prop({
