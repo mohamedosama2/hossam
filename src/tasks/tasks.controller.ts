@@ -21,6 +21,7 @@ import { UsersService } from 'src/users/users.service';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { CreateAdminTaskDto } from './dto/create-admin-task.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { UpdateAdminTaskDto } from './dto/update-admin-task.dto';
 
 @ApiBearerAuth()
 @ApiTags('tasks'.toUpperCase())
@@ -99,8 +100,8 @@ export class TasksController {
 
   @Roles(UserRole.ADMIN)
   @Patch(':id/admin')
-  updateAdminTask(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(id, updateTaskDto);
+  updateAdminTask(@Param('id') id: string, @Body() updateTaskDto: UpdateAdminTaskDto) {
+    return this.tasksService.updateAdmin(id, updateTaskDto);
   }
   @Delete(':id')
   remove(@Param('id') id: string) {
