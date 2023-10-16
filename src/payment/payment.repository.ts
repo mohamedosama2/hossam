@@ -222,6 +222,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 as: 'byWhom',
               },
             },
+            { $unwind: { path: '$byWhom', preserveNullAndEmptyArrays: true } },
             {
               $lookup: {
                 from: 'tasks',
@@ -237,6 +238,14 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 localField: 'task.group',
                 foreignField: '_id',
                 as: 'task.group',
+              },
+            },
+
+            {
+              $group: {
+                _id: "$byWhom._id",
+                payments: { $push: '$$ROOT' },
+                // totalPrice: { $push: '$task.totalPrice' },
               },
             },
             /* { $unwind: { path: '$task.group',preserveNullAndEmptyArrays: true  } }, */
