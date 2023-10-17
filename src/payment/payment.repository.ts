@@ -40,7 +40,7 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
 
   async findTaskDetails(taskId: string) {
     const taskDeatils = await this.paymentModel.aggregate([
-      { $match: { task: new Types.ObjectId(taskId), paymentType: PaymentType.EXPENSIS } },
+      { $match: { task: ObjectId(taskId),/* paymentType: PaymentType.REVENUSE*/ } },
 
       {
         $facet: {
@@ -54,17 +54,9 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
                 as: 'task',
               },
             },
-            /*  {
-              $lookup: {
-                from: 'users',
-                localField: 'byWhom',
-                foreignField: '_id',
-                as: 'byWhom',
-              },
-            }, */
             {
               $unwind: {
-                path: '$task', //+ preserveNullAndEmptyArrays: true
+                path: '$task', preserveNullAndEmptyArrays: true
               },
             },
             {
