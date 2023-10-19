@@ -190,15 +190,15 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
         queryFiltersAndOptions.semester && {
         semester: queryFiltersAndOptions.semester,
       }),
-      ...(me.role === UserRole.teamMember && {
-        'taskManager.id': me._id,
-      }),
+      // ...(me.role === UserRole.teamMember && {
+      //   'taskManager.id': me._id,
+      // }),
 
       ...(me.role === UserRole.teamMember && (me as any).jobTitle === JopTitle.REPORTER && {
-        'reporter': me._id,
+        'reporter': ObjectId(me._id),
       }),
       ...(me.role === UserRole.teamMember && (me as any).jobTitle === JopTitle.DEVELOPER && {
-        'programmer': me._id,
+        'programmer': ObjectId(me._id),
       }),
 
       ...(queryFiltersAndOptions.isDeletedTask !== null &&
