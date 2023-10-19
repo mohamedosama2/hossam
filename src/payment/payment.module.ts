@@ -6,6 +6,7 @@ import { Payment, PaymentSchema } from './models/payment.model';
 import { PaymentRepository } from './payment.repository';
 import { TasksModule } from 'src/tasks/tasks.module';
 import { GroupModule } from 'src/group/group.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
 
@@ -17,7 +18,8 @@ import { GroupModule } from 'src/group/group.module';
       },
     ]),
     forwardRef(() => TasksModule),
-    GroupModule
+    GroupModule,
+    UsersModule
   ],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentRepository],

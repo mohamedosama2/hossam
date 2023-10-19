@@ -12,10 +12,11 @@ import { Types, Schema as MongooseSchema } from 'mongoose';
 import { PaymentType } from './models/payment.model';
 import { TasksService } from 'src/tasks/tasks.service';
 import { FilterQueryOptionsPayment } from './dto/filter.dto';
-import { UserDocument } from 'src/users/models/_user.model';
+import { UserDocument, UserRole } from 'src/users/models/_user.model';
 import { AuthUser } from 'src/auth/decorators/me.decorator';
 import { GroupRepository } from 'src/group/group.repository';
 import { TaskType } from 'src/tasks/models/task.model';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PaymentService {
@@ -25,6 +26,7 @@ export class PaymentService {
 
     private readonly PaymentRepository: PaymentRepository,
     private readonly GroupRepository: GroupRepository,
+    private readonly usersService: UsersService,
   ) { }
   /* async create(createPaymentDto: CreatePaymentDto)
   {
@@ -123,10 +125,21 @@ export class PaymentService {
     let task = await this.tasksService.findOne(createPaymentDto.task, {
       populate: 'group',
     });
-    // console.log(task.taskManager.id)
+    console.log('task.group')
+    console.log(task.group)
     // console.log(createPaymentDto.byWhom)
 
     // if (task.taskManager.id != createPaymentDto.byWhom) throw new BadRequestException("this team member not inside this project")
+    let userDoc = await this.usersService.findOne({ _id: Object(createPaymentDto.byWhom) })
+
+    if (userDoc.role == UserRole.STUDENT) {
+
+      if (createPaymentDto.paid > task.totalPriceTeamMember) {
+        throw new BadRequestException(
+          `You cant pay this as your total price is  ${task.totalPriceTeamMember} , want to pay ${createPaymentDto.paid} `,
+        );
+      }
+    }
 
     const remaining = await this.PaymentRepository.testingRemaning(
       createPaymentDto.byWhom,
@@ -134,19 +147,28 @@ export class PaymentService {
     );
     console.log('remaining')
     console.log(remaining)
-    if (createPaymentDto.paid > task.totalPriceTeamMember) {
-      throw new BadRequestException(
-        `You cant pay this as your total price is  ${task.totalPriceTeamMember} , want to pay ${createPaymentDto.paid} `,
-      );
-    }
+    // let user = await this.u
     if (remaining.length != 0) {
       console.log('remaining[0].allPaid')
       console.log(remaining[0].allPaid)
       console.log(task.totalPrice)
-      if (remaining[0].allPaid + createPaymentDto.paid > task.totalPriceTeamMember) {
-        throw new BadRequestException(
-          `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
-        );
+      if (userDoc.role == UserRole.STUDENT) {
+
+        if (remaining[0].allPaid + createPaymentDto.paid > task.totalPriceTeamMember) {
+          throw new BadRequestException(
+            `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid} `,
+          );
+        }
+
+      }
+
+      if (userDoc.role == UserRole.teamMember) {
+        if (remaining[0].allPaid + createPaymentDto.paid > task.totalPrice) {
+          throw new BadRequestException(
+            `You cant pay this as you paid ${remaining[0].allPaid} , want to pay ${createPaymentDto.paid}  , totalMony on task${task.totalPrice} `,
+          );
+        }
+
       }
     }
     createPaymentDto.teamMember = createPaymentDto.byWhom
