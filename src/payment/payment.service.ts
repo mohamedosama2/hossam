@@ -132,7 +132,13 @@ export class PaymentService {
       createPaymentDto.byWhom,
       task._id,
     );
-
+    console.log('remaining')
+    console.log(remaining)
+    if (createPaymentDto.paid > task.totalPriceTeamMember) {
+      throw new BadRequestException(
+        `You cant pay this as your total price is  ${task.totalPriceTeamMember} , want to pay ${createPaymentDto.paid} `,
+      );
+    }
     if (remaining.length != 0) {
       console.log('remaining[0].allPaid')
       console.log(remaining[0].allPaid)
