@@ -20,6 +20,11 @@ export class FilterQueryPayment {
   @IsMongoId()
   teamMember?: string;
 
+
+  @IsOptional()
+  @IsMongoId()
+  byWhom?: string;
+
   @IsOptional()
   from?: string;
 

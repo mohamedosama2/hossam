@@ -492,6 +492,8 @@ export class PaymentRepository extends BaseAbstractRepository<Payment> {
           ...(queryFiltersAndOptions.to && { $lte: moment(queryFiltersAndOptions.to).utc().endOf('d').toDate(), })
         }
       }),
+
+      ...(queryFiltersAndOptions.byWhom && { byWhom: ObjectId(queryFiltersAndOptions.byWhom) }),
       ...(queryFiltersAndOptions.task && { task: ObjectId(queryFiltersAndOptions.task) }),
       ...(queryFiltersAndOptions.teamMember && { teamMember: ObjectId(queryFiltersAndOptions.teamMember) }),
       ...(queryFiltersAndOptions.title && { title: new RegExp(_.escapeRegExp(queryFiltersAndOptions.title), 'i') }),

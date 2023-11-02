@@ -38,10 +38,10 @@ export class GroupService {
   async findAll(
     queryFiltersAndOptions: FilterQueryOptionsGroup,
   ): Promise<PaginateResult<GroupDocument> | GroupDocument[]> {
-    const groups = await this.GroupRepository.findAllWithPaginationOption(
+    const groups = await this.GroupRepository.findAllWithPaginationCustome(
       queryFiltersAndOptions,
-      ['name', 'enable', 'university', 'collage'],
-      { populate: ['students.student', 'university', 'collage'] },
+      // ['name', 'enable', 'university', 'collage', 'student'],
+      // { populate: ['students.student', 'university', 'collage'] },
     );
     return groups;
   }

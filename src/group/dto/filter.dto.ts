@@ -25,6 +25,11 @@ export class FilterQueryGroup {
   @IsMongoId()
   collage?: string;
 
+  @IsOptional()
+  @IsMongoId()
+  student?: string;
+
+
 
 
   @IsOptional()

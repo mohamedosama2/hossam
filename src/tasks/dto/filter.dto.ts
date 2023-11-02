@@ -61,6 +61,10 @@ export class FilterQueryTasksUpdated {
 
   @IsOptional()
   @IsMongoId()
+  student?: string;
+
+  @IsOptional()
+  @IsMongoId()
   collage?: string;
 
   @IsOptional()

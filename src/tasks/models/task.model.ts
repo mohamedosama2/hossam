@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Types, Schema as MongooseSchema, Document } from 'mongoose';
 import { Collage } from 'src/collage/entities/collage.entity';
 import { Group } from 'src/group/models/group.model';
@@ -291,6 +291,20 @@ export class Task {
     default: false, required: false
   }) //testing
   isDeletedTask?: boolean;
+
+  @Prop(
+    raw([
+      {
+
+        type: MongooseSchema.Types.ObjectId,
+        ref: User.name, ///EDDITON
+        required: true,
+
+
+      },
+    ]),
+  )
+  taskStudents: Record<string, any>[];
 }
 
 const TaskSchema = SchemaFactory.createForClass(Task);

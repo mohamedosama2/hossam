@@ -24,7 +24,9 @@ export class Student {
   })
   collage: string;
 
-  
+  @Prop({ type: Number })
+  identificationNumber?: number;
+
 
   @Prop({ type: Date, required: false })
   enrolmentDate?: Date;

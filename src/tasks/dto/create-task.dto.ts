@@ -2,6 +2,7 @@ import { Type } from 'class-transformer'
 import { ApiHideProperty } from '@nestjs/swagger';
 ;
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsEnum,
@@ -84,6 +85,12 @@ export class TaskManagerDto {
   @ApiHideProperty()
   name?: string;
 }
+// export class CreateStudentGroupDto {
+//   @IsMongoId()
+//   @IsOptional()
+//   student?: string;
+// }
+
 export class CreateTaskDto {
   @IsString()
   @IsOptional()
@@ -99,6 +106,11 @@ export class CreateTaskDto {
   @IsNotEmpty()
   @IsOptional()
   projectIdiea?: string;
+
+  @IsArray()
+  @IsOptional()
+  @ApiHideProperty()
+  taskStudents?: string[];
 
 
   @IsString()

@@ -19,6 +19,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { State, TaskType } from './models/task.model';
 import { TaskRepository } from './task.repository';
 import { UpdateAdminTaskDto } from './dto/update-admin-task.dto';
+var ObjectId = require('mongodb').ObjectId;
 
 @Injectable()
 export class TasksService {
@@ -32,10 +33,18 @@ export class TasksService {
   ) { }
   async create(createTaskDto: CreateTaskDto) {
     const payment = createTaskDto.payment as CreatePaymentTaskDto[];
-
+    let taskStudents = []
     if (createTaskDto.taskType === TaskType.GRADUATION) {
       // if (!createTaskDto.group || !createTaskDto.levels || !createTaskDto.logo) throw new BadRequestException('must fill all data ');
       if (!createTaskDto.group) throw new BadRequestException('must fill all data ');
+      let groupData = await this.groupService.findOne(createTaskDto.group)
+      if (!groupData) throw new BadRequestException('must fill all data ');
+
+      await groupData.students.map((doc) => {
+        taskStudents.push(ObjectId(doc.student));
+      });
+
+      createTaskDto.taskStudents = taskStudents
     }
     if (createTaskDto.taskType === TaskType.SINGLE) {
       if (!createTaskDto.student) throw new BadRequestException('must fill all data ');

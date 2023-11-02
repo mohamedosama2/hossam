@@ -40,6 +40,12 @@ export class CreateStudentDto {
   @ApiHideProperty()
   userId?: number;
 
+  @IsNumber()
+  @IsOptional()
+  // @IsNotEmpty()
+  identificationNumber?: number;
+
+
   // @IsString()
   // @IsNotEmpty()
   // usernameAr?: string;

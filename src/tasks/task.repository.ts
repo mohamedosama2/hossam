@@ -168,6 +168,7 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       'nameEn',
       'nameAr',
       'group',
+      'student',
       'collage',
       'isDeletedTask',
       'isAdminTask',
@@ -192,6 +193,15 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
       }),
       // ...(me.role === UserRole.teamMember && {
       //   'taskManager.id': me._id,
+      // }),
+
+      // ...(queryFiltersAndOptions.student && {
+      //   'taskstudents':
+      //     typeof ids == 'string'
+      //       ? ObjectId(ids)
+      //       : {
+      //         $in: ids.map((ids, _, __) => ObjectId(ids)),
+      //       },
       // }),
 
       ...(me.role === UserRole.teamMember && (me as any).jobTitle === JopTitle.REPORTER && {
@@ -255,6 +265,10 @@ export class TaskRepository extends BaseAbstractRepository<Task> {
 
       ...(queryFiltersAndOptions.group && {
         group: ObjectId(queryFiltersAndOptions.group),
+      }),
+
+      ...(queryFiltersAndOptions.student && {
+        taskStudents: ObjectId(queryFiltersAndOptions.student),
       }),
 
       ...(queryFiltersAndOptions.reporter && {
