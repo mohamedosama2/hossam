@@ -48,10 +48,15 @@ export class TasksService {
     }
     if (createTaskDto.taskType === TaskType.SINGLE) {
       if (!createTaskDto.student) throw new BadRequestException('must fill all data ');
+
     }
 
     if (createTaskDto.taskType === TaskType.PRIVATE) {
       if (!createTaskDto.numberOfHours || !createTaskDto.numberOfHours) throw new BadRequestException('must fill all data ');
+    }
+
+    if (createTaskDto.student) {
+      createTaskDto.taskStudents = [ObjectId(createTaskDto.student)]
     }
 
 
