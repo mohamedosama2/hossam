@@ -9,6 +9,10 @@ export type SubjectDocument = Subject & Document;
 export enum Semester {
   FIRST = 'FIRST',
   SECOND = 'SECOND',
+  SUMMER_COURSE = 'SUMMER_COURSE',
+  SPRING_COURSE = 'SPRING_COURSE',
+  FALL_COURSE = 'FALL_COURSE',
+  WINTER_COURSE = 'WINTER_COURSE'
 }
 
 @Schema({ timestamps: true })
