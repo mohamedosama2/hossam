@@ -43,6 +43,8 @@ export class GroupService {
       // ['name', 'enable', 'university', 'collage', 'student'],
       // { populate: ['students.student', 'university', 'collage'] },
     );
+
+    console.log(groups)
     return groups;
   }
 

@@ -95,13 +95,17 @@ export class GroupRepository extends BaseAbstractRepository<Group> {
         },
       );
     } else {
-      docs = await this.groupModel
-        .find({
-          filters,
-          ...query,
-        })
-        .populate(['students.student', 'university', 'collage']);
+      docs = {
+        docs: await this.groupModel
+          .find({
+            filters,
+            ...query,
+          })
+          .populate(['students.student', 'university', 'collage'])
+      }
+
     }
+
     return docs;
   }
 }
