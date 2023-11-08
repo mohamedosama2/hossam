@@ -47,9 +47,10 @@ export class GroupRepository extends BaseAbstractRepository<Group> {
       ...(queryFiltersAndOptions.enable !== null &&
         queryFiltersAndOptions.enable !== undefined && {
         enable:
-          queryFiltersAndOptions.enable == ('true' as any)
-            ? { $ne: false, $exists: true }
-            : { $ne: true },
+          queryFiltersAndOptions.enable
+        //  == ('true' as any)
+        //   ? { $ne: false }
+        //   : { $ne: true },
       }),
       ...(queryFiltersAndOptions.name && {
         name: {

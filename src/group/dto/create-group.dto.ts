@@ -1,21 +1,19 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import
-  {
-    IsArray,
-    IsBoolean,
-    IsEnum,
-    IsMongoId,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    ValidateNested,
-  } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+IsArray,
+IsBoolean,
+IsEnum,
+IsMongoId,
+IsNotEmpty,
+IsOptional,
+IsString,
+ValidateNested,
+} from 'class-validator';
 import { Semester } from 'src/subjects/models/subject.model';
 import { IsNonPrimitiveArray } from 'src/utils/custumValidationDecorator';
 
-export class CreateGroupDto
-{
+export class CreateGroupDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -25,7 +23,7 @@ export class CreateGroupDto
 
   @IsMongoId()
   collage: string;
-  
+
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -33,19 +31,20 @@ export class CreateGroupDto
   @Type(() => CreateStudentGroupDto)
   students: CreateStudentGroupDto[];
 
-  @IsBoolean()
   @IsOptional()
-  @ApiHideProperty()
+  @IsBoolean()
+  @Transform(({ obj }) => {
+    return [true, 'true'].indexOf(obj.isApprovedToJoinRequest) > -1;
+  })
   enable: boolean;
 
-  
+
   @IsEnum(Semester)
   semester: Semester;
 
 }
 
-export class CreateStudentGroupDto
-{
+export class CreateStudentGroupDto {
   @IsMongoId()
   student: string;
 
